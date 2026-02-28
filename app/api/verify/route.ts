@@ -3,13 +3,15 @@ import { buildVerifyPayload, mapVerificationResponse } from '@/lib/verification'
 
 const VERIFY_API_URL = process.env.VERIFY_API_URL || 'https://api.authichain.io/api/verify'
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const rawInput = params.id
-
+export async function POST(request: NextRequest) {
   try {
+    const body = await request.json().catch(() => ({}))
+    const rawInput = String(body?.raw ?? body?.input ?? '').trim()
+
+    if (!rawInput) {
+      return NextResponse.json({ error: 'Input is required' }, { status: 400 })
+    }
+
     const payload = buildVerifyPayload(rawInput)
     const upstream = await fetch(VERIFY_API_URL, {
       method: 'POST',
@@ -17,6 +19,7 @@ export async function GET(
       body: JSON.stringify(payload),
       cache: 'no-store',
     })
+
     const data = await upstream.json().catch(() => ({}))
 
     if (!upstream.ok) {
@@ -24,18 +27,16 @@ export async function GET(
         {
           success: false,
           message: data?.message || 'Verification request failed',
+          upstreamStatus: upstream.status,
           ...mapVerificationResponse(data, rawInput),
         },
         { status: 200 }
       )
     }
 
-    return NextResponse.json(mapVerificationResponse(data, rawInput), { status: 200 })
+    return NextResponse.json(mapVerificationResponse(data, rawInput))
   } catch (error) {
-    console.error('Verification error:', error)
-    return NextResponse.json(
-      { error: 'Failed to verify product' },
-      { status: 500 }
-    )
+    console.error('Verify proxy error:', error)
+    return NextResponse.json({ error: 'Failed to verify product' }, { status: 500 })
   }
 }
