@@ -2,10 +2,12 @@ import { NextRequest, NextResponse } from 'next/server';
 import Stripe from 'stripe';
 export const dynamic = 'force-dynamic';
 
-
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
 const AIRTABLE_API_KEY = process.env.AIRTABLE_API_KEY!;
 const AIRTABLE_BASE_ID = process.env.AIRTABLE_BASE_ID!;
+
+// Lazy Stripe client initialization
+const getStripe = () => new Stripe(process.env.STRIPE_SECRET_KEY!);
 
 // ─── Airtable helpers ────────────────────────────────────────────────────────
 
@@ -36,7 +38,7 @@ async function isEventProcessed(stripeEventId: string): Promise<boolean> {
     'Events Log',
     'GET',
     undefined,
-    `?filterByFormula=AND({Stripe Event ID}="${stripeEventId}")`
+    `?filterByFormula=AND({Stripe Event ID}=\"${stripeEventId}\")`
   );
   return data.records?.length > 0;
 }
@@ -60,7 +62,7 @@ async function upsertAccount(customerId: string, fields: object): Promise<string
     'Accounts',
     'GET',
     undefined,
-    `?filterByFormula={Stripe Customer ID}="${customerId}"`
+    `?filterByFormula={Stripe Customer ID}=\"${customerId}\"`
   );
   if (existing.records?.length > 0) {
     const recordId = existing.records[0].id;
@@ -79,10 +81,11 @@ async function upsertContact(email: string, fields: object, accountRecordId?: st
     'Contacts',
     'GET',
     undefined,
-    `?filterByFormula={Email}="${email}"`
+    `?filterByFormula={Email}=\"${email}\"`
   );
   const contactFields: any = { Email: email, ...fields };
   if (accountRecordId) contactFields['Account'] = [accountRecordId];
+
   if (existing.records?.length > 0) {
     const recordId = existing.records[0].id;
     await airtableRequest('Contacts', 'PATCH', { records: [{ id: recordId, fields: contactFields }] });
@@ -102,7 +105,7 @@ async function upsertRevenueProjection(subscriptionId: string, fields: object) {
     'Revenue Projections',
     'GET',
     undefined,
-    `?filterByFormula={Stripe Subscription ID}="${subscriptionId}"`
+    `?filterByFormula={Stripe Subscription ID}=\"${subscriptionId}\"`
   );
   if (existing.records?.length > 0) {
     await airtableRequest('Revenue Projections', 'PATCH', {
@@ -118,6 +121,7 @@ async function upsertRevenueProjection(subscriptionId: string, fields: object) {
 // ─── Event handlers ──────────────────────────────────────────────────────────
 
 async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+  const stripe = getStripe();
   const customerId = session.customer as string;
   const customerEmail = session.customer_email || session.customer_details?.email || '';
   const customerName = session.customer_details?.name || '';
@@ -152,6 +156,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     const monthlyAmount = subscription.items.data[0]?.price?.unit_amount
       ? subscription.items.data[0].price.unit_amount / 100
       : amountTotal;
+
     await upsertRevenueProjection(subscriptionId, {
       'Customer Email': customerEmail,
       'MRR': monthlyAmount,
@@ -165,6 +170,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 }
 
 async function handleInvoicePaid(invoice: Stripe.Invoice) {
+  const stripe = getStripe();
   const customerId = invoice.customer as string;
   const customerEmail = invoice.customer_email || '';
   const subscriptionId = invoice.subscription as string;
@@ -193,6 +199,7 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
     const mrr = sub.items.data[0]?.price?.unit_amount
       ? sub.items.data[0].price.unit_amount / 100
       : amountPaid;
+
     await upsertRevenueProjection(subscriptionId, {
       'Status': 'Active',
       'MRR': mrr,
@@ -260,7 +267,7 @@ async function handleSubscriptionDeleted(subscription: Stripe.Subscription) {
 // ─── Main handler ─────────────────────────────────────────────────────────────
 
 export async function POST(req: NextRequest) {
-    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
+  const stripe = getStripe();
   const body = await req.text();
   const signature = req.headers.get('stripe-signature')!;
 
@@ -302,7 +309,6 @@ export async function POST(req: NextRequest) {
 
     await logEvent(event.id, event.type, 'success', JSON.stringify({ processed: true }));
     return NextResponse.json({ status: 'success' });
-
   } catch (err: any) {
     console.error(`Error processing ${event.type}:`, err);
     try {
