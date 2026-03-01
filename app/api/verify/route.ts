@@ -4,13 +4,15 @@ import { buildVerifyPayload, mapVerificationResponse } from '@/lib/verification'
 const VERIFY_API_URL = process.env.VERIFY_API_URL || 'https://api.authichain.io/api/verify'
 const UPSTREAM_TIMEOUT_MS = 8000
 
-export async function GET(
-  _request: NextRequest,
-  { params }: { params: { id: string } }
-) {
-  const rawInput = params.id
-
+export async function POST(request: NextRequest) {
   try {
+    const body = await request.json().catch(() => ({}))
+    const rawInput = String(body?.raw ?? body?.input ?? '').trim()
+
+    if (!rawInput) {
+      return NextResponse.json({ error: 'Input is required' }, { status: 400 })
+    }
+
     const payload = buildVerifyPayload(rawInput)
     const controller = new AbortController()
     const timeout = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS)
@@ -27,6 +29,7 @@ export async function GET(
     } finally {
       clearTimeout(timeout)
     }
+
     const data = await upstream.json().catch(() => ({}))
 
     if (!upstream.ok) {
@@ -34,15 +37,16 @@ export async function GET(
         {
           success: false,
           message: data?.message || 'Verification request failed',
+          upstreamStatus: upstream.status,
           ...mapVerificationResponse(data, rawInput),
         },
         { status: 200 }
       )
     }
 
-    return NextResponse.json(mapVerificationResponse(data, rawInput), { status: 200 })
+    return NextResponse.json(mapVerificationResponse(data, rawInput))
   } catch (error) {
-    console.error('Verification error:', error)
+    console.error('Verify proxy error:', error)
     const message = error instanceof Error && error.name === 'AbortError'
       ? 'Verification request timed out'
       : 'Failed to verify product'
