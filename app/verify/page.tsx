@@ -162,6 +162,19 @@ function VerifyContent() {
     }
   }, [logEvent, stopCamera, toast])
 
+  const handleReset = useCallback(() => {
+    setResult(null)
+    setInputValue("")
+    setShareOpen(false)
+    stopCamera()
+  }, [stopCamera])
+
+  const handleOpenShare = useCallback(async () => {
+    if (!result) return
+    await logEvent('share_opened', { qron_id: result.qron_id })
+    setShareOpen(true)
+  }, [result, logEvent])
+
   useEffect(() => {
     const hasWindow = typeof window !== 'undefined'
     setDetectorSupported(hasWindow && typeof window.BarcodeDetector !== 'undefined')
@@ -254,6 +267,7 @@ function VerifyContent() {
       toast({ title: 'Share cancelled', description: 'No data was shared.' })
     }
   }
+
   return (
     <div className="min-h-screen bg-background">
       {fallbackEnabled && <Script src="/jsQR.js" strategy="afterInteractive" onLoad={() => setJsQrAvailable(typeof window !== 'undefined' && typeof window.jsQR === 'function')} />}
