@@ -24,6 +24,11 @@ export interface Database {
           is_registered: boolean
           created_at: string
           updated_at: string
+          industry_id: string | null
+          confidence: number | null
+          workflow: string | null
+          story: string | null
+          features: Json | null
         }
         Insert: {
           id?: string
@@ -39,6 +44,11 @@ export interface Database {
           is_registered?: boolean
           created_at?: string
           updated_at?: string
+          industry_id?: string | null
+          confidence?: number | null
+          workflow?: string | null
+          story?: string | null
+          features?: Json | null
         }
         Update: {
           id?: string
@@ -54,6 +64,11 @@ export interface Database {
           is_registered?: boolean
           created_at?: string
           updated_at?: string
+          industry_id?: string | null
+          confidence?: number | null
+          workflow?: string | null
+          story?: string | null
+          features?: Json | null
         }
       }
       scans: {
