@@ -13,6 +13,13 @@ import { ArrowLeft, Shield, CheckCircle, Loader2, Copy, ExternalLink, Sparkles, 
 import { ThemeToggle } from "@/components/theme-toggle"
 import type { Product } from "@/lib/supabase/types"
 
+interface WorkflowStep {
+  id: string
+  name: string
+  description: string
+  duration: string
+}
+
 export default function ProductDetailPage({ params }: { params: { id: string } }) {
   const router = useRouter()
   const { toast } = useToast()
@@ -136,6 +143,10 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
     return null
   }
 
+  const workflowSteps = Array.isArray(product.workflow) ? product.workflow as WorkflowStep[] : []
+  const featureList = Array.isArray(product.features) ? product.features as string[] : []
+  const authenticityList = Array.isArray(product.authenticity_features) ? product.authenticity_features as string[] : []
+
   return (
     <div className="min-h-screen bg-background">
       {/* Navigation */}
@@ -241,7 +252,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             </div>
 
             {/* AI AutoFlow Classification */}
-            {(product as any).industry_id && (
+            {product.industry_id && (
               <Card className="border-purple-500/20 bg-gradient-to-br from-purple-50 to-indigo-50 dark:from-purple-950/20 dark:to-indigo-950/20">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -254,24 +265,24 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     <div>
                       <p className="text-sm text-muted-foreground">Industry</p>
                       <p className="text-lg font-semibold capitalize">
-                        {((product as any).industry_id as string).replace('-', ' & ')}
+                        {product.industry_id.replace('-', ' & ')}
                       </p>
                     </div>
-                    {(product as any).confidence && (
+                    {product.confidence && (
                       <div className="text-right">
                         <p className="text-sm text-muted-foreground">Confidence</p>
                         <p className="text-2xl font-bold text-purple-600 dark:text-purple-400">
-                          {(product as any).confidence}%
+                          {product.confidence}%
                         </p>
                       </div>
                     )}
                   </div>
 
-                  {(product as any).features && (product as any).features.length > 0 && (
+                  {featureList.length > 0 && (
                     <div>
                       <p className="text-sm font-medium mb-2">Detected Features</p>
                       <div className="flex flex-wrap gap-2">
-                        {(product as any).features.map((feature: string, index: number) => (
+                        {featureList.map((feature, index) => (
                           <Badge key={index} variant="outline" className="bg-purple-500/10 text-purple-700 dark:text-purple-300">
                             <Star className="h-3 w-3 mr-1" />
                             {feature}
@@ -285,7 +296,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             )}
 
             {/* AI Story */}
-            {(product as any).story && (
+            {product.story && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -294,14 +305,14 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </CardHeader>
                 <CardContent>
                   <p className="text-muted-foreground italic leading-relaxed">
-                    "{(product as any).story}"
+                    &ldquo;{product.story}&rdquo;
                   </p>
                 </CardContent>
               </Card>
             )}
 
             {/* Authentication Workflow */}
-            {(product as any).workflow && (product as any).workflow.length > 0 && (
+            {workflowSteps.length > 0 && (
               <Card>
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -309,12 +320,12 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                     Authentication Workflow
                   </CardTitle>
                   <CardDescription>
-                    Industry-specific verification process ({(product as any).workflow.length} steps)
+                    Industry-specific verification process ({workflowSteps.length} steps)
                   </CardDescription>
                 </CardHeader>
                 <CardContent>
                   <div className="space-y-3">
-                    {(product as any).workflow.map((step: any, index: number) => (
+                    {workflowSteps.map((step, index) => (
                       <div key={step.id} className="flex items-start gap-3">
                         <div className="flex-shrink-0 w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center text-sm font-bold">
                           {index + 1}
@@ -334,7 +345,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
             )}
 
             {/* Authenticity Features */}
-            {(product as any).authenticity_features && (product as any).authenticity_features.length > 0 && (
+            {authenticityList.length > 0 && (
               <Card className="border-green-500/20">
                 <CardHeader>
                   <CardTitle className="flex items-center gap-2">
@@ -344,7 +355,7 @@ export default function ProductDetailPage({ params }: { params: { id: string } }
                 </CardHeader>
                 <CardContent>
                   <div className="grid grid-cols-1 gap-2">
-                    {(product as any).authenticity_features.map((feature: string, index: number) => (
+                    {authenticityList.map((feature, index) => (
                       <div key={index} className="flex items-center gap-2 p-2 rounded bg-green-50 dark:bg-green-900/20">
                         <CheckCircle className="h-4 w-4 text-green-500 flex-shrink-0" />
                         <span className="text-sm">{feature}</span>
