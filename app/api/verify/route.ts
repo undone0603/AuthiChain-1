@@ -1,7 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { buildVerifyPayload, mapVerificationResponse } from '@/lib/verification'
-
-const VERIFY_API_URL = process.env.VERIFY_API_URL || 'https://api.authichain.io/api/verify'
+import { getVerifyApiMissingMessage, getVerifyApiUrl } from '@/lib/verification-config'
 
 export async function POST(request: NextRequest) {
   let rawInput = ''
@@ -13,8 +12,21 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: 'Input is required' }, { status: 400 })
     }
 
+    const verifyApiUrl = getVerifyApiUrl()
+    if (!verifyApiUrl) {
+      const mapped = mapVerificationResponse({}, rawInput)
+      return NextResponse.json(
+        {
+          ...mapped,
+          success: false,
+          message: getVerifyApiMissingMessage(),
+        },
+        { status: 200 }
+      )
+    }
+
     const payload = buildVerifyPayload(rawInput)
-    const upstream = await fetch(VERIFY_API_URL, {
+    const upstream = await fetch(verifyApiUrl, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
@@ -23,24 +35,26 @@ export async function POST(request: NextRequest) {
 
     const data = await upstream.json().catch(() => null)
     if (data === null) {
+      const mapped = mapVerificationResponse({}, rawInput)
       return NextResponse.json(
         {
+          upstreamStatus: upstream.status,
+          ...mapped,
           success: false,
           message: 'Upstream returned non-JSON response',
-          upstreamStatus: upstream.status,
-          ...mapVerificationResponse({}, rawInput),
         },
         { status: 200 }
       )
     }
 
     if (!upstream.ok) {
+      const mapped = mapVerificationResponse(data, rawInput)
       return NextResponse.json(
         {
+          upstreamStatus: upstream.status,
+          ...mapped,
           success: false,
           message: data?.message || 'Verification request failed',
-          upstreamStatus: upstream.status,
-          ...mapVerificationResponse(data, rawInput),
         },
         { status: 200 }
       )
@@ -49,11 +63,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(mapVerificationResponse(data, rawInput))
   } catch (error) {
     console.error('Verify proxy error:', error)
+    const mapped = mapVerificationResponse({}, rawInput)
     return NextResponse.json(
       {
+        ...mapped,
         success: false,
         message: 'Failed to verify product',
-        ...mapVerificationResponse({}, rawInput),
       },
       { status: 200 }
     )

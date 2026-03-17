@@ -22,6 +22,12 @@ export interface Database {
           truemark_data: Json | null
           blockchain_tx_hash: string | null
           is_registered: boolean
+          industry_id: string | null
+          workflow: Json | null
+          story: string | null
+          features: Json | null
+          authenticity_features: Json | null
+          confidence: number | null
           created_at: string
           updated_at: string
         }
@@ -37,6 +43,12 @@ export interface Database {
           truemark_data?: Json | null
           blockchain_tx_hash?: string | null
           is_registered?: boolean
+          industry_id?: string | null
+          workflow?: Json | null
+          story?: string | null
+          features?: Json | null
+          authenticity_features?: Json | null
+          confidence?: number | null
           created_at?: string
           updated_at?: string
         }
@@ -52,6 +64,12 @@ export interface Database {
           truemark_data?: Json | null
           blockchain_tx_hash?: string | null
           is_registered?: boolean
+          industry_id?: string | null
+          workflow?: Json | null
+          story?: string | null
+          features?: Json | null
+          authenticity_features?: Json | null
+          confidence?: number | null
           created_at?: string
           updated_at?: string
         }
