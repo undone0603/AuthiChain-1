@@ -91,8 +91,11 @@ export type VerificationViewModel = {
   input: string
 }
 
-export function mapVerificationResponse(data: VerifyApiResponse, input: string): VerificationViewModel {
-  const authentic = data?.success === true && data?.product?.isActive !== false
+export function mapVerificationResponse(
+  data: VerifyApiResponse,
+  input: string
+): VerificationViewModel {
+  const authentic = data.success === true && data?.product?.isActive !== false
   const trustScore = authentic ? 96 : data?.success === true ? 30 : 10
   const confidence: 'High' | 'Medium' | 'Low' =
     trustScore >= 80 ? 'High' : trustScore >= 40 ? 'Medium' : 'Low'
