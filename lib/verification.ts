@@ -105,7 +105,7 @@ export function mapVerificationResponse(
     authentic,
     trust_score: trustScore,
     confidence,
-    qron_iddata?.product?.productIdentifier?.product?.productIdentifier || deriveInputIdentifier(input),
+?.product?.productIdentifier?.product?.productIdentifier || deriveInputIdentifier(input),
     actions: authentic
       ? ['launch_ar', 'view_story', 'claim_ownership']
       : ['retry_scan', 'contact_support'],
