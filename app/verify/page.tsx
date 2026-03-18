@@ -55,6 +55,7 @@ function VerifyContent() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null)
   const scanTimerRef = useRef<number | null>(null)
   const streamRef = useRef<MediaStream | null>(null)
+  const scanLockRef = useRef(false)
 
   const [inputValue, setInputValue] = useState("")
   const [loading, setLoading] = useState(false)
@@ -84,6 +85,7 @@ function VerifyContent() {
       streamRef.current = null
     }
     setCameraReady(false)
+    scanLockRef.current = false
   }, [])
 
   const verifyValue = useCallback(async (raw: string) => {
@@ -101,6 +103,10 @@ function VerifyContent() {
       const data = await response.json()
       setResult(data)
 
+      if (!response.ok && !data?.message) {
+        throw new Error('Verification request failed')
+      }
+
       if (data.authentic) {
         await logEvent('verify_success', { qron_id: data.qron_id, trust_score: data.trust_score })
       } else {
@@ -116,10 +122,14 @@ function VerifyContent() {
       })
     } finally {
       setLoading(false)
+      scanLockRef.current = false
     }
   }, [logEvent, toast])
 
   const handleDetectedValue = useCallback(async (value: string) => {
+    if (scanLockRef.current) return
+    scanLockRef.current = true
+
     setInputValue(value)
     await logEvent('scan_detected', { value })
     stopCamera()
@@ -136,6 +146,7 @@ function VerifyContent() {
     }
 
     try {
+      stopCamera()
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'environment' } })
       streamRef.current = stream
       if (videoRef.current) {
@@ -149,7 +160,20 @@ function VerifyContent() {
       await logEvent('camera_failed', { reason })
       toast({ title: 'Camera Error', description: 'Could not start camera.', variant: 'destructive' })
     }
-  }, [logEvent, toast])
+  }, [logEvent, stopCamera, toast])
+
+  const handleReset = useCallback(() => {
+    setResult(null)
+    setInputValue("")
+    setShareOpen(false)
+    stopCamera()
+  }, [stopCamera])
+
+  const handleOpenShare = useCallback(async () => {
+    if (!result) return
+    await logEvent('share_opened', { qron_id: result.qron_id })
+    setShareOpen(true)
+  }, [result, logEvent])
 
   useEffect(() => {
     const hasWindow = typeof window !== 'undefined'
@@ -183,7 +207,7 @@ function VerifyContent() {
       }
     }
 
-    if (fallbackEnabled && window.jsQR) {
+    if (fallbackEnabled && jsQrAvailable && window.jsQR) {
       scanTimerRef.current = window.setInterval(async () => {
         if (!videoRef.current || !canvasRef.current) return
 
@@ -214,7 +238,7 @@ function VerifyContent() {
     }
 
     return undefined
-  }, [cameraReady, detectorSupported, fallbackEnabled, handleDetectedValue])
+  }, [cameraReady, detectorSupported, fallbackEnabled, jsQrAvailable, handleDetectedValue])
 
   const handleVerify = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -242,19 +266,6 @@ function VerifyContent() {
     } catch {
       toast({ title: 'Share cancelled', description: 'No data was shared.' })
     }
-  }
-
-  const handleReset = async () => {
-    setResult(null)
-    setInputValue('')
-    setShareOpen(false)
-    stopCamera()
-    await logEvent('reset')
-  }
-
-  const handleOpenShare = async () => {
-    setShareOpen(true)
-    await logEvent('share_prompt_shown', { qron_id: result?.qron_id })
   }
 
   return (

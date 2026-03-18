@@ -28,9 +28,9 @@ export async function POST(request: NextRequest) {
     const industries = getAllIndustries()
     const industryList = industries.map(i => i.name).join(', ')
 
-    // Use GPT-4 Vision to analyze the product image
+    // Use GPT-4o Vision to analyze the product image
     const response = await openai.chat.completions.create({
-      model: 'gpt-4-vision-preview',
+      model: 'gpt-4o',
       messages: [
         {
           role: 'user',
@@ -80,8 +80,10 @@ Respond in JSON format:
       )
     }
 
-    // Parse the JSON response
-    const aiResult = JSON.parse(content)
+    // Parse the JSON response — strip markdown code fences if present
+    const jsonMatch = content.match(/```(?:json)?\s*([\s\S]*?)```/) 
+    const jsonStr = jsonMatch ? jsonMatch[1].trim() : content.trim()
+    const aiResult = JSON.parse(jsonStr)
 
     // Classify into our industry system
     const industryId = classifyIndustry(

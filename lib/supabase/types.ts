@@ -30,6 +30,12 @@ export interface Database {
           confidence: number | null
           created_at: string
           updated_at: string
+          industry_id: string | null
+          confidence: number | null
+          workflow: Json | null
+          story: string | null
+          features: Json | null
+          authenticity_features: Json | null
         }
         Insert: {
           id?: string
@@ -51,6 +57,12 @@ export interface Database {
           confidence?: number | null
           created_at?: string
           updated_at?: string
+          industry_id?: string | null
+          confidence?: number | null
+          workflow?: Json | null
+          story?: string | null
+          features?: Json | null
+          authenticity_features?: Json | null
         }
         Update: {
           id?: string
@@ -72,6 +84,12 @@ export interface Database {
           confidence?: number | null
           created_at?: string
           updated_at?: string
+          industry_id?: string | null
+          confidence?: number | null
+          workflow?: Json | null
+          story?: string | null
+          features?: Json | null
+          authenticity_features?: Json | null
         }
       }
       scans: {

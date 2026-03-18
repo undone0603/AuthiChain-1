@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { buildVerifyPayload, mapVerificationResponse } from '@/lib/verification'
-import { getVerifyApiMissingMessage, getVerifyApiUrl } from '@/lib/verification-config'
+
+const VERIFY_API_URL = process.env.VERIFY_API_URL || 'https://api.authichain.io/api/verify'
+const UPSTREAM_TIMEOUT_MS = 8000
 
 export async function POST(request: NextRequest) {
   let rawInput = ''
@@ -26,12 +28,21 @@ export async function POST(request: NextRequest) {
     }
 
     const payload = buildVerifyPayload(rawInput)
-    const upstream = await fetch(verifyApiUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload),
-      cache: 'no-store',
-    })
+    const controller = new AbortController()
+    const timeout = setTimeout(() => controller.abort(), UPSTREAM_TIMEOUT_MS)
+
+    let upstream: Response
+    try {
+      upstream = await fetch(VERIFY_API_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify(payload),
+        cache: 'no-store',
+        signal: controller.signal,
+      })
+    } finally {
+      clearTimeout(timeout)
+    }
 
     const data = await upstream.json().catch(() => null)
     if (data === null) {
@@ -42,6 +53,7 @@ export async function POST(request: NextRequest) {
           ...mapped,
           success: false,
           message: 'Upstream returned non-JSON response',
+          ...mapVerificationResponse({}, rawInput),
         },
         { status: 200 }
       )
@@ -63,12 +75,15 @@ export async function POST(request: NextRequest) {
     return NextResponse.json(mapVerificationResponse(data, rawInput))
   } catch (error) {
     console.error('Verify proxy error:', error)
-    const mapped = mapVerificationResponse({}, rawInput)
+    const message = error instanceof Error && error.name === 'AbortError'
+      ? 'Verification request timed out'
+      : 'Failed to verify product'
     return NextResponse.json(
       {
         ...mapped,
         success: false,
-        message: 'Failed to verify product',
+        message,
+        ...mapVerificationResponse({}, rawInput),
       },
       { status: 200 }
     )

@@ -29,10 +29,23 @@ export function buildVerifyPayload(rawInput: string): VerifyPayload {
   const raw = rawInput.trim()
 
   if (isLikelyUrl(raw)) {
+    try {
+      const parsed = new URL(raw)
+      const idParam = parsed.searchParams.get('id')
+      if (idParam) {
+        return { productIdentifier: normalizeProductIdentifier(idParam) }
+      }
+    } catch {
+      // fall through
+    }
     return { qrCode: raw }
   }
 
-  if (/PROD-/i.test(raw) || /^[A-Z]{2,}-[A-Z0-9-]+$/i.test(raw)) {
+  if (
+    /^PROD-/i.test(raw) ||
+    /^TM-/i.test(raw) ||
+    /^[A-Z]{2,}-[A-Z0-9-]+$/i.test(raw)
+  ) {
     return { productIdentifier: normalizeProductIdentifier(raw) }
   }
 
@@ -45,13 +58,15 @@ export function buildVerifyPayload(rawInput: string): VerifyPayload {
 
 function deriveInputIdentifier(input: string): string {
   const trimmed = input.trim()
-
   if (!isLikelyUrl(trimmed)) {
     return normalizeProductIdentifier(trimmed)
   }
-
   try {
     const parsed = new URL(trimmed)
+    const idParam = parsed.searchParams.get('id')
+    if (idParam) {
+      return normalizeProductIdentifier(idParam)
+    }
     const pathParts = parsed.pathname.split('/').filter(Boolean)
     const lastSegment = pathParts[pathParts.length - 1]
     return normalizeProductIdentifier(lastSegment || trimmed)
@@ -76,8 +91,11 @@ export type VerificationViewModel = {
   input: string
 }
 
-export function mapVerificationResponse(data: VerifyApiResponse, input: string): VerificationViewModel {
-  const authentic = data?.success === true && data?.product?.isActive !== false
+export function mapVerificationResponse(
+  data: VerifyApiResponse,
+  input: string
+): VerificationViewModel {
+  const authentic = data.success === true && data.product?.isActive !== false
   const trustScore = authentic ? 96 : data?.success === true ? 30 : 10
   const confidence: 'High' | 'Medium' | 'Low' =
     trustScore >= 80 ? 'High' : trustScore >= 40 ? 'Medium' : 'Low'
@@ -91,7 +109,7 @@ export function mapVerificationResponse(data: VerifyApiResponse, input: string):
     actions: authentic
       ? ['launch_ar', 'view_story', 'claim_ownership']
       : ['retry_scan', 'contact_support'],
-    product: data?.product ?? null,
+    product: data.product ?? null,
     supplyChain: data?.supplyChain ?? null,
     tokenId: typeof data?.tokenId === 'number' ? data.tokenId : null,
     success: Boolean(data?.success),

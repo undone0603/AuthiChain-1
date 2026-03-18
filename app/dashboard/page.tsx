@@ -76,21 +76,21 @@ export default function DashboardPage() {
   }
 
   // AI AutoFlow Analytics
-  const industryBreakdown = products.reduce((acc: Record<string, number>, product: any) => {
+  const industryBreakdown = products.reduce((acc: Record<string, number>, product: Product) => {
     if (product.industry_id) {
       acc[product.industry_id] = (acc[product.industry_id] || 0) + 1
     }
     return acc
   }, {} as Record<string, number>)
 
-  const totalWithIndustry = Object.values(industryBreakdown).reduce((sum: number, count: number) => sum + count, 0) as number
+  const totalWithIndustry = Object.values(industryBreakdown).reduce((sum: number, count: number) => sum + count, 0)
 
-  const avgConfidence = products.filter((p: any) => p.confidence)
-    .reduce((sum: number, p: any) => sum + (p.confidence || 0), 0) /
-    (products.filter((p: any) => p.confidence).length || 1)
+  const avgConfidence = products.filter((p) => p.confidence !== null && p.confidence !== undefined)
+    .reduce((sum: number, p: Product) => sum + (p.confidence ?? 0), 0) /
+    (products.filter((p) => p.confidence !== null && p.confidence !== undefined).length || 1)
 
   const topIndustries = Object.entries(industryBreakdown)
-    .sort(([,a]: [string, number], [,b]: [string, number]) => b - a)
+    .sort(([, a], [, b]) => b - a)
     .slice(0, 3) as [string, number][]
 
   return (
@@ -242,8 +242,8 @@ export default function DashboardPage() {
                   <h4 className="text-sm font-semibold mb-3">Industry Distribution</h4>
                   <div className="space-y-2">
                     {Object.entries(industryBreakdown)
-                      .sort(([,a]: any, [,b]: any) => b - a)
-                      .map(([industry, count]: any) => (
+                      .sort(([, a], [, b]) => b - a)
+                      .map(([industry, count]) => (
                         <div key={industry} className="flex items-center gap-3">
                           <div className="flex-1 flex items-center gap-3">
                             <span className="text-sm font-medium capitalize min-w-[120px]">
@@ -333,20 +333,20 @@ export default function DashboardPage() {
                     </CardHeader>
                     <CardContent>
                       <div className="space-y-2 text-sm">
-                        {(product as any).industry_id && (
+                        {product.industry_id && (
                           <div className="flex items-center gap-2">
                             <Badge variant="outline" className="bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/20">
                               <Sparkles className="h-3 w-3 mr-1" />
-                              {((product as any).industry_id as string).replace('-', ' & ')}
+                              {product.industry_id.replace('-', ' & ')}
                             </Badge>
-                            {(product as any).confidence && (
+                            {product.confidence && (
                               <span className="text-xs text-muted-foreground">
-                                {(product as any).confidence}% confidence
+                                {product.confidence}% confidence
                               </span>
                             )}
                           </div>
                         )}
-                        {product.category && !(product as any).industry_id && (
+                        {product.category && !product.industry_id && (
                           <p className="text-muted-foreground">
                             Category: {product.category}
                           </p>
