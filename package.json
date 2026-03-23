@@ -15,7 +15,9 @@
     "contract:deploy:mainnet": "npx hardhat run scripts/nft/deploy.ts --network vechain_main",
     "build:cloudflare": "npx @opennextjs/cloudflare build"
   },
-  "dependencies": {
+  
+    "engines": { "node": "20.x" },
+"dependencies": {
     "@fal-ai/client": "^1.9.4",
     "@hookform/resolvers": "^3.10.0",
     "@radix-ui/react-accordion": "^1.2.4",
