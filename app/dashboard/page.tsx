@@ -2,20 +2,21 @@
 
 export const dynamic = 'force-dynamic'
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
+import { useState, useEffect, useRef } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import { useToast } from "@/hooks/use-toast"
 import { createClient } from "@/lib/supabase/client"
-import { Shield, Plus, Package, CheckCircle, Loader2, LogOut, Sparkles, TrendingUp, Zap, X } from "lucide-react"
+import { Shield, Plus, Package, CheckCircle, Loader2, LogOut, Sparkles, TrendingUp, Zap, X, Coins, ArrowUpRight, Lock, Share2, Copy, Check } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { productsResponseSchema, type Product } from "@/lib/contracts/products"
 
 export default function DashboardPage() {
   const router = useRouter()
+  const searchParams = useSearchParams()
   const { toast } = useToast()
   const [supabase] = useState(() => createClient())
 
@@ -157,7 +158,7 @@ export default function DashboardPage() {
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <Card>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="text-sm font-medium">Total Products</CardTitle>
@@ -189,7 +190,186 @@ export default function DashboardPage() {
               <div className="text-2xl font-bold">{stats.pending}</div>
             </CardContent>
           </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+              <CardTitle className="text-sm font-medium">Plan</CardTitle>
+              <Zap className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold capitalize">
+                {subscription?.subscription?.plan ?? 'Free'}
+              </div>
+              {subscription?.subscription?.status === 'trialing' && (
+                <p className="text-xs text-blue-500 mt-1">Trial active</p>
+              )}
+              {subscription?.subscription?.status === 'past_due' && (
+                <p className="text-xs text-red-500 mt-1">Payment past due</p>
+              )}
+            </CardContent>
+          </Card>
         </div>
+
+        {/* QRON Staking Widget */}
+        {brand && (
+          <Card className="mb-8 border-amber-500/30 bg-gradient-to-br from-amber-50 to-yellow-50 dark:from-amber-950/20 dark:to-yellow-950/20">
+            <CardHeader>
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Coins className="h-5 w-5 text-amber-500" />
+                    QRON Staking
+                  </CardTitle>
+                  <CardDescription>Stake QRON tokens to reduce per-scan authentication fees</CardDescription>
+                </div>
+                <div className="flex items-center gap-2">
+                  <Badge
+                    className={
+                      brand.staking_tier === 'platinum' ? 'bg-purple-500 text-white' :
+                      brand.staking_tier === 'gold'     ? 'bg-yellow-500 text-black' :
+                      brand.staking_tier === 'silver'   ? 'bg-slate-400 text-white'  :
+                      brand.staking_tier === 'bronze'   ? 'bg-orange-500 text-white'  :
+                      'bg-muted text-muted-foreground'
+                    }
+                  >
+                    {brand.staking_tier.charAt(0).toUpperCase() + brand.staking_tier.slice(1)} Tier
+                  </Badge>
+                  <Link href="/qron">
+                    <Button size="sm" variant="outline" className="border-amber-400 text-amber-700 dark:text-amber-300 hover:bg-amber-100 dark:hover:bg-amber-900/30">
+                      <ArrowUpRight className="h-3 w-3 mr-1" />
+                      Get QRON
+                    </Button>
+                  </Link>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div className="p-3 bg-white/60 dark:bg-black/20 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">Staked</p>
+                  <p className="text-xl font-bold text-amber-600 dark:text-amber-400">
+                    {Number(brand.qron_staked).toLocaleString()} <span className="text-sm font-normal">QRON</span>
+                  </p>
+                </div>
+                <div className="p-3 bg-white/60 dark:bg-black/20 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">Discount</p>
+                  <p className="text-xl font-bold text-green-600 dark:text-green-400">
+                    {(brand.unit_cost_discount * 100).toFixed(0)}%
+                  </p>
+                </div>
+                <div className="p-3 bg-white/60 dark:bg-black/20 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">Scans (30d)</p>
+                  <p className="text-xl font-bold">
+                    {feeFlowSummary?.total_scans ?? 0}
+                  </p>
+                </div>
+                <div className="p-3 bg-white/60 dark:bg-black/20 rounded-lg">
+                  <p className="text-xs text-muted-foreground mb-1">QRON Saved (30d)</p>
+                  <p className="text-xl font-bold text-emerald-600 dark:text-emerald-400">
+                    {feeFlowSummary?.total_discounted?.toFixed(2) ?? '0.00'}
+                  </p>
+                </div>
+              </div>
+
+              {brand.staking_locked_until && new Date(brand.staking_locked_until) > new Date() && (
+                <div className="mt-3 flex items-center gap-2 text-xs text-muted-foreground">
+                  <Lock className="h-3 w-3" />
+                  Locked until {new Date(brand.staking_locked_until).toLocaleDateString()}
+                </div>
+              )}
+
+              <div className="mt-4 flex flex-wrap gap-2">
+                {brand.staking_tier === 'none' && (
+                  <Button
+                    size="sm"
+                    className="bg-orange-500 hover:bg-orange-600 text-white"
+                    onClick={() => handleStakeQron('bronze')}
+                  >
+                    Stake 1K QRON — Bronze (10% off)
+                  </Button>
+                )}
+                {(brand.staking_tier === 'none' || brand.staking_tier === 'bronze') && (
+                  <Button
+                    size="sm"
+                    className="bg-slate-400 hover:bg-slate-500 text-white"
+                    onClick={() => handleStakeQron('silver')}
+                  >
+                    10K QRON — Silver (25% off)
+                  </Button>
+                )}
+                {(brand.staking_tier === 'none' || brand.staking_tier === 'bronze' || brand.staking_tier === 'silver') && (
+                  <Button
+                    size="sm"
+                    className="bg-yellow-500 hover:bg-yellow-600 text-black font-semibold"
+                    onClick={() => handleStakeQron('gold')}
+                  >
+                    100K QRON — Gold (40% off)
+                  </Button>
+                )}
+                {brand.staking_tier !== 'platinum' && (
+                  <Button
+                    size="sm"
+                    className="bg-purple-500 hover:bg-purple-600 text-white"
+                    onClick={() => handleStakeQron('platinum')}
+                  >
+                    1M QRON — Platinum (60% off)
+                  </Button>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Referral Widget */}
+        {referral && (
+          <Card className="mb-8 border-emerald-500/30 bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-950/20 dark:to-teal-950/20">
+            <CardHeader>
+              <div className="flex items-center justify-between flex-wrap gap-2">
+                <div>
+                  <CardTitle className="flex items-center gap-2">
+                    <Share2 className="h-5 w-5 text-emerald-500" />
+                    Refer &amp; Earn
+                  </CardTitle>
+                  <CardDescription>Invite brands — earn 3 months at 25% off when they subscribe</CardDescription>
+                </div>
+              </div>
+            </CardHeader>
+            <CardContent>
+              <div className="flex items-center gap-2 mb-4">
+                <div className="flex-1 bg-white/70 dark:bg-black/30 border border-emerald-200 dark:border-emerald-800 rounded-lg px-3 py-2 font-mono text-sm truncate select-all">
+                  {referral.referral_url}
+                </div>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  className="border-emerald-400 text-emerald-700 dark:text-emerald-300 hover:bg-emerald-100 dark:hover:bg-emerald-900/30 shrink-0"
+                  onClick={handleCopyReferral}
+                >
+                  {referralCopied ? <Check className="h-4 w-4" /> : <Copy className="h-4 w-4" />}
+                  <span className="ml-1.5">{referralCopied ? 'Copied!' : 'Copy'}</span>
+                </Button>
+              </div>
+              <div className="grid grid-cols-3 gap-3">
+                <div className="p-3 bg-white/60 dark:bg-black/20 rounded-lg text-center">
+                  <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{referral.stats?.total_referred ?? 0}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Invited</p>
+                </div>
+                <div className="p-3 bg-white/60 dark:bg-black/20 rounded-lg text-center">
+                  <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{referral.stats?.converted ?? 0}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Converted</p>
+                </div>
+                <div className="p-3 bg-white/60 dark:bg-black/20 rounded-lg text-center">
+                  <p className="text-2xl font-bold text-emerald-600 dark:text-emerald-400">{referral.stats?.rewarded ?? 0}</p>
+                  <p className="text-xs text-muted-foreground mt-0.5">Rewarded</p>
+                </div>
+              </div>
+              <p className="text-xs text-muted-foreground mt-3">
+                Your code: <span className="font-mono font-semibold text-emerald-600 dark:text-emerald-400">{referral.code}</span>
+                {' · '}You get <span className="font-semibold">LAUNCH25</span> coupon (25% off, 3 months) for each paying referral.
+              </p>
+            </CardContent>
+          </Card>
+        )}
 
         {/* Upgrade Banner */}
         {!loading && !upgradeDismissed && isFreePlan && (
