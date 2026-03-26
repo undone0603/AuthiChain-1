@@ -1,8 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-const E = `${process.env.NEXT_PUBLIC_SUPABASE_URL}/functions/v1/authichain-verify`
-const K = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const CF = process.env.CF_WORKER_URL || 'https://authichain-unified.undone-k.workers.dev'
 export async function GET(_r: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   const { id } = await params
-  const res = await fetch(`${E}/${encodeURIComponent(id)}`, { headers: { apikey: K } })
+  const res = await fetch(`${CF}/api/verify/${encodeURIComponent(id)}`)
   return NextResponse.json(await res.json(), { status: res.status })
 }
