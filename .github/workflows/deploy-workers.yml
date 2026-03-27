@@ -16,6 +16,8 @@ jobs:
         run: npm install -g pnpm@9
       - name: Install dependencies
         run: pnpm install --no-frozen-lockfile
+      - name: Build Cloudflare
+        run: "pnpm run build:cloudflare"
       - name: Publish to Cloudflare Workers
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
