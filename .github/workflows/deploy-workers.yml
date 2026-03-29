@@ -1,4 +1,5 @@
 name: Deploy Cloudflare Worker
+if: false
 
 on:
   push:
