@@ -175,7 +175,7 @@ function MarketSizeChart() {
           <span className="text-sm text-muted-foreground w-24 shrink-0 truncate" title={item.fullName}>
             {item.name}
           </span>
-          <div className="flex-1 rounded-full h-5" style={{ background: "rgba(201,162,39,0.1)" }} overflow-hidden">
+          <div className="flex-1 rounded-full h-5 overflow-hidden" style={{ background: "rgba(201,162,39,0.1)" }}>
             <motion.div
               className="h-full rounded-full bg-gradient-to-r from-[#c9a227] to-[#ffd700]"
               initial={{ width: 0 }}
