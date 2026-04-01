@@ -21,69 +21,13 @@ jobs:
         with:
           node-version: 20
           cache: 'npm'
-<<<<<<< claude/fix-all-workflows-9pB45
-
-      # Validate required secrets before running build/deploy
-      - name: Validate Vercel secrets
-        run: |
-          if [ -z "${{ secrets.VERCEL_TOKEN }}" ]; then
-            echo "Missing VERCEL_TOKEN"
-            exit 1
-          fi
 
       - name: Install dependencies
         run: npm ci
 
       - name: Build
         run: npm run build
-
-      # Upload build artifacts for debugging + reproducibility
-      - name: Upload Next.js build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: next-build
-          path: .next
-
-      - name: Deploy to Vercel (Production)
-        run: |
-          npx vercel deploy --prod --token ${{ secrets.VERCEL_TOKEN }}
-
-  preview:
-    name: Preview Deploy
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Setup Node
-        uses: actions/setup-node@v4
-        with:
-          node-version: 20
-          cache: 'npm'
-
-      - name: Install dependencies
-        run: npm ci
-
-      - name: Build
-        run: npm run build
-
-      # Upload preview build artifacts
-      - name: Upload Preview Build Artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: preview-build
-          path: .next
-
-      - name: Deploy Preview to Vercel
-        run: |
-          npx vercel deploy --token ${{ secrets.VERCEL_TOKEN }}
-=======
-
-      - name: Install dependencies
-        run: npm install --legacy-peer-deps
-
-      - name: Build
-        run: npm run build
->>>>>>> main
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
