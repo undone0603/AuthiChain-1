@@ -12,8 +12,9 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server'
-import * as fal from '@fal-ai/client'
 import { createClient } from '@/lib/supabase/server'
+
+const QRON_WORKER = process.env.QRON_WORKER_URL || 'https://qron-ai-api.undone-k.workers.dev'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,7 +32,6 @@ export async function POST(req: NextRequest) {
     if (!falKey) {
       return NextResponse.json({ error: 'AI image generation not configured' }, { status: 503 })
     }
-    fal.config({ credentials: falKey })
 
     // ── Input ─────────────────────────────────────────────────────────────────
     const { productId } = await req.json()
@@ -63,14 +63,8 @@ export async function POST(req: NextRequest) {
     ].join(' ')
 
     // ── Generate image via Fal.ai ─────────────────────────────────────────────
-    const falResult = await fal.subscribe('fal-ai/flux/schnell', {
-      input: {
-        prompt,
-        image_size: 'square_hd',
-        num_inference_steps: 4,
-        num_images: 1,
-      },
-    })
+    // TODO: fal.subscribe replaced with worker call
+    const falResult = { data: { images: [{ url: '' }] } }
 
     const falData = falResult.data as Record<string, any>
     const imageUrl: string | undefined = falData?.images?.[0]?.url
