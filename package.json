@@ -13,7 +13,9 @@
     "contract:compile": "npx hardhat compile",
     "contract:deploy:testnet": "npx hardhat run scripts/nft/deploy.ts --network vechain_test",
     "contract:deploy:mainnet": "npx hardhat run scripts/nft/deploy.ts --network vechain_main",
-    "build:cloudflare": "pnpm exec @opennextjs/cloudflare build"
+    "build:cloudflare": "pnpm exec @opennextjs/cloudflare build",
+    "contract:deploy:polygon": "hardhat run scripts/nft/deploy.ts --network polygon",
+    "contract:deploy:polygon_amoy": "hardhat run scripts/nft/deploy.ts --network polygon_amoy"
   },
   "engines": {
     "node": "20.x"
