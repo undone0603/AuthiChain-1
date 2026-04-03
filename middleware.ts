@@ -1,8 +1,17 @@
-import { NextResponse, type NextRequest } from "next/server";
-import { updateSession } from "@/lib/supabase/middleware";
-export async function middleware(req: NextRequest) {
-  const { pathname } = req.nextUrl;
-  if (pathname.startsWith("/api/") || pathname.startsWith("/_next") || pathname.startsWith("/favicon") || pathname.match(/\.(png|jpg|jpeg|gif|webp|svg|ico)$/)) return NextResponse.next();
-  return await updateSession(req);
+import { NextResponse } from 'next/server'
+import type { NextRequest } from 'next/server'
+
+export function middleware(req: NextRequest) {
+  const { pathname } = req.nextUrl
+  const m = pathname.match(/^\/google([a-zA-Z0-9_-]+)\.html$/)
+  if (m) {
+    return new NextResponse(`google-site-verification: ${m[1]}`, {
+      headers: { 'Content-Type': 'text/html' }
+    })
+  }
+  return NextResponse.next()
 }
-export const config = { matcher: ["/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)"] };
+
+export const config = {
+  matcher: ['/google:token*.html']
+}
