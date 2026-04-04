@@ -86,7 +86,7 @@ export default function Home() {
             <div className="relative w-full max-w-lg">
               <div className="absolute inset-[-20%] rounded-full glow-gold opacity-20 blur-3xl pointer-events-none" />
               <Image
-                src="/images/hero-shield.png"
+                src="/images/hero-shield.svg"
                 alt="AuthiChain blockchain authentication shield"
                 width={800}
                 height={600}
@@ -102,7 +102,7 @@ export default function Home() {
       <section className="container mx-auto px-4 pb-16">
         <div className="max-w-6xl mx-auto overflow-hidden rounded-2xl protocol-card">
           <Image
-            src="/images/industries-banner.png"
+            src="/images/industries-banner.svg"
             alt="10 Industries served by AuthiChain Protocol"
             width={1200}
             height={150}
@@ -149,7 +149,7 @@ export default function Home() {
         </div>
         <div className="max-w-4xl mx-auto">
           <div className="protocol-card p-2">
-            <Image src="/images/how-it-works.png" alt="How AuthiChain works" width={900} height={280} className="w-full h-auto rounded-xl" />
+            <Image src="/images/how-it-works.svg" alt="How AuthiChain works" width={900} height={280} className="w-full h-auto rounded-xl" />
           </div>
         </div>
       </section>
