@@ -97,6 +97,7 @@ export default function RootLayout({
             <nav class="w-full px-6 py-4 border-b border-neutral-800 flex gap-6">
           <a href="/" class="hover:opacity-80">Home</a>
           <a href="/storymode" class="hover:opacity-80">Storymode</a>
+          <a href="/careers" class="hover:opacity-80">Careers</a>
         </nav>
         {children}
             <Toaster />
