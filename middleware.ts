@@ -1,19 +1,24 @@
 import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
+import { updateSession } from '@/utils/supabase/middleware'
 
-export function middleware(req: NextRequest) {
+export async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl
-  // Match /google{token}.html — return exact filename as GSC expects
+
+  // Google Search Console verification file
   const m = pathname.match(/^\/google([a-zA-Z0-9_-]+)\.html$/)
   if (m) {
-    const filename = `google${m[1]}.html`
-    return new NextResponse(`google-site-verification: ${filename}`, {
-      headers: { 'Content-Type': 'text/html; charset=utf-8' }
+    return new NextResponse(`google-site-verification: google${m[1]}.html`, {
+      headers: { 'Content-Type': 'text/html' },
     })
   }
-  return NextResponse.next()
+
+  // Refresh Supabase session on every request
+  return updateSession(req)
 }
 
 export const config = {
-  matcher: ['/google:token*.html']
+  matcher: [
+    '/((?!_next/static|_next/image|favicon.ico|.*\.(?:svg|png|jpg|jpeg|gif|webp)$).*)',
+  ],
 }
