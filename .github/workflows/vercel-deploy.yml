@@ -32,12 +32,14 @@ jobs:
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
           NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY }}
 
-      - name: Deploy to Vercel
+      - name: Inject env vars + Deploy to Vercel
         if: github.ref == 'refs/heads/main' && github.event_name == 'push'
         env:
           VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
           VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
           VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
+          STRIPE_WEBHOOK_SECRET: ${{ secrets.STRIPE_WEBHOOK_SECRET }}
         run: |
           npm install -g vercel
-          vercel --token=$VERCEL_TOKEN --prod --yes 2>/dev/null || echo "Vercel deploy skipped (token not configured)"
+          echo "$STRIPE_WEBHOOK_SECRET" | vercel env add STRIPE_WEBHOOK_SECRET production --token=$VERCEL_TOKEN --yes 2>/dev/null || true
+          vercel --token=$VERCEL_TOKEN --prod --yes 2>/dev/null || echo "Vercel deploy: VERCEL_TOKEN not configured"
