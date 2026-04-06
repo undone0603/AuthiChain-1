@@ -21,11 +21,28 @@ export const metadata: Metadata = {
     siteName: "AuthiChain",
     type: "website",
     locale: "en_US",
+    images: [
+      {
+        url: "/og-image.png",
+        width: 1200,
+        height: 630,
+        alt: "AuthiChain — AI-Powered Blockchain Product Authentication",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
     title: "AuthiChain - AI-Powered Product Authentication",
     description: "Stop counterfeits with AI + blockchain. Trusted by enterprise brands.",
+    images: ["/og-image.png"],
+  },
+  icons: {
+    icon: "/favicon.png",
+    apple: "/apple-touch-icon.png",
+    other: [
+      { rel: "icon", type: "image/png", sizes: "192x192", url: "/icon-192.png" },
+      { rel: "icon", type: "image/png", sizes: "512x512", url: "/icon-512.png" },
+    ],
   },
   robots: {
   verification: { google: 'cu9x2r43csh8lpqxm5YsxTvNAI2EVqkXIq65RYrj0vk' },
