@@ -1,0 +1,92 @@
+[
+  {
+    "product_name": "Valentino Garavani Rockstud Pump",
+    "industry": "Fashion & Apparel",
+    "brand": "Valentino",
+    "price": 1190,
+    "product_id": "a1000001-0001-4000-a000-000000000011",
+    "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000011",
+    "qron_theme": "Cinematic couture — soft gold accents, runway lighting, high-contrast silhouette"
+  },
+  {
+    "product_name": "Patek Philippe Nautilus 5711/1A",
+    "industry": "Luxury Goods",
+    "brand": "Patek Philippe",
+    "price": 85000,
+    "product_id": "a1000001-0001-4000-a000-000000000002",
+    "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000002",
+    "qron_theme": "Emerald-gold Rolex/Patek hybrid — precision dial rings, brushed steel texture"
+  },
+  {
+    "product_name": "Kopi Luwak Heritage Reserve Coffee",
+    "industry": "Food & Beverage",
+    "brand": "Heritage Reserve",
+    "price": 289,
+    "product_id": "a1000001-0001-4000-a000-000000000003",
+    "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000003",
+    "qron_theme": "Artisanal craft — warm earth tones, botanical motifs, micro-engraved texture"
+  },
+  {
+    "product_name": "Sony WH-1000XM6 Headphones",
+    "industry": "Electronics",
+    "brand": "Sony",
+    "price": 449,
+    "product_id": "a1000001-0001-4000-a000-000000000004",
+    "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000004",
+    "qron_theme": "Futuristic audio — neon edges, waveform-inspired modules, dark tech aesthetic"
+  },
+  {
+    "product_name": "NovaShield mRNA Booster Vial",
+    "industry": "Pharmaceuticals",
+    "brand": "NovaShield Bio",
+    "price": 42,
+    "product_id": "a1000001-0001-4000-a000-000000000005",
+    "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000005",
+    "qron_theme": "Clinical precision — sterile whites, micro-grid patterns, biotech luminescence"
+  },
+  {
+    "product_name": "Banksy 'Girl with Balloon' Print",
+    "industry": "Art & Collectibles",
+    "brand": "Banksy / Pest Control",
+    "price": 320000,
+    "product_id": "a1000001-0001-4000-a000-000000000006",
+    "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000006",
+    "qron_theme": "Stencil-punk — distressed textures, spray-paint gradients, gallery-grade contrast"
+  },
+  {
+    "product_name": "La Mer Creme de la Mer",
+    "industry": "Cosmetics & Beauty",
+    "brand": "La Mer",
+    "price": 380,
+    "product_id": "a1000001-0001-4000-a000-000000000007",
+    "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000007",
+    "qron_theme": "Oceanic luxury — teal gradients, pearl highlights, soft luminous edges"
+  },
+  {
+    "product_name": "Brembo GT-R Brake Caliper Set",
+    "industry": "Automotive",
+    "brand": "Brembo",
+    "price": 4800,
+    "product_id": "a1000001-0001-4000-a000-000000000008",
+    "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000008",
+    "qron_theme": "Motorsport kinetic — red heat-flare accents, carbon fiber texture"
+  },
+  {
+    "product_name": "Titleist Pro V1x Tour Edition",
+    "industry": "Sports & Fitness",
+    "brand": "Titleist",
+    "price": 79.99,
+    "product_id": "a1000001-0001-4000-a000-000000000009",
+    "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000009",
+    "qron_theme": "Precision sport — clean white minimalism, micro-dimples, kinetic arcs"
+  },
+  {
+    "product_name": "SKF Explorer Roller Bearing 22320",
+    "industry": "Industrial",
+    "brand": "SKF",
+    "price": 1250,
+    "product_id": "a1000001-0001-4000-a000-000000000010",
+    "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000010",
+    "qron_theme": "Industrial steel — machined textures, rotational symmetry, metallic gradients"
+  }
+]
