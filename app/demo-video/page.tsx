@@ -8,7 +8,7 @@ const SCENES = [
     duration: 22,
     bg: "#080808",
     accent: "#ef4444",
-    visual: "STAT",
+    visual: "QR_BACKDROP",
     headline: "$500 Billion",
     sub: "in counterfeit goods every year",
     body: `Paper certificates are forged in minutes.
@@ -540,6 +540,153 @@ function VerifyVisual({ active }: { active: boolean }) {
   );
 }
 
+
+/* ─── QR BACKDROP — Scene 1: giant QR fades behind $500B stat ─────── */
+function QRBackdropVisual({ active }: { active: boolean }) {
+  const [glow, setGlow] = useState(false);
+  const [pulse, setPulse] = useState(0);
+  useEffect(() => {
+    if (!active) { setGlow(false); setPulse(0); return; }
+    setTimeout(() => setGlow(true), 800);
+    // Pulse energy arcs through QR every 3s
+    let i = 0;
+    const id = setInterval(() => { setPulse(p => p + 1); }, 3000);
+    return () => clearInterval(id);
+  }, [active]);
+  return (
+    <div style={{ position: "relative", width: "100%", maxWidth: 700, display: "flex", alignItems: "center", justifyContent: "center" }}>
+      {/* QR as ambient background — large, dim, electric */}
+      <div style={{
+        position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center",
+        opacity: glow ? .18 : 0, transition: "opacity 1.8s ease",
+        filter: `brightness(2) saturate(0) ${glow ? "drop-shadow(0 0 24px rgba(239,68,68,.6))" : ""}`,
+      }}>
+        <img src="https://qron-images.undone-k.workers.dev/qr-clean.png" alt="" style={{ width: "min(90%,440px)", height: "min(90%,440px)", objectFit: "contain" }} />
+      </div>
+      {/* Scan line sweeping across QR */}
+      {glow && (
+        <div style={{ position: "absolute", left: "5%", right: "5%", height: 2, background: "linear-gradient(90deg,transparent,rgba(239,68,68,.6),transparent)", animation: "scan-bg 2.4s ease-in-out infinite", top: "20%", pointerEvents: "none" }} />
+      )}
+      {/* Foreground stat — sits on top of the QR */}
+      <div style={{ position: "relative", zIndex: 2, textAlign: "center" }}>
+        <div style={{ fontSize: "clamp(72px,14vw,140px)", fontWeight: 900, color: "#ef4444", lineHeight: 1, textShadow: "0 0 80px rgba(239,68,68,.5)", fontVariantNumeric: "tabular-nums", letterSpacing: "-.02em" }}>
+          $500B
+        </div>
+        <div style={{ fontSize: "clamp(14px,2.5vw,22px)", color: "rgba(255,255,255,.5)", marginTop: 18, letterSpacing: ".12em", textTransform: "uppercase" }}>
+          in counterfeit goods every year
+        </div>
+        <div style={{ display: "flex", gap: 32, justifyContent: "center", marginTop: 52, flexWrap: "wrap" }}>
+          {[["Paper certs", "forged in minutes"], ["Barcodes", "trivially cloned"], ["RFID", "$0.50+ per tag"]].map(([t, s], i) => (
+            <div key={i} style={{ textAlign: "center" }}>
+              <div style={{ fontSize: 15, fontWeight: 600, color: "#e06060", marginBottom: 4 }}>{t}</div>
+              <div style={{ fontSize: 12, color: "rgba(255,255,255,.25)" }}>{s}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <style>{`@keyframes scan-bg{0%{top:8%;opacity:0}10%{opacity:1}90%{opacity:1}100%{top:88%;opacity:0}}`}</style>
+    </div>
+  );
+}
+
+/* ─── QR TRANSFORM — Scene 4: clean→cannabis transformation auto-plays */
+function QRTransformVisual({ active }: { active: boolean }) {
+  const [phase, setPhase] = useState<0|1|2|3|4>(0);
+  // 0=idle 1=scanning 2=dissolving 3=cannabis 4=authentic
+  useEffect(() => {
+    if (!active) { setPhase(0); return; }
+    const ts = [
+      setTimeout(() => setPhase(1), 400),   // scan beam appears
+      setTimeout(() => setPhase(2), 2800),  // QR dissolves
+      setTimeout(() => setPhase(3), 4200),  // cannabis QR emerges
+      setTimeout(() => setPhase(4), 6200),  // AUTHENTIC badge
+    ];
+    return () => ts.forEach(clearTimeout);
+  }, [active]);
+
+  const glow = phase >= 3;
+
+  return (
+    <div style={{ display: "flex", alignItems: "center", gap: 40, flexWrap: "wrap", justifyContent: "center" }}>
+      {/* QR Stage */}
+      <div style={{
+        position: "relative",
+        width: "min(56vw,300px)", aspectRatio: "1",
+        flexShrink: 0,
+      }}>
+        {/* Glow ring */}
+        <div style={{ position: "absolute", inset: -20, borderRadius: "50%", boxShadow: glow ? "0 0 80px 30px rgba(132,204,22,.4)" : phase >= 1 ? "0 0 30px 10px rgba(132,204,22,.15)" : "none", transition: "box-shadow 1s", pointerEvents: "none" }} />
+
+        {/* Clean QR */}
+        <img src="https://qron-images.undone-k.workers.dev/qr-clean.png" alt="AuthiChain QR" style={{
+          position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain",
+          borderRadius: 12,
+          opacity: phase >= 2 ? 0 : 1,
+          filter: phase === 2 ? "blur(8px) brightness(5) saturate(6) hue-rotate(120deg)" : "none",
+          transition: phase >= 2 ? "opacity .8s ease-in, filter .8s" : "opacity .3s",
+          zIndex: 2,
+        }} />
+
+        {/* Cannabis QR art */}
+        <img src="https://qron-images.undone-k.workers.dev/qr-art.png" alt="QRON Cannabis Art" style={{
+          position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "contain",
+          borderRadius: 16,
+          opacity: phase >= 3 ? 1 : 0,
+          transform: phase >= 3 ? "scale(1)" : "scale(1.08)",
+          filter: phase === 3 ? "blur(2px) brightness(1.6) saturate(2)" : "none",
+          transition: "opacity 1.2s ease-out, transform 1.2s ease-out, filter 1.2s",
+          zIndex: 3,
+        }} />
+
+        {/* Scan beam */}
+        {phase === 1 && (
+          <div style={{ position: "absolute", left: "8%", right: "8%", height: 2.5, background: "linear-gradient(90deg,transparent,#84cc16,transparent)", boxShadow: "0 0 14px 5px rgba(132,204,22,.5)", zIndex: 10, animation: "scan-line 2.4s ease-in-out 1 forwards", top: "8%" }} />
+        )}
+
+        {/* Corner brackets */}
+        {(phase === 1 || phase === 2) && ["tl","tr","bl","br"].map(pos => (
+          <div key={pos} style={{ position: "absolute", width: 26, height: 26, zIndex: 12,
+            top: pos.startsWith("t") ? 8 : "auto", bottom: pos.startsWith("b") ? 8 : "auto",
+            left: pos.endsWith("l") ? 8 : "auto", right: pos.endsWith("r") ? 8 : "auto",
+            borderTop: pos.startsWith("t") ? "2.5px solid #84cc16" : "none",
+            borderBottom: pos.startsWith("b") ? "2.5px solid #84cc16" : "none",
+            borderLeft: pos.endsWith("l") ? "2.5px solid #84cc16" : "none",
+            borderRight: pos.endsWith("r") ? "2.5px solid #84cc16" : "none",
+            boxShadow: "0 0 8px rgba(132,204,22,.6)", animation: "fadeIn .3s ease both" }} />
+        ))}
+
+        {/* AUTHENTIC badge */}
+        {phase >= 4 && (
+          <div style={{ position: "absolute", top: "50%", left: "50%", transform: "translate(-50%,-50%)", background: "rgba(0,0,0,.85)", border: "2px solid #22c55e", borderRadius: 12, padding: "14px 20px", textAlign: "center", zIndex: 20, backdropFilter: "blur(12px)", boxShadow: "0 0 28px rgba(34,197,94,.4)", animation: "popIn .5s cubic-bezier(.34,1.56,.64,1) both" }}>
+            <div style={{ fontSize: 30, lineHeight: 1, marginBottom: 6 }}>✓</div>
+            <div style={{ fontFamily: "monospace", fontSize: 13, fontWeight: 700, color: "#22c55e", letterSpacing: ".1em" }}>AUTHENTIC</div>
+            <div style={{ fontSize: 8, color: "rgba(255,255,255,.4)", marginTop: 4, letterSpacing: ".05em" }}>STRAINCHAIN · POLYGON</div>
+          </div>
+        )}
+      </div>
+
+      {/* Right side stat */}
+      {phase >= 4 && (
+        <div style={{ textAlign: "center" }}>
+          <div style={{ fontSize: "clamp(48px,9vw,88px)", fontWeight: 900, color: "#84cc16", textShadow: "0 0 60px rgba(132,204,22,.5)", lineHeight: 1, letterSpacing: "-.02em" }}>2.1s</div>
+          <div style={{ fontSize: "clamp(13px,2vw,17px)", color: "rgba(255,255,255,.4)", marginTop: 10, letterSpacing: ".08em" }}>Any phone · No app · Free</div>
+          <div style={{ marginTop: 14, display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+            {["No hardware","$0.004/seal","Blockchain proven"].map(t => (
+              <span key={t} style={{ background: "rgba(132,204,22,.08)", border: "1px solid rgba(132,204,22,.2)", color: "#84cc16", fontSize: 10, padding: "3px 10px", borderRadius: 20, fontWeight: 600 }}>{t}</span>
+            ))}
+          </div>
+        </div>
+      )}
+
+      <style>{`
+        @keyframes scan-line{0%{top:8%;opacity:1}100%{top:88%;opacity:0}}
+        @keyframes fadeIn{from{opacity:0}to{opacity:1}}
+        @keyframes popIn{0%{opacity:0;transform:translate(-50%,-50%) scale(.3)}60%{transform:translate(-50%,-50%) scale(1.08)}100%{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+      `}</style>
+    </div>
+  );
+}
+
 /* ─── MAIN PAGE ──────────────────────────────────────────────────── */
 export default function DemoPage() {
   const [sceneIdx, setSceneIdx] = useState(0);
@@ -679,10 +826,10 @@ export default function DemoPage() {
 
         {/* Visual */}
         <div style={{ width: "100%", maxWidth: 720, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 40, minHeight: sc.visual === "IFRAME" ? 380 : 280 }}>
-          {sc.visual === "STAT"    && <StatVisual    active={running && sceneIdx === 0} />}
+          {sc.visual === "QR_BACKDROP" && <QRBackdropVisual active={running && sceneIdx === 0} />}
           {sc.visual === "PRODUCT" && <ProductVisual active={running && sceneIdx === 1} />}
           {sc.visual === "VERIFY"   && <VerifyVisual  active={running && sceneIdx === 2} />}
-          {sc.visual === "SCAN"    && <ScanVisual    active={running && sceneIdx === 3} />}
+          {sc.visual === "QR_TRANSFORM" && <QRTransformVisual active={running && sceneIdx === 3} />}
           {sc.visual === "ART"     && <ArtVisual     active={running && sceneIdx === 4} />}
           {sc.visual === "NETWORK" && <NetworkVisual active={running && sceneIdx === 5} />}
           {sc.visual === "CLOSE"   && <CloseVisual   active={running && sceneIdx === 6} />}
