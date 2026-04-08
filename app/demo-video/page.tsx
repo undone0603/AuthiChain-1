@@ -251,40 +251,95 @@ function ScanVisual({ active }: { active: boolean }) {
   const [step, setStep] = useState(0);
   useEffect(() => {
     if (!active) { setStep(0); return; }
-    const ts = [setTimeout(() => setStep(1), 800), setTimeout(() => setStep(2), 3000), setTimeout(() => setStep(3), 6000)];
+    const ts = [
+      setTimeout(() => setStep(1), 600),   // camera opens
+      setTimeout(() => setStep(2), 2200),  // scanning animation
+      setTimeout(() => setStep(3), 4200),  // AUTHENTIC flash
+      setTimeout(() => setStep(4), 6000),  // big reveal
+    ];
     return () => ts.forEach(clearTimeout);
   }, [active]);
   return (
-    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 28 }}>
-      <div style={{ width: 160, borderRadius: 24, border: "2.5px solid rgba(255,255,255,.12)", background: "#0a0a0a", overflow: "hidden", boxShadow: "0 16px 48px rgba(0,0,0,.7)" }}>
-        <div style={{ height: 28, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ width: 32, height: 8, background: "#222", borderRadius: 4 }} />
-        </div>
-        <div style={{ height: 220, background: step >= 2 ? "linear-gradient(160deg,#0f3d1f,#1a5e30)" : "#0a0a0a", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", transition: "background .8s", padding: 14, position: "relative" }}>
-          {step === 0 && <div style={{ color: "rgba(255,255,255,.15)", fontSize: 11, textAlign: "center" }}>Scanning…</div>}
-          {step === 1 && (
-            <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ width: 100, height: 100, border: "2px solid #84cc16", borderRadius: 8, opacity: .7 }} />
-            </div>
-          )}
-          {step >= 2 && (
-            <>
-              <div style={{ fontSize: 32, marginBottom: 8 }}>✓</div>
-              <div style={{ fontSize: 13, fontWeight: 800, color: "#22c55e", marginBottom: 4 }}>AUTHENTIC</div>
-              <div style={{ fontSize: 9, color: "rgba(255,255,255,.4)", textAlign: "center", lineHeight: 1.5 }}>Blue Dream<br />Emerald Peak Farms<br />Mar 15 2026</div>
-            </>
-          )}
-        </div>
-        <div style={{ height: 20, background: "#0a0a0a", display: "flex", alignItems: "center", justifyContent: "center" }}>
-          <div style={{ width: 34, height: 4, background: "rgba(255,255,255,.12)", borderRadius: 2 }} />
+    <div style={{ display: "flex", alignItems: "center", gap: 40, flexWrap: "wrap", justifyContent: "center" }}>
+      {/* Phone */}
+      <div style={{ flexShrink: 0 }}>
+        <div style={{ width: 180, borderRadius: 28, border: "2.5px solid rgba(255,255,255,.15)", background: "#080808", overflow: "hidden", boxShadow: step >= 3 ? "0 0 60px rgba(132,204,22,.35), 0 20px 60px rgba(0,0,0,.8)" : "0 16px 48px rgba(0,0,0,.7)", transition: "box-shadow .6s" }}>
+          {/* Notch */}
+          <div style={{ height: 30, background: "#111", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 36, height: 8, background: "#1c1c1c", borderRadius: 4 }} />
+          </div>
+          {/* Screen */}
+          <div style={{
+            height: 260, position: "relative", overflow: "hidden",
+            background: step >= 3 ? "linear-gradient(160deg,#062210,#0d3d1c)" : "#080808",
+            transition: "background .7s",
+            display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center",
+          }}>
+            {step === 0 && <div style={{ color: "rgba(255,255,255,.12)", fontSize: 12 }}>Camera</div>}
+
+            {step === 1 && (
+              <div style={{ width: "80%", aspectRatio: "1", position: "relative" }}>
+                <div style={{ position: "absolute", inset: 0, border: "1.5px solid rgba(132,204,22,.3)", borderRadius: 8 }} />
+                {/* Corner brackets */}
+                {[["0,0","tl"],["auto,0","tr"],["0,auto","bl"],["auto,auto","br"]].map(([pos, name]) => {
+                  const [r,b] = pos.split(",");
+                  return <div key={name} style={{ position:"absolute", top: name.startsWith("t")?"0":"auto", bottom: name.startsWith("b")?"0":"auto", left: name.endsWith("l")?"0":"auto", right: name.endsWith("r")?"0":"auto", width:18, height:18, borderTop: name.startsWith("t")?"2px solid #84cc16":"none", borderBottom: name.startsWith("b")?"2px solid #84cc16":"none", borderLeft: name.endsWith("l")?"2px solid #84cc16":"none", borderRight: name.endsWith("r")?"2px solid #84cc16":"none" }} />;
+                })}
+                <div style={{ position: "absolute", top: "50%", left: 0, right: 0, height: 1.5, background: "linear-gradient(90deg,transparent,#84cc16,transparent)", animation: "scanline 1.2s ease-in-out infinite" }} />
+                <div style={{ position: "absolute", inset: 0, display: "flex", alignItems: "center", justifyContent: "center" }}>
+                  <svg viewBox="0 0 10 10" width="60" height="60" style={{ opacity: .35 }}>
+                    {Array.from({length:100},(_,k)=>{const x=k%10,y=Math.floor(k/10),c=(x<3&&y<3)||(x>6&&y<3)||(x<3&&y>6),d=c||(Math.sin(k*2.8+13)*Math.cos(k*1.4)*0.5+0.5>0.44);return d?<rect key={k} x={x} y={y} width={1} height={1} fill="#84cc16"/>:null;})}
+                  </svg>
+                </div>
+              </div>
+            )}
+
+            {step === 2 && (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "0 16px" }}>
+                <div style={{ width: 36, height: 36, border: "3px solid #84cc16", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.7s linear infinite" }} />
+                <div style={{ fontSize: 11, color: "#84cc16", fontFamily: "monospace", textAlign: "center" }}>Querying<br/>blockchain…</div>
+              </div>
+            )}
+
+            {step >= 3 && (
+              <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, padding: "0 14px", width: "100%" }}>
+                {/* Big checkmark */}
+                <div style={{ width: 56, height: 56, borderRadius: "50%", background: "#22c55e", display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "0 0 24px rgba(34,197,94,.6)", flexShrink: 0 }}>
+                  <svg width="26" height="20" viewBox="0 0 26 20"><path d="M2 10L9 17L24 2" stroke="#000" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" fill="none"/></svg>
+                </div>
+                <div style={{ fontSize: 16, fontWeight: 900, color: "#22c55e", letterSpacing: ".06em" }}>AUTHENTIC</div>
+                <div style={{ width: "100%", height: 1, background: "rgba(34,197,94,.2)" }} />
+                <div style={{ fontSize: 9, color: "rgba(255,255,255,.55)", textAlign: "center", lineHeight: 1.7, fontFamily: "monospace" }}>
+                  Blue Dream<br/>Emerald Peak Farms<br/>Humboldt County CA<br/>
+                  <span style={{ color: "rgba(34,197,94,.6)" }}>Block 54,892,341 · 99.1%</span>
+                </div>
+              </div>
+            )}
+          </div>
+          {/* Home bar */}
+          <div style={{ height: 22, background: "#080808", display: "flex", alignItems: "center", justifyContent: "center" }}>
+            <div style={{ width: 38, height: 4, background: "rgba(255,255,255,.12)", borderRadius: 2 }} />
+          </div>
         </div>
       </div>
-      {step >= 3 && (
+
+      {/* Big reveal */}
+      {step >= 4 && (
         <div style={{ textAlign: "center" }}>
-          <div style={{ fontSize: "clamp(36px,7vw,72px)", fontWeight: 900, color: "#84cc16", textShadow: "0 0 40px rgba(132,204,22,.3)" }}>2.1 seconds</div>
-          <div style={{ fontSize: 14, color: "rgba(255,255,255,.4)", marginTop: 8, letterSpacing: ".08em" }}>Any smartphone · No app required</div>
+          <div style={{ fontSize: "clamp(48px,9vw,88px)", fontWeight: 900, color: "#84cc16", textShadow: "0 0 60px rgba(132,204,22,.5),0 0 120px rgba(132,204,22,.2)", lineHeight: 1, letterSpacing: "-.02em" }}>2.1s</div>
+          <div style={{ fontSize: "clamp(13px,2vw,17px)", color: "rgba(255,255,255,.4)", marginTop: 10, letterSpacing: ".08em" }}>Any phone · No app · Free</div>
+          <div style={{ marginTop: 14, display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
+            {["No hardware","$0.004/seal","2.1 seconds"].map(t => (
+              <span key={t} style={{ background: "rgba(132,204,22,.08)", border: "1px solid rgba(132,204,22,.2)", color: "#84cc16", fontSize: 10, padding: "3px 10px", borderRadius: 20, fontWeight: 600 }}>{t}</span>
+            ))}
+          </div>
         </div>
       )}
+
+      <style>{`
+        @keyframes spin{to{transform:rotate(360deg)}}
+        @keyframes scanline{0%,100%{top:10%}50%{top:90%}}
+      `}</style>
     </div>
   );
 }
@@ -373,6 +428,115 @@ function CloseVisual({ active }: { active: boolean }) {
         ))}
       </div>
       <div style={{ fontSize: 12, color: "rgba(255,255,255,.25)", letterSpacing: ".06em" }}>Built solo · Zero capital · Six months · Applying to YC S26</div>
+    </div>
+  );
+}
+
+
+/* ─── VERIFY VISUAL — live blockchain auth simulation ───────────── */
+function VerifyVisual({ active }: { active: boolean }) {
+  const [step, setStep] = useState(0);
+  // steps: 0=idle 1=scanning 2=fetching 3=verifying 4=confirmed
+  useEffect(() => {
+    if (!active) { setStep(0); return; }
+    const ts = [
+      setTimeout(() => setStep(1), 500),   // QR scan
+      setTimeout(() => setStep(2), 2200),  // fetching chain
+      setTimeout(() => setStep(3), 4800),  // verifying
+      setTimeout(() => setStep(4), 7500),  // AUTHENTIC 🎉
+    ];
+    return () => ts.forEach(clearTimeout);
+  }, [active]);
+
+  const LOGS = [
+    { t: 1, label: "QR SCAN",   text: "qron.space/s/BD9291CA → decoded" },
+    { t: 2, label: "CHAIN",     text: "Querying Polygon block 54,892,341…" },
+    { t: 2, label: "CONTRACT",  text: "0x5db511706FB…6AA2 → StrainChain ERC-721" },
+    { t: 3, label: "GUARDIAN",  text: "COA hash 7f3bc4d8… ✓ — THC 22.4% in range" },
+    { t: 3, label: "ARCHIVIST", text: "8 lifecycle events — chain intact ✓" },
+    { t: 3, label: "SENTINEL",  text: "METRC 1A4060…788 — no recalls, no diversion" },
+    { t: 3, label: "ARBITER",   text: "Consensus 99.1% — threshold met ✓" },
+    { t: 4, label: "VERDICT",   text: "AUTHENTIC — Blue Dream · Emerald Peak Farms" },
+  ];
+  const visibleLogs = LOGS.filter(l => l.t <= step);
+
+  return (
+    <div style={{ width: "100%", maxWidth: 640, display: "flex", flexDirection: "column", gap: 12 }}>
+
+      {/* Status bar */}
+      <div style={{
+        display: "flex", alignItems: "center", gap: 14, padding: "12px 18px",
+        background: step === 4 ? "rgba(34,197,94,.12)" : "rgba(201,162,39,.06)",
+        border: `1.5px solid ${step === 4 ? "#22c55e" : "#c9a227"}40`,
+        borderRadius: 12, transition: "all .6s",
+        boxShadow: step === 4 ? "0 0 32px rgba(34,197,94,.2)" : "none",
+      }}>
+        {/* Spinner / checkmark */}
+        {step > 0 && step < 4 && (
+          <div style={{ width: 22, height: 22, border: "2.5px solid #c9a227", borderTopColor: "transparent", borderRadius: "50%", animation: "spin 0.8s linear infinite", flexShrink: 0 }} />
+        )}
+        {step === 4 && (
+          <div style={{ width: 28, height: 28, borderRadius: "50%", background: "#22c55e", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, boxShadow: "0 0 16px rgba(34,197,94,.5)" }}>
+            <svg width="14" height="10" viewBox="0 0 14 10"><path d="M1.5 5L5.5 9L12.5 1" stroke="#000" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" fill="none"/></svg>
+          </div>
+        )}
+        {step === 0 && <div style={{ width: 22, height: 22, border: "2px solid rgba(201,162,39,.25)", borderRadius: "50%", flexShrink: 0 }} />}
+
+        <div style={{ flex: 1 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: step === 4 ? "#22c55e" : "#c9a227", transition: "color .4s" }}>
+            {step === 0 && "Waiting…"}
+            {step === 1 && "QR code scanned — querying blockchain…"}
+            {step === 2 && "Fetching Polygon certificate…"}
+            {step === 3 && "5-agent consensus running…"}
+            {step === 4 && "✓  AUTHENTIC — StrainChain Verified"}
+          </div>
+          {step === 4 && <div style={{ fontSize: 11, color: "rgba(255,255,255,.4)", marginTop: 2 }}>Blue Dream · Emerald Peak Farms · Humboldt CA · Block 54,892,341</div>}
+        </div>
+
+        {step > 0 && step < 4 && (
+          <div style={{ fontFamily: "monospace", fontSize: 11, color: "rgba(201,162,39,.5)" }}>
+            {step === 1 ? "0.3s" : step === 2 ? "1.1s" : "2.1s"}
+          </div>
+        )}
+        {step === 4 && <div style={{ fontFamily: "monospace", fontSize: 13, fontWeight: 800, color: "#22c55e" }}>2.1s</div>}
+      </div>
+
+      {/* Terminal log */}
+      <div style={{ background: "#050505", border: "1px solid rgba(201,162,39,.12)", borderRadius: 10, padding: "10px 14px", fontFamily: "monospace", fontSize: 11, lineHeight: 1.9, minHeight: 120 }}>
+        {visibleLogs.map((l, i) => (
+          <div key={i} style={{ display: "flex", gap: 10, opacity: i === visibleLogs.length - 1 ? 1 : 0.5 }}>
+            <span style={{ color: l.t === 4 ? "#22c55e" : "#c9a227", fontWeight: 700, minWidth: 80, flexShrink: 0 }}>[{l.label}]</span>
+            <span style={{ color: l.t === 4 ? "#22c55e" : "#aaa" }}>{l.text}</span>
+          </div>
+        ))}
+        {step > 0 && step < 4 && (
+          <div style={{ display: "flex", gap: 10 }}>
+            <span style={{ color: "#c9a227", fontWeight: 700, minWidth: 80 }}>[ ··· ]</span>
+            <span style={{ color: "#333" }}>processing…</span>
+          </div>
+        )}
+      </div>
+
+      {/* Certificate card — revealed on AUTHENTIC */}
+      {step === 4 && (
+        <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, opacity: 1, transition: "opacity .5s" }}>
+          {[
+            { l: "Certificate", v: "SC-CA-2026-BD-9291", c: "#c9a227" },
+            { l: "Blockchain", v: "Polygon · Block 54.8M", c: "#a78bfa" },
+            { l: "Confidence", v: "99.1%", c: "#22c55e" },
+            { l: "THC", v: "22.4% verified", c: "#22c55e" },
+            { l: "Chain events", v: "8 of 8 intact", c: "#22c55e" },
+            { l: "METRC", v: "1A4060…788 ✓", c: "#38bdf8" },
+          ].map(({ l, v, c }) => (
+            <div key={l} style={{ background: `${c}08`, border: `1px solid ${c}20`, borderRadius: 8, padding: "8px 10px", textAlign: "center" }}>
+              <div style={{ fontSize: 11, fontWeight: 700, color: c, marginBottom: 3 }}>{v}</div>
+              <div style={{ fontSize: 9, color: "rgba(255,255,255,.3)", textTransform: "uppercase", letterSpacing: ".06em" }}>{l}</div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
 }
@@ -518,11 +682,7 @@ export default function DemoPage() {
         <div style={{ width: "100%", maxWidth: 720, display: "flex", alignItems: "center", justifyContent: "center", marginBottom: 40, minHeight: sc.visual === "IFRAME" ? 380 : 280 }}>
           {sc.visual === "STAT"    && <StatVisual    active={running && sceneIdx === 0} />}
           {sc.visual === "PRODUCT" && <ProductVisual active={running && sceneIdx === 1} />}
-          {sc.visual === "IFRAME"  && sc.url && (
-            <div style={{ width: "100%", borderRadius: 14, overflow: "hidden", boxShadow: "0 20px 60px rgba(0,0,0,.6)", border: `1.5px solid ${accent}30` }}>
-              <iframe src={sc.url} style={{ width: "100%", height: 380, border: "none", display: "block" }} title="Live AuthiChain certificate" />
-            </div>
-          )}
+          {sc.visual === "VERIFY"   && <VerifyVisual  active={running && sceneIdx === 2} />}
           {sc.visual === "SCAN"    && <ScanVisual    active={running && sceneIdx === 3} />}
           {sc.visual === "ART"     && <ArtVisual     active={running && sceneIdx === 4} />}
           {sc.visual === "NETWORK" && <NetworkVisual active={running && sceneIdx === 5} />}
