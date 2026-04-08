@@ -1,26 +1,38 @@
-import { NextResponse } from 'next/server'
+import { NextResponse } from "next/server";
 
-export const dynamic = 'force-dynamic'
-
-const CF_API = process.env.CF_API_URL || 'https://authichain-api.undone-k.workers.dev'
-const CORS = { 'Access-Control-Allow-Origin': '*', 'Access-Control-Allow-Methods': 'GET, OPTIONS' }
-
-export async function OPTIONS() {
-  return new NextResponse(null, { status: 204, headers: CORS })
-}
+export const runtime = "edge";
+export const revalidate = 60;
 
 export async function GET() {
-  try {
-    const res = await fetch(`${CF_API}/health`, { signal: AbortSignal.timeout(8000) })
-    const data = await res.json()
-    return NextResponse.json(
-      { ...data, gateway: 'authichain.com', timestamp: new Date().toISOString() },
-      { status: 200, headers: CORS }
-    )
-  } catch {
-    return NextResponse.json(
-      { status: 'degraded', gateway: 'authichain.com', timestamp: new Date().toISOString() },
-      { status: 200, headers: CORS }   // always 200 so RapidAPI stays green
-    )
-  }
+  return NextResponse.json({
+    ok: true,
+    service: "AuthiChain API",
+    version: "1.0.0",
+    timestamp: new Date().toISOString(),
+    endpoints: {
+      verify: "/api/v1/verify/:cert_id",
+      register: "/api/v1/register",
+      health: "/api/v1/health",
+    },
+    blockchain: "Polygon Mainnet",
+    contract: "0x5db511706FB6317cd23A7655F67450c5AC6e6AA2",
+    platforms: ["AuthiChain", "QRON", "StrainChain"],
+    docs: "https://authichain.com/openapi.json",
+  }, {
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Cache-Control": "public, max-age=60",
+    }
+  });
+}
+
+export async function OPTIONS() {
+  return new NextResponse(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    }
+  });
 }
