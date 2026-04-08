@@ -5,7 +5,7 @@ import { useEffect, useRef, useState, useCallback } from "react";
 const SCENES = [
   {
     id: "problem",
-    duration: 22,
+    duration: 16,
     bg: "#080808",
     accent: "#ef4444",
     visual: "QR_BACKDROP",
@@ -14,11 +14,11 @@ const SCENES = [
     body: `Paper certificates are forged in minutes.
 Barcodes are trivially cloned.
 No one can prove what's real.`,
-    narration: "Five hundred billion dollars. That's how much counterfeit product moves through the global economy every year. Paper certificates are forged in minutes. Barcodes are cloned. There is no way to prove what's real — until now.",
+    narration: "Five hundred billion dollars in counterfeit goods — every year. Paper certificates forged in minutes. Barcodes cloned in seconds. There is no way to prove what's real. Until now.",
   },
   {
     id: "product",
-    duration: 22,
+    duration: 16,
     bg: "#0a1a0a",
     accent: "#22c55e",
     visual: "PRODUCT",
@@ -27,11 +27,11 @@ No one can prove what's real.`,
     body: `Planted February 3rd.
 Harvested March 15th.
 THC 22.4% · CBD 0.8%`,
-    narration: "This is Blue Dream. Grown by Emerald Peak Farms on fog-kissed ridgelines above Garberville, California. Harvested March 15th after 42 days of flower. This batch exists. It's real. And from this moment — StrainChain can prove it.",
+    narration: "This is Blue Dream. Emerald Peak Farms, Humboldt County, California. Harvested March 15th. THC twenty-two point four percent. This batch is real — and from this moment, the blockchain knows it.",
   },
   {
     id: "certificate",
-    duration: 23,
+    duration: 14,
     bg: "#0d1117",
     accent: "#c9a227",
     visual: "VERIFY",
@@ -40,11 +40,11 @@ THC 22.4% · CBD 0.8%`,
     body: `ERC-721 NFT · Polygon · $0.004
 COA hash · METRC · Seed-to-sale chain
 Immutable. Permanent. Unforgeable.`,
-    narration: "The moment this batch is harvested, StrainChain mints a blockchain certificate. Every lab result, every state transfer, every event in this plant's life — hashed, signed, and locked to the Polygon blockchain forever. No one can alter it. No one.",
+    narration: "The moment it's harvested, StrainChain mints a blockchain certificate. Every lab result, every transfer — hashed, signed, locked to Polygon forever. Permanent. Unforgeable. No one can alter it.",
   },
   {
     id: "scan",
-    duration: 22,
+    duration: 14,
     bg: "#0a0a0a",
     accent: "#84cc16",
     visual: "QR_TRANSFORM",
@@ -53,11 +53,11 @@ Immutable. Permanent. Unforgeable.`,
     body: `Consumer scans the QR code.
 Blockchain confirms: AUTHENTIC.
 Instant. Certain. Free.`,
-    narration: "A consumer picks up the package. They scan the QR code with their phone. Two seconds later — the blockchain confirms it's authentic. No app to download. No reader to buy. Just a camera, and the truth.",
+    narration: "Consumer picks up the package. Scans the QR code. Two seconds. Blockchain confirmed — authentic. No app. No reader. Just a phone camera and the truth.",
   },
   {
     id: "art",
-    duration: 24,
+    duration: 17,
     bg: "#0f0a1a",
     accent: "#ec4899",
     visual: "ART",
@@ -66,11 +66,11 @@ Instant. Certain. Free.`,
     body: `ArtGuard score: 87/100
 Edition: #23 of 50
 Collectable — long after the product is gone`,
-    narration: "The packaging was designed by Verde Studio. Authenticated by ArtGuard. Edition twenty-three of fifty. The cannabis is consumed — but the art lives on. The NFT proves ownership. The blockchain proves it's real. A new asset class, born from a plant.",
+    narration: "Verde Studio designed the packaging. ArtGuard scored it eighty-seven. Edition twenty-three of fifty. The flower is gone — but the art lives on as an NFT. A collectible. A new asset class born from a plant.",
   },
   {
     id: "network",
-    duration: 19,
+    duration: 14,
     bg: "#080808",
     accent: "#38bdf8",
     visual: "NETWORK",
@@ -79,11 +79,11 @@ Collectable — long after the product is gone`,
     body: `Consumer votes: AUTHENTIC
 Truth Network records the scan
 The Authentic Economy self-enforces`,
-    narration: "Every consumer who scans casts a vote. The Truth Network records it. The Authentic Economy grows stronger with every product, every scan, every proof. Objects have authenticity. AI agents enforce it.",
+    narration: "Every scan casts a vote. The Truth Network records it. Objects have authenticity. AI agents enforce it. The Authentic Economy — self-enforcing, growing stronger with every proof.",
   },
   {
     id: "close",
-    duration: 22,
+    duration: 13,
     bg: "#070707",
     accent: "#c9a227",
     visual: "CLOSE",
@@ -92,7 +92,7 @@ The Authentic Economy self-enforces`,
     body: `StrainChain · AuthiChain · QRON
 Built solo · Zero capital · Six months
 Applying to Y Combinator S26`,
-    narration: "StrainChain. AuthiChain. QRON. Three platforms built by one founder in six months with zero dollars raised. The truth layer for the physical world. We are applying to Y Combinator to bring this to every product on earth.",
+    narration: "StrainChain. AuthiChain. QRON. Three platforms, one founder, six months, zero dollars raised. The truth layer for the physical world. Y Combinator — we're ready.",
   },
 ];
 
@@ -119,15 +119,15 @@ function useVoice(muted: boolean, onSpeechEnd: () => void) {
     // Priority: deep/authoritative male English voices, then any English, then default
     const preferred = [
       "Google UK English Male",
+      "Google US English",
+      "Microsoft Christopher Online (Natural) - English (United States)",
+      "Microsoft Guy Online (Natural) - English (United States)",
       "Microsoft David Desktop",
       "Microsoft David",
-      "Microsoft Guy Online (Natural) - English (United States)",
-      "Microsoft Christopher Online (Natural) - English (United States)",
-      "Daniel",              // macOS deep male
-      "Aaron",               // macOS
-      "Fred",                // macOS (deep robotic but distinct)
-      "Alex",                // macOS
-      "Google US English",
+      "Daniel",              // macOS — clear, authoritative
+      "Aaron",               // macOS — natural
+      "Alex",                // macOS fallback
+      "Samantha",            // macOS female — clear articulation
     ];
     let chosen: SpeechSynthesisVoice | null = null;
     for (const name of preferred) {
@@ -166,8 +166,8 @@ function useVoice(muted: boolean, onSpeechEnd: () => void) {
     if (voiceRef.current) u.voice = voiceRef.current;
 
     // Tuned for clarity: slightly slower than natural, deeper pitch
-    u.rate  = 0.82;   // 0.82 = unhurried, authoritative
-    u.pitch = 0.75;   // 0.75 = deep, documentary-style
+    u.rate  = 0.95;   // 0.95 = natural conversational pace
+    u.pitch = 0.95;   // 0.95 = natural, not robotic
     u.volume = 1;
 
     u.onboundary = (e: SpeechSynthesisEvent) => {
