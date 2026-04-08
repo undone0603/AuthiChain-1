@@ -100,46 +100,60 @@ const TOTAL = SCENES.reduce((s, sc) => s + sc.duration, 0);
 const fmt = (s: number) => `${Math.floor(s / 60)}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 
 /* ─── VOICE HOOK ─────────────────────────────────────────────────── */
+// Voice quality tiers — scored so the best clear male voice always wins
+const VOICE_SCORES: Record<string, number> = {
+  // Tier 1: Microsoft Natural Neural (best quality, Edge/Windows)
+  "Microsoft Guy Online (Natural) - English (United States)": 100,
+  "Microsoft Christopher Online (Natural) - English (United States)": 99,
+  "Microsoft Andrew Online (Natural) - English (United States)": 98,
+  "Microsoft Ryan Online (Natural) - English (United Kingdom)": 97,
+  "Microsoft Eric Online (Natural) - English (United States)": 96,
+  "Microsoft Roger Online (Natural) - English (United States)": 95,
+  "Microsoft Steffan Online (Natural) - English (United Kingdom)": 94,
+  // Tier 2: Google (Chrome, clear male)
+  "Google UK English Male": 80,
+  "Google US English": 75,
+  // Tier 3: macOS system voices (clear, consistent)
+  "Daniel": 65,
+  "Aaron": 60,
+  "Alex": 55,
+  // Tier 4: Microsoft offline (decent)
+  "Microsoft David Desktop": 40,
+  "Microsoft David": 35,
+  // Tier 5: any other male-sounding English
+};
+
+function scoreVoice(v: SpeechSynthesisVoice): number {
+  if (VOICE_SCORES[v.name]) return VOICE_SCORES[v.name];
+  if (!v.lang.startsWith("en")) return -50;
+  if (/natural|neural/i.test(v.name)) return 50;
+  if (/male|guy|man|david|chris|james|oliver|aaron|daniel|alex|andrew|ryan|eric|roger/i.test(v.name)) return 20;
+  return 0;
+}
+
 function useVoice(muted: boolean, onSpeechEnd: () => void) {
   const synthRef = useRef<SpeechSynthesis | null>(null);
   const voiceRef = useRef<SpeechSynthesisVoice | null>(null);
-  const uttRef   = useRef<SpeechSynthesisUtterance | null>(null);
   const [voiceName, setVoiceName] = useState("Loading…");
+  const [allVoices, setAllVoices] = useState<SpeechSynthesisVoice[]>([]);
   const [ready, setReady] = useState(false);
   const [caption, setCaption] = useState<string[]>([]);
   const [wordIdx, setWordIdx] = useState(-1);
   const onEndRef = useRef(onSpeechEnd);
   useEffect(() => { onEndRef.current = onSpeechEnd; }, [onSpeechEnd]);
 
-  const pickVoice = useCallback(() => {
+  const loadVoices = useCallback(() => {
     const s = window.speechSynthesis;
     synthRef.current = s;
     const vs = s.getVoices();
     if (!vs.length) return;
-    // Priority: deep/authoritative male English voices, then any English, then default
-    const preferred = [
-      "Google UK English Male",
-      "Google US English",
-      "Microsoft Christopher Online (Natural) - English (United States)",
-      "Microsoft Guy Online (Natural) - English (United States)",
-      "Microsoft David Desktop",
-      "Microsoft David",
-      "Daniel",              // macOS — clear, authoritative
-      "Aaron",               // macOS — natural
-      "Alex",                // macOS fallback
-      "Samantha",            // macOS female — clear articulation
-    ];
-    let chosen: SpeechSynthesisVoice | null = null;
-    for (const name of preferred) {
-      chosen = vs.find(v => v.name === name) ?? null;
-      if (chosen) break;
-    }
-    // Fallback: any English male-sounding voice
-    if (!chosen) chosen = vs.find(v => v.lang.startsWith("en") && /male|david|guy|aaron|alex|daniel|fred|chris|james|oliver/i.test(v.name)) ?? null;
-    // Fallback: any English voice
-    if (!chosen) chosen = vs.find(v => v.lang.startsWith("en-GB")) ?? vs.find(v => v.lang.startsWith("en")) ?? vs[0] ?? null;
-    voiceRef.current = chosen;
-    setVoiceName(chosen?.name ?? "Default");
+    // Sort all English voices by score descending
+    const engVoices = vs.filter(v => v.lang.startsWith("en")).sort((a, b) => scoreVoice(b) - scoreVoice(a));
+    setAllVoices(engVoices);
+    // Auto-pick highest scoring
+    const best = engVoices[0] ?? vs[0];
+    voiceRef.current = best;
+    setVoiceName(best?.name ?? "Default");
     setReady(true);
   }, []);
 
@@ -147,56 +161,58 @@ function useVoice(muted: boolean, onSpeechEnd: () => void) {
     if (typeof window === "undefined") return;
     const s = window.speechSynthesis;
     synthRef.current = s;
-    if (s.getVoices().length) pickVoice();
-    else s.addEventListener("voiceschanged", pickVoice, { once: true });
-    return () => { s.cancel(); s.removeEventListener("voiceschanged", pickVoice); };
-  }, [pickVoice]);
+    if (s.getVoices().length) loadVoices();
+    else s.addEventListener("voiceschanged", loadVoices, { once: true });
+    return () => { s.cancel(); s.removeEventListener("voiceschanged", loadVoices); };
+  }, [loadVoices]);
+
+  const selectVoice = useCallback((name: string) => {
+    const v = allVoices.find(v => v.name === name) ?? null;
+    if (v) { voiceRef.current = v; setVoiceName(v.name); }
+  }, [allVoices]);
+
+  const testVoice = useCallback(() => {
+    const s = synthRef.current;
+    if (!s || !voiceRef.current) return;
+    s.cancel();
+    const u = new SpeechSynthesisUtterance("AuthiChain. The truth layer for the physical world.");
+    u.voice = voiceRef.current;
+    u.rate = 0.92;
+    u.pitch = 1.0;
+    u.volume = 1;
+    s.speak(u);
+  }, []);
 
   const speak = useCallback((text: string) => {
     const s = synthRef.current;
     if (!s) return;
     s.cancel();
     if (muted) { onEndRef.current(); return; }
-
     const words = text.split(/\s+/);
     setCaption(words);
     setWordIdx(-1);
-
     const u = new SpeechSynthesisUtterance(text);
     if (voiceRef.current) u.voice = voiceRef.current;
-
-    // Tuned for clarity: slightly slower than natural, deeper pitch
-    u.rate  = 0.95;   // 0.95 = natural conversational pace
-    u.pitch = 0.95;   // 0.95 = natural, not robotic
+    // Natural male delivery: 0.92 pace, pitch at 1.0 (natural — no robotic lowering)
+    u.rate   = 0.92;
+    u.pitch  = 1.0;
     u.volume = 1;
-
     u.onboundary = (e: SpeechSynthesisEvent) => {
       if (e.name === "word") {
         const spoken = text.slice(0, e.charIndex + e.charLength);
         setWordIdx(spoken.trim().split(/\s+/).length - 1);
       }
     };
-    u.onend = () => {
-      setWordIdx(-1);
-      onEndRef.current();   // ← fires AFTER full narration completes
-    };
-    u.onerror = () => {
-      onEndRef.current();   // advance even on error
-    };
-    uttRef.current = u;
+    u.onend  = () => { setWordIdx(-1); onEndRef.current(); };
+    u.onerror = () => { onEndRef.current(); };
     s.speak(u);
   }, [muted]);
 
-  const stop = useCallback(() => {
-    synthRef.current?.cancel();
-    setCaption([]);
-    setWordIdx(-1);
-  }, []);
-
+  const stop   = useCallback(() => { synthRef.current?.cancel(); setCaption([]); setWordIdx(-1); }, []);
   const pause  = useCallback(() => synthRef.current?.pause(),  []);
   const resume = useCallback(() => synthRef.current?.resume(), []);
 
-  return { voiceName, ready, caption, wordIdx, speak, stop, pause, resume, synth: synthRef };
+  return { voiceName, allVoices, selectVoice, testVoice, ready, caption, wordIdx, speak, stop, pause, resume, synth: synthRef };
 }
 
 /* ─── VISUALS ────────────────────────────────────────────────────── */
@@ -687,6 +703,50 @@ function QRTransformVisual({ active }: { active: boolean }) {
   );
 }
 
+
+/* ─── VOICE SELECTOR PANEL ──────────────────────────────────────── */
+function VoiceSelector({ voiceName, allVoices, selectVoice, testVoice, accent }: {
+  voiceName: string;
+  allVoices: SpeechSynthesisVoice[];
+  selectVoice: (name: string) => void;
+  testVoice: () => void;
+  accent: string;
+}) {
+  const [open, setOpen] = useState(false);
+  return (
+    <div style={{ position: "relative", flexShrink: 0 }}>
+      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
+        <button
+          onClick={() => setOpen(o => !o)}
+          style={{ background: "transparent", border: "0.5px solid rgba(255,255,255,.12)", borderRadius: 6, padding: "4px 8px", cursor: "pointer", display: "flex", alignItems: "center", gap: 5, fontSize: 9, color: "rgba(255,255,255,.4)" }}
+        >
+          🎙 <span style={{ maxWidth: 120, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{voiceName}</span> ▾
+        </button>
+        <button
+          onClick={testVoice}
+          title="Test voice"
+          style={{ background: "transparent", border: "0.5px solid rgba(255,255,255,.1)", borderRadius: 6, padding: "4px 7px", cursor: "pointer", fontSize: 10, color: "rgba(255,255,255,.3)" }}
+        >▶</button>
+      </div>
+      {open && allVoices.length > 0 && (
+        <div style={{ position: "absolute", top: "100%", right: 0, marginTop: 4, background: "#111", border: "1px solid rgba(255,255,255,.12)", borderRadius: 8, minWidth: 280, maxHeight: 240, overflowY: "auto", zIndex: 200, boxShadow: "0 8px 24px rgba(0,0,0,.8)" }}>
+          {allVoices.map((v, i) => (
+            <div
+              key={v.name}
+              onClick={() => { selectVoice(v.name); setOpen(false); }}
+              style={{ padding: "7px 12px", cursor: "pointer", fontSize: 10, color: v.name === voiceName ? accent : i < 7 ? "rgba(255,255,255,.7)" : "rgba(255,255,255,.35)", background: v.name === voiceName ? `${accent}15` : "transparent", display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, borderBottom: "0.5px solid rgba(255,255,255,.05)" }}
+            >
+              <span>{v.name}</span>
+              {i === 0 && <span style={{ fontSize: 8, color: accent, fontWeight: 700 }}>BEST</span>}
+              {i < 7 && i > 0 && <span style={{ fontSize: 8, color: "rgba(255,255,255,.25)" }}>✓</span>}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
+
 /* ─── MAIN PAGE ──────────────────────────────────────────────────── */
 export default function DemoPage() {
   const [sceneIdx, setSceneIdx] = useState(0);
@@ -705,7 +765,7 @@ export default function DemoPage() {
     setSpeechDone(true);
   }, []);
 
-  const { voiceName, ready, caption, wordIdx, speak, stop, pause, resume, synth } = useVoice(muted, handleSpeechEnd);
+  const { voiceName, allVoices, selectVoice, testVoice, ready, caption, wordIdx, speak, stop, pause, resume, synth } = useVoice(muted, handleSpeechEnd);
 
   const sc = SCENES[sceneIdx];
   const totalElapsed = SCENES.slice(0, sceneIdx).reduce((s, x) => s + x.duration, 0) + elapsed;
@@ -804,7 +864,7 @@ export default function DemoPage() {
           <button onClick={toggleMute} style={{ background: "transparent", color: muted ? accent : "rgba(255,255,255,.3)", border: "0.5px solid rgba(255,255,255,.08)", borderRadius: 8, padding: "7px 9px", cursor: "pointer", fontSize: 13, transition: "color 1.2s" }}>{muted ? "🔇" : "🔊"}</button>
           <button onClick={resetDemo} style={{ background: "transparent", color: "rgba(255,255,255,.2)", border: "0.5px solid rgba(255,255,255,.06)", borderRadius: 8, padding: "7px 9px", cursor: "pointer", fontSize: 12 }}>↺</button>
         </div>
-        <div style={{ fontSize: 9, color: "rgba(255,255,255,.18)", flexShrink: 0 }}>🎙 {voiceName}</div>
+        <VoiceSelector voiceName={voiceName} allVoices={allVoices} selectVoice={selectVoice} testVoice={testVoice} accent={accent} />
       </div>
 
       {/* MAIN SCENE */}
