@@ -784,6 +784,7 @@ export default function DemoPage() {
   // Called when narration finishes — advance scene directly (no intermediate state)
   // Using ref to avoid stale sceneIdx in callback
   const runningRef = useRef(false);
+  const advanceRef  = useRef<(() => void) | null>(null);
   const handleSpeechEnd = useCallback(() => {
     if (runningRef.current) advanceRef.current?.();
   }, []);
