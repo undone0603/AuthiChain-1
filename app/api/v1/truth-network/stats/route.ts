@@ -1,15 +1,18 @@
-import { NextResponse } from 'next/server';
+import { NextResponse } from 'next/server'
 
-const TRUTH_WORKER = 'https://qron-truth-network.undone-k.workers.dev';
+export const runtime = 'edge'
+export const dynamic = 'force-dynamic'
 
 export async function GET() {
   try {
-    const r = await fetch(TRUTH_WORKER + '/api/v1/truth-network/stats');
-    const data = await r.json();
-    return NextResponse.json(data, { status: r.status });
+    const r = await fetch('https://qron-truth-network.undone-k.workers.dev/api/v1/truth-network/stats', {
+      headers: { 'Content-Type': 'application/json' }
+    })
+    const data = await r.json()
+    return NextResponse.json(data, {
+      headers: { 'Access-Control-Allow-Origin': '*' }
+    })
   } catch (e) {
-    return NextResponse.json({ error: 'upstream error', detail: String(e) }, { status: 503 });
+    return NextResponse.json({ ok: false, error: 'upstream unavailable' }, { status: 503 })
   }
 }
-
-export const runtime = 'edge';
