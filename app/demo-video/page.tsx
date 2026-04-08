@@ -785,8 +785,8 @@ export default function DemoPage() {
   // Using ref to avoid stale sceneIdx in callback
   const runningRef = useRef(false);
   const handleSpeechEnd = useCallback(() => {
-    if (runningRef.current) advanceScene();
-  }, [advanceScene]);
+    if (runningRef.current) advanceRef.current?.();
+  }, []);
 
   const { voiceName, allVoices, selectVoice, testVoice, ready, caption, wordIdx, speak, stop, pause, resume, synth } = useVoice(muted, handleSpeechEnd);
 
@@ -816,8 +816,9 @@ export default function DemoPage() {
     });
   }, []);
 
-  // Keep runningRef in sync (used by speech callbacks to avoid stale state)
+  // Keep refs in sync with latest values
   useEffect(() => { runningRef.current = running; }, [running]);
+  useEffect(() => { advanceRef.current = advanceScene; }, [advanceScene]);
 
   // Elapsed counter (for progress ring display only — NOT used to advance scenes)
   useEffect(() => {
