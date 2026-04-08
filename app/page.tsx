@@ -1,10 +1,6 @@
 "use client";
 import Link from "next/link"
 
-export const metadata = {
-  title: "AuthiChain — Blockchain Product Authentication",
-  description: "Cryptographic provenance for every physical product. ERC-721 NFT + QR code + 2.1 second verification. The truth layer for the physical world.",
-}
 
 const STATS = [
   {v:"2.1s",l:"Verification time"},
