@@ -1,136 +1,389 @@
 "use client";
 import { useEffect, useRef, useState, useCallback } from "react";
 
-/* ── PRODUCT CONTEXT ─────────────────────────────────────────────────
-   Blue Dream 3.5g — Emerald Peak Farms, Humboldt CA
-   Running through the full Authentic Economy stack via StrainChain
-   ──────────────────────────────────────────────────────────────────── */
-
-const PRODUCT = {
-  name: "Blue Dream",
-  sku: "SC-2026-0408-BD-001",
-  type: "Premium Flower · Hybrid · 3.5g",
-  thc: "22.4%", cbd: "0.8%",
-  cultivator: "Emerald Peak Farms",
-  location: "Humboldt County, CA",
-  license: "CCL21-0003847",
-  metrc: "1A4060300000022000005788",
-  harvest: "March 15, 2026",
-  batch: "SC-2026-0408-BD",
-  cert: "SC-CA-2026-BD-9291",
+/* ─── PRODUCT ────────────────────────────────────────────────────────── */
+const P = {
+  name:"Blue Dream", type:"Premium Flower · Hybrid · 3.5g",
+  thc:"22.4%", cbd:"0.8%", cultivator:"Emerald Peak Farms",
+  location:"Humboldt County, CA", license:"CCL21-0003847",
+  metrc:"1A4060300000022000005788", harvest:"March 15, 2026",
+  batch:"SC-2026-0408-BD", cert:"SC-CA-2026-BD-9291",
+  terpenes:[
+    {name:"Myrcene",   pct:0.80, color:"#22c55e"},
+    {name:"Caryophyl.",pct:0.40, color:"#84cc16"},
+    {name:"Pinene",    pct:0.30, color:"#38bdf8"},
+    {name:"Limonene",  pct:0.20, color:"#f59e0b"},
+    {name:"Ocimene",   pct:0.15, color:"#a78bfa"},
+    {name:"Linalool",  pct:0.10, color:"#ec4899"},
+  ],
 };
 
+/* ─── SCENES ─────────────────────────────────────────────────────────── */
 const USE_CASES = [
   {
-    id:"autoflow", phase:"AUTOFLOW", accent:"#7c3aed",
-    title:"AutoFlow — Cannabis Product Classification",
-    narration:"AutoFlow ingests this Blue Dream batch from Emerald Peak Farms and instantly classifies it across every regulatory dimension. Cannabis strain, METRC tag, California BCC license, cultivation address, lab terpene profile, state compliance requirements, and StrainChain protocol routing — all resolved in under 3 seconds. No manual entry. No paper forms.",
-    duration:18,
+    id:"autoflow", phase:"AUTOFLOW", accent:"#7c3aed", duration:18,
+    title:"AutoFlow — Cannabis Classification Engine",
+    narration:"AutoFlow ingests the Blue Dream batch description and resolves its complete regulatory identity in under three seconds. Strain genetics, METRC tag, BCC license, terpene fingerprint, state compliance requirements, StrainChain protocol routing — all resolved automatically. No paper forms. No manual entry. The terpene profile alone fingerprints this cultivar uniquely.",
     steps:[
-      {t:300,  label:"INPUT",      text:'Product: "Blue Dream 3.5g Flower — Emerald Peak Farms, Humboldt CA"'},
+      {t:300,  label:"INPUT",      text:'Product: "Blue Dream 3.5g — Emerald Peak Farms, Humboldt CA"'},
       {t:1000, label:"AUTOFLOW",   text:"Cannabis classification engine engaged…"},
       {t:1800, label:"STRAIN",     text:"Cannabis sativa × indica hybrid — Blue Dream (Blueberry × Haze)"},
-      {t:2700, label:"METRC",      text:"Tag: 1A4060300000022000005788  |  State: California (Prop 64)"},
-      {t:3600, label:"LICENSE",    text:"BCC license CCL21-0003847  |  CDFA cert #CF-1982-P  ✓ VALID"},
-      {t:4500, label:"TERPENES",   text:"Myrcene 0.8%  |  Caryophyllene 0.4%  |  Pinene 0.3%  |  Limonene 0.2%"},
-      {t:5400, label:"PROTOCOL",   text:"StrainChain protocol selected  |  AuthiChain NFT layer: active"},
-      {t:6300, label:"ROUTING",    text:"Seed-to-sale chain: Cultivator → Distributor → Dispensary"},
-      {t:7200, label:"OUTPUT",     text:"Classification complete ✓  |  StrainChain ID: SC-2026-0408-BD"},
-      {t:8100, label:"NEXT",       text:"Routing to 5-agent TRUmark authentication via StrainChain…"},
+      {t:2700, label:"METRC",      text:"Tag: 1A4060300000022000005788  |  California Prop 64"},
+      {t:3600, label:"LICENSE",    text:"BCC CCL21-0003847  |  CDFA CF-1982-P  ✓ VALID through Dec 2026"},
+      {t:4500, label:"TERPENES",   text:"Myrcene 0.80%  Caryophyllene 0.40%  Pinene 0.30%  Limonene 0.20%"},
+      {t:5400, label:"PROTOCOL",   text:"→ StrainChain selected  |  AuthiChain NFT layer: ACTIVE"},
+      {t:6300, label:"ROUTING",    text:"Chain: Cultivator → Distributor → Dispensary → Consumer"},
+      {t:7200, label:"COMPLETE",   text:"Classification ✓  |  StrainChain ID: SC-2026-0408-BD"},
     ],
   },
   {
-    id:"trumark", phase:"STRAINCHAIN / TRUMARK", accent:"#22c55e",
-    title:"StrainChain — 5-Agent Seed-to-Sale Authentication",
-    narration:"StrainChain runs the AuthiChain 5-agent TRUmark protocol, tuned for cannabis compliance. Guardian cross-references the Certificate of Analysis hash. Archivist verifies the unbroken seed-to-sale chain. Sentinel checks for diversion flags and recall alerts. Scout confirms METRC state sync. Arbiter adjudicates compliance. One unified verdict — compliant and authentic.",
-    duration:22,
+    id:"trumark", phase:"STRAINCHAIN / TRUMARK", accent:"#22c55e", duration:22,
+    title:"StrainChain TRUmark — 5-Agent Consensus",
+    narration:"StrainChain runs the AuthiChain 5-agent TRUmark protocol, calibrated for cannabis compliance. Guardian verifies the Certificate of Analysis hash. Archivist confirms the unbroken seed-to-sale chain. Sentinel checks diversion flags and recalls. Scout syncs with METRC. Arbiter adjudicates. One verdict — compliant and authentic.",
     agents:[
-      {name:"Guardian",  role:"COA lab results verification",        weight:35, color:"#22c55e",  steps:["Loading COA hash from Confident Cannabis…","THC: 22.4% — within label tolerance","Pesticide screen: PASS (0 detections)","Heavy metals: PASS  |  COA: VERIFIED ✓"]},
-      {name:"Archivist", role:"Seed-to-sale chain integrity",         weight:20, color:"#a78bfa",  steps:["Tracing from seed tag #1A406030…","Nursery → Cultivation: INTACT","Harvest → Distrib.: INTACT","Dispensary transfer: INTACT ✓"]},
-      {name:"Sentinel",  role:"Diversion & recall detection",         weight:25, color:"#f59e0b",  steps:["Checking CA recall database…","METRC diversion flags: ZERO","Out-of-state movement: NONE","Batch status: CLEAR ✓"]},
-      {name:"Scout",     role:"METRC state sync verification",        weight:8,  color:"#38bdf8",  steps:["Syncing with METRC CA API…","Tag 1A4060300000022000005788: ACTIVE","Inventory reconciled: 50/50 units","State sync: CONFIRMED ✓"]},
-      {name:"Arbiter",   role:"StrainChain compliance adjudication",  weight:12, color:"#c9a227",  steps:["Collecting agent verdicts…","Weighted consensus: 99.1%","BCC compliance threshold: 95% ✓","Verdict: COMPLIANT + AUTHENTIC"]},
+      {name:"Guardian",  role:"COA lab verification",          weight:35, color:"#22c55e",  steps:["Loading COA from Confident Cannabis…","THC 22.4%: within label tolerance ✓","Pesticide panel: 0 detections ✓","COA SHA-256 hash: VERIFIED ✓"]},
+      {name:"Archivist", role:"Seed-to-sale chain",            weight:20, color:"#a78bfa",  steps:["Tracing 8 lifecycle events…","Cultivation → Harvest: INTACT","Packaging → Distrib: INTACT","Chain of custody: UNBROKEN ✓"]},
+      {name:"Sentinel",  role:"Diversion & recall detection",  weight:25, color:"#f59e0b",  steps:["Querying CA recall database…","METRC diversion flags: ZERO","Out-of-state movement: NONE","Batch status: CLEAR ✓"]},
+      {name:"Scout",     role:"METRC state sync",              weight:8,  color:"#38bdf8",  steps:["Syncing METRC CA API…","Tag 1A4060300000022000005788: ACTIVE","Inventory: 50/50 units reconciled","State sync: CONFIRMED ✓"]},
+      {name:"Arbiter",   role:"StrainChain adjudication",      weight:12, color:"#c9a227",  steps:["Collecting weighted verdicts…","Consensus: 99.1%  (threshold: 95%)","BCC compliance: ✓","Verdict: COMPLIANT + AUTHENTIC"]},
     ],
-    verdict:"COMPLIANT + AUTHENTIC",
-    confidence:99.1,
+    verdict:"COMPLIANT + AUTHENTIC", confidence:99.1,
     trumark:"SC-TM-CA-2026-04-08-BD9291",
-    duration:22,
   },
   {
-    id:"mint", phase:"BLOCKCHAIN / STRAINCHAIN", accent:"#a78bfa",
+    id:"mint", phase:"BLOCKCHAIN", accent:"#a78bfa", duration:18,
     title:"NFT Mint — Cannabis Provenance Collectable",
-    narration:"Every authenticated StrainChain batch is minted as an ERC-721 NFT on Polygon — creating a permanent, tradeable provenance record. For Blue Dream from Emerald Peak Farms, this NFT carries the full COA hash, METRC tag, terpene fingerprint, and harvest timestamp. Cannabis collectables are an emerging secondary market — verified provenance is the foundation.",
-    duration:18,
+    narration:"Every authenticated StrainChain batch is minted as an ERC-721 NFT on Polygon — a permanent, tradeable provenance record. This Blue Dream NFT carries the full COA hash, METRC tag, terpene fingerprint, and harvest timestamp. Cannabis collectables are an emerging secondary market, and verified provenance is the foundation every serious collector needs.",
     steps:[
-      {t:400,  label:"TRIGGER",    text:"StrainChain verdict COMPLIANT → initiating Polygon mint"},
-      {t:1200, label:"METADATA",   text:'{"strain":"Blue Dream","thc":"22.4%","cultivator":"Emerald Peak Farms","metrc":"1A4060300000022000005788"}'},
-      {t:2200, label:"IPFS",       text:"Pinning COA + metadata to IPFS: ipfs://QmBD3c9R…k7pT2"},
-      {t:3000, label:"CONTRACT",   text:"StrainChain ERC-721: 0x5db511706FB6317cd23A7655F67450c5AC6"},
-      {t:3900, label:"MINT",       text:"Minting token #SC-9291… tx: 0xa4f8e3…c291"},
-      {t:5000, label:"CONFIRMED",  text:"Block 54,892,341  |  Gas: $0.004  |  Polygon mainnet ✓"},
-      {t:5800, label:"EDITION",    text:"Edition: 1 of 50 units  |  Category: Humboldt Reserve"},
-      {t:6600, label:"COLLECTABLE",text:"Cannabis collectables marketplace: listing created"},
-      {t:7400, label:"ROYALTY",    text:"Emerald Peak Farms: 7% royalty on all secondary sales"},
-      {t:8200, label:"LIVE",       text:"Provenance collectable ACTIVE  |  NFT + COA permanently linked ✓"},
+      {t:400,  label:"TRIGGER",    text:"TRUmark COMPLIANT → initiating Polygon mint"},
+      {t:1200, label:"METADATA",   text:'COA hash + METRC + terpenes + harvest → IPFS: ipfs://QmBD3c9…k7T'},
+      {t:2200, label:"CONTRACT",   text:"StrainChain ERC-721: 0x5db511706FB6317cd23A7655F67450c5AC6e6AA2"},
+      {t:3100, label:"MINTING",    text:"Token #SC-9291 — tx: 0xa4f8e3d1c7b2a9f4e8d3c6b1a7f2e9d4c8b3a6f1"},
+      {t:4200, label:"CONFIRMED",  text:"Block 54,892,341  |  Gas: $0.004  |  Polygon mainnet ✓"},
+      {t:5000, label:"EDITION",    text:"1 of 50 units  |  Category: Humboldt Reserve 2026"},
+      {t:5800, label:"ROYALTY",    text:"Emerald Peak Farms: 7% on all secondary sales → encoded on-chain"},
+      {t:6600, label:"MARKET",     text:"Collectables listing: LIVE  |  Floor: $420 USD"},
     ],
   },
   {
-    id:"qron", phase:"QRON / STRAINCHAIN", accent:"#84cc16",
-    title:"Dynamic QRON Code → StoryMode Strain Narrative",
-    narration:"The Blue Dream packaging carries a QRON code — AI-generated QR art that resolves to StoryMode, a cinematic strain origin narrative. Every scan logs a Truth Network vote confirming authenticity. The code is dynamic: it knows when the batch changes hands, when inventory depletes, when a dispensary activates the product. The QR code is as alive as the plant it represents.",
-    duration:18,
-    qron:{
-      style:"Forest Weave",
-      shortUrl:"qron.space/s/BD9291CA",
-      resolves:"StoryMode — Strain Origin Narrative",
-      story:"From fog-kissed ridgelines above Garberville, Humboldt County. Planted February 3, 2026. Hand-watered from a spring-fed creek at 2,400 feet elevation. Harvested March 15 after 42 days of flower. Dried 14 days, hand-trimmed, third-party tested. This batch is lot 1 of 50 units. You are holding verified proof of that.",
-      scans:0,
-    },
-    duration:18,
+    id:"qron", phase:"QRON / STRAINCHAIN", accent:"#84cc16", duration:18,
+    title:"Dynamic QRON Code → StoryMode",
+    narration:"The Blue Dream packaging carries a QRON code — AI-generated QR art in Forest Weave style — that resolves to StoryMode, a cinematic strain origin narrative. Every scan logs a Truth Network vote. The code is dynamic: it knows when the batch changes hands, when inventory depletes, when a dispensary activates the product. The QR code is as alive as the plant it represents.",
+    story:"From fog-kissed ridgelines above Garberville, Humboldt County. Planted February 3rd. Hand-watered from a spring-fed creek at 2,400 feet elevation. Harvested March 15th after 42 days of flower. Dried 14 days, hand-trimmed, third-party tested at Confident Cannabis. This batch is lot 1 of 50 units. You are holding verified proof of that.",
   },
   {
-    id:"ledger", phase:"STRAINCHAIN LEDGER / BTC", accent:"#f59e0b",
+    id:"ledger", phase:"LEDGER / BTC", accent:"#f59e0b", duration:18,
     title:"Immutable Seed-to-Sale Ledger + BTC Ordinal",
-    narration:"The StrainChain ledger is the append-only record of every event in Blue Dream's lifecycle — from clone tag to consumer scan. Every cultivation event, every state transfer, every lab test, every ownership change is written and signed. For the highest-integrity batches, this ledger is inscribed as a Bitcoin Ordinal — anchoring cannabis compliance permanently to the world's most audited blockchain. No regulator can question it. No court can dispute it.",
-    duration:18,
+    narration:"The StrainChain ledger is the append-only record of every event in Blue Dream's lifecycle. From clone tag to consumer scan, every state transfer, lab test, and ownership change is signed and written. For the highest-integrity batches, this ledger is inscribed as a Bitcoin Ordinal — anchoring cannabis compliance permanently to the world's most audited blockchain.",
+    events:[
+      {icon:"🌱",label:"Seed/Clone", date:"Feb 3"},
+      {icon:"🌿",label:"Vegetative", date:"Feb 17"},
+      {icon:"🌸",label:"Flowering",  date:"Feb 28"},
+      {icon:"✂️",label:"Harvest",    date:"Mar 15"},
+      {icon:"💨",label:"Drying",     date:"Mar 16"},
+      {icon:"🔬",label:"Lab Test",   date:"Mar 28"},
+      {icon:"📦",label:"Packaging",  date:"Apr 1"},
+      {icon:"🏪",label:"Dispensary", date:"Apr 8"},
+    ],
     steps:[
-      {t:400,  label:"LEDGER",     text:"StrainChain ledger entry: SC-LDG-20260408-BD9291"},
-      {t:1300, label:"EVENTS",     text:"8 lifecycle events logged: seed→clone→veg→flower→harvest→dry→test→package"},
-      {t:2200, label:"COA HASH",   text:"sha256(COA PDF): 7f3bc4d8e2a1f9c6b4d5e3a2f1c0b9a8  signed ✓"},
-      {t:3100, label:"METRC SYNC", text:"METRC transfer manifest: TM-2026-0408-001  |  State: RECEIVED"},
-      {t:3900, label:"CHAIN",      text:"Anchored Polygon block 54,892,341  |  StrainChain contract ✓"},
-      {t:4700, label:"TAX",        text:"CA excise tax: $3.21/unit  |  Board of Equalization: SYNCED"},
-      {t:5500, label:"BTC",        text:"Inscribing compliance record to Bitcoin Ordinal…"},
-      {t:6300, label:"ORDINAL",    text:"Ordinal #84,291,003  |  Sat: 1,923,847,291  |  Block 841,923"},
-      {t:7100, label:"URI",        text:"strainchain://SC-LDG-20260408-BD9291"},
-      {t:7900, label:"STATUS",     text:"IMMUTABLE SEED-TO-SALE RECORD  |  Auditable forever ✓"},
+      {t:300,  label:"LEDGER",     text:"StrainChain ledger: SC-LDG-20260408-BD9291"},
+      {t:1100, label:"COA HASH",   text:"sha256: 7f3bc4d8e2a1f9c6b4d5e3a2f1c0b9a8  signed ✓"},
+      {t:1900, label:"METRC",      text:"Transfer TM-2026-0408-001  |  CA METRC: RECEIVED"},
+      {t:2700, label:"POLYGON",    text:"Anchored block 54,892,341  |  StrainChain contract ✓"},
+      {t:3500, label:"TAX",        text:"CA excise $3.21/unit  |  Board of Equalization: SYNCED"},
+      {t:4300, label:"BTC",        text:"Inscribing to Bitcoin Ordinal…"},
+      {t:5100, label:"ORDINAL",    text:"#84,291,003  |  Sat 1,923,847,291  |  Block 841,923"},
+      {t:5900, label:"IMMUTABLE",  text:"strainchain://SC-LDG-20260408-BD9291  |  PERMANENT ✓"},
     ],
   },
   {
-    id:"dpp", phase:"STATE COMPLIANCE", accent:"#38bdf8",
+    id:"compliance", phase:"CA BCC COMPLIANCE", accent:"#38bdf8", duration:17,
     title:"Instant StrainChain Compliance Certificate",
-    narration:"In the time it took to scan one QR code, StrainChain generated a complete cannabis compliance certificate for Blue Dream batch SC-2026-0408-BD. Every California BCC requirement satisfied automatically — as a byproduct of running through the Authentic Economy stack. No manual compliance reports. No paper COA binders. The regulator can query the blockchain.",
-    duration:17,
+    narration:"In the time it took to scan one QR code, StrainChain generated a complete California BCC compliance certificate for this Blue Dream batch. Every requirement satisfied automatically — as a byproduct of running through the Authentic Economy stack. No manual compliance reports. No paper COA binders. The regulator queries the blockchain.",
     requirements:[
-      {label:"METRC tag verified",            value:"1A4060300000022000005788 — ACTIVE in CA METRC",           done:false},
-      {label:"BCC license current",           value:"CCL21-0003847 — expires Dec 31 2026 — VALID",            done:false},
-      {label:"Certificate of Analysis",       value:"Confident Cannabis COA — hash on-chain — PASS",           done:false},
-      {label:"Pesticide & heavy metal screen", value:"BCC panel: 0 detections — PASS",                         done:false},
-      {label:"Seed-to-sale chain intact",     value:"8 events — Polygon + BTC Ordinal — UNBROKEN",            done:false},
-      {label:"CA excise tax paid",            value:"$3.21/unit → CA Board of Equalization — SYNCED",         done:false},
-      {label:"Consumer QR verification",      value:"QRON code active — StoryMode live — scans logged",       done:false},
+      {label:"METRC tag verified",             value:"1A4060300000022000005788 — ACTIVE ✓"},
+      {label:"BCC license current",            value:"CCL21-0003847 — valid through Dec 31 2026"},
+      {label:"Certificate of Analysis",        value:"Confident Cannabis COA — hash on-chain — PASS"},
+      {label:"Pesticide & heavy metals",        value:"Full BCC panel: 0 detections — PASS"},
+      {label:"Seed-to-sale chain intact",      value:"8 events — Polygon + BTC Ordinal — UNBROKEN"},
+      {label:"CA excise tax paid",             value:"$3.21/unit → Board of Equalization — SYNCED"},
+      {label:"Consumer QR verification",       value:"QRON Forest Weave — StoryMode active — scans logged"},
     ],
     cert:"SC-CA-2026-BD-9291",
-    duration:17,
   },
 ];
 
 const TOTAL = USE_CASES.reduce((s,u)=>s+u.duration,0);
-function pad(n:number){return String(Math.floor(n)).padStart(2,"0")}
-function fmt(s:number){return `${Math.floor(s/60)}:${pad(s%60)}`}
+const fmt=(s:number)=>`${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,"0")}`;
 
-/* ── TERMINAL ────────────────────────────────────────────────────────── */
-function Terminal({steps, running, accent}:{steps:{t:number,label:string,text:string}[], running:boolean, accent:string}){
+/* ─── TERPENE RADAR ──────────────────────────────────────────────────── */
+function TerpeneRadar({active}:{active:boolean}){
+  const [reveal,setReveal]=useState(0);
+  useEffect(()=>{
+    if(!active){setReveal(0);return;}
+    const t=setTimeout(()=>{
+      let i=0;const id=setInterval(()=>{setReveal(++i);if(i>=P.terpenes.length)clearInterval(id);},350);
+      return()=>clearInterval(id);
+    },3200);
+    return()=>clearTimeout(t);
+  },[active]);
+  const N=P.terpenes.length; const R=72; const cx=88; const cy=88;
+  const pt=(i:number,r:number)=>{const a=(2*Math.PI*i/N)-Math.PI/2;return{x:cx+r*Math.cos(a),y:cy+r*Math.sin(a)};};
+  const gridPts=(r:number)=>Array.from({length:N},(_,i)=>pt(i,r));
+  const dataPath=(pts:{x:number,y:number}[])=>`M${pts.map(p=>`${p.x},${p.y}`).join("L")}Z`;
+  const terpPts=P.terpenes.map((t,i)=>pt(i,R*(t.pct/0.80)*0.9));
+  return(
+    <div style={{textAlign:"center"}}>
+      <div style={{fontSize:9,color:"rgba(255,255,255,.25)",textTransform:"uppercase",letterSpacing:".1em",marginBottom:6}}>Terpene Profile</div>
+      <svg width="176" height="176" viewBox="0 0 176 176" style={{overflow:"visible"}}>
+        {[0.25,0.5,0.75,1].map(r=>(
+          <polygon key={r} points={gridPts(R*r).map(p=>`${p.x},${p.y}`).join(" ")}
+            fill="none" stroke="rgba(255,255,255,.07)" strokeWidth=".5"/>
+        ))}
+        {Array.from({length:N},(_,i)=>{const p=pt(i,R);return(
+          <line key={i} x1={cx} y1={cy} x2={p.x} y2={p.y} stroke="rgba(255,255,255,.06)" strokeWidth=".5"/>
+        );})}
+        <polygon points={terpPts.slice(0,reveal).concat(terpPts.slice(0,1)).map(p=>`${p.x},${p.y}`).join(" ")}
+          fill="rgba(132,204,22,.15)" stroke="#84cc16" strokeWidth="1.5" strokeLinejoin="round"/>
+        {P.terpenes.map((t,i)=>reveal>i&&(
+          <circle key={i} cx={terpPts[i].x} cy={terpPts[i].y} r="3.5" fill={t.color} style={{filter:`drop-shadow(0 0 4px ${t.color})`}}/>
+        ))}
+        {P.terpenes.map((t,i)=>{
+          const p=pt(i,R+16);const isLeft=p.x<cx;
+          return(<text key={i} x={p.x} y={p.y} textAnchor={isLeft?"end":"start"} fill={reveal>i?t.color:"rgba(255,255,255,.2)"} fontSize="8.5" fontFamily="monospace" transition="fill .3s">{t.name} {t.pct}%</text>);
+        })}
+      </svg>
+    </div>
+  );
+}
+
+/* ─── NFT CARD ───────────────────────────────────────────────────────── */
+function NFTCard({active}:{active:boolean}){
+  const [show,setShow]=useState(false);
+  const [glow,setGlow]=useState(false);
+  useEffect(()=>{
+    if(!active){setShow(false);setGlow(false);return;}
+    const t1=setTimeout(()=>setShow(true),3600);
+    const t2=setTimeout(()=>setGlow(true),4200);
+    return()=>{clearTimeout(t1);clearTimeout(t2);};
+  },[active]);
+  if(!show)return(<div style={{height:180,display:"flex",alignItems:"center",justifyContent:"center",color:"rgba(255,255,255,.15)",fontSize:11}}>Awaiting mint confirmation…</div>);
+  return(
+    <div style={{opacity:show?1:0,transition:"opacity .6s",display:"flex",justifyContent:"center"}}>
+      <div style={{
+        width:160,borderRadius:16,overflow:"hidden",
+        background:"linear-gradient(135deg,#0d2e1a 0%,#1a4d2e 40%,#0a1f12 100%)",
+        border:`1.5px solid ${glow?"#22c55e":"rgba(34,197,94,.3)"}`,
+        boxShadow:glow?"0 0 24px rgba(34,197,94,.35),0 0 48px rgba(34,197,94,.15)":"none",
+        transition:"all .6s",position:"relative",
+      }}>
+        {/* Art area */}
+        <div style={{height:90,position:"relative",overflow:"hidden",background:"linear-gradient(160deg,#0f3d1f,#1e6b37,#0a2810)"}}>
+          <div style={{position:"absolute",inset:0,opacity:.4,backgroundImage:"radial-gradient(circle at 70% 30%,rgba(34,197,94,.6) 0%,transparent 50%),radial-gradient(circle at 20% 70%,rgba(132,204,22,.4) 0%,transparent 50%)"}}/>
+          <div style={{position:"absolute",top:"50%",left:"50%",transform:"translate(-50%,-50%)",fontSize:36,filter:"drop-shadow(0 2px 8px rgba(0,0,0,.5))"}}>🌿</div>
+          <div style={{position:"absolute",top:6,right:6,background:"rgba(34,197,94,.9)",borderRadius:4,padding:"2px 7px",fontSize:7,fontWeight:700,color:"#000"}}>SC VERIFIED</div>
+          <div style={{position:"absolute",bottom:6,left:6,fontSize:8,color:"rgba(255,255,255,.6)",fontFamily:"monospace"}}>#{P.batch.slice(-6)}</div>
+        </div>
+        {/* Info */}
+        <div style={{padding:"9px 10px"}}>
+          <div style={{fontWeight:800,fontSize:12,color:"#22c55e",marginBottom:2}}>{P.name}</div>
+          <div style={{fontSize:9,color:"rgba(255,255,255,.45)",marginBottom:6}}>{P.type}</div>
+          <div style={{display:"flex",justifyContent:"space-between",marginBottom:5}}>
+            <div style={{textAlign:"center"}}>
+              <div style={{fontSize:10,fontWeight:700,color:"#e5e5e5"}}>{P.thc}</div>
+              <div style={{fontSize:7,color:"rgba(255,255,255,.3)"}}>THC</div>
+            </div>
+            <div style={{textAlign:"center"}}>
+              <div style={{fontSize:10,fontWeight:700,color:"#e5e5e5"}}>{P.cbd}</div>
+              <div style={{fontSize:7,color:"rgba(255,255,255,.3)"}}>CBD</div>
+            </div>
+            <div style={{textAlign:"center"}}>
+              <div style={{fontSize:10,fontWeight:700,color:"#a78bfa"}}>1/50</div>
+              <div style={{fontSize:7,color:"rgba(255,255,255,.3)"}}>Edition</div>
+            </div>
+          </div>
+          <div style={{borderTop:"0.5px solid rgba(255,255,255,.08)",paddingTop:5,display:"flex",justifyContent:"space-between",alignItems:"center"}}>
+            <div style={{fontSize:8,color:"rgba(255,255,255,.35)",fontFamily:"monospace"}}>Token #SC-9291</div>
+            <div style={{fontSize:9,fontWeight:700,color:"#c9a227"}}>$420</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── LIFECYCLE TIMELINE ─────────────────────────────────────────────── */
+function LifecycleTimeline({events,active}:{events:{icon:string,label:string,date:string}[],active:boolean}){
+  const [lit,setLit]=useState(0);
+  useEffect(()=>{
+    if(!active){setLit(0);return;}
+    let i=0;
+    const id=setInterval(()=>{if(i<events.length)setLit(++i);else clearInterval(id);},700);
+    return()=>clearInterval(id);
+  },[active,events.length]);
+  return(
+    <div style={{padding:"4px 0"}}>
+      <div style={{fontSize:9,color:"rgba(255,255,255,.22)",textTransform:"uppercase",letterSpacing:".1em",marginBottom:10}}>Seed-to-Sale Chain · 8 Events</div>
+      <div style={{display:"flex",alignItems:"center",gap:0,overflowX:"auto"}}>
+        {events.map((e,i)=>(
+          <div key={i} style={{display:"flex",alignItems:"center",flexShrink:0}}>
+            <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:3}}>
+              <div style={{
+                width:38,height:38,borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",fontSize:16,
+                background:i<lit?"rgba(34,197,94,.12)":"rgba(255,255,255,.03)",
+                border:`1px solid ${i<lit?"#22c55e":"rgba(255,255,255,.07)"}`,
+                transition:"all .4s",
+                boxShadow:i<lit?"0 0 10px rgba(34,197,94,.25)":"none",
+              }}>{e.icon}</div>
+              <div style={{fontSize:8,fontWeight:600,color:i<lit?"#22c55e":"rgba(255,255,255,.2)",transition:"color .4s",textAlign:"center",lineHeight:1.2}}>{e.label}</div>
+              <div style={{fontSize:7,color:i<lit?"rgba(34,197,94,.5)":"rgba(255,255,255,.1)",fontFamily:"monospace"}}>{e.date}</div>
+            </div>
+            {i<events.length-1&&(
+              <div style={{width:16,height:1.5,background:i<lit-1?"#22c55e":"rgba(255,255,255,.06)",margin:"0 2px",marginBottom:24,transition:"background .4s",flexShrink:0}}/>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+/* ─── COMPLIANCE GAUGE ───────────────────────────────────────────────── */
+function ComplianceGauge({score,active,accent}:{score:number,active:boolean,accent:string}){
+  const [val,setVal]=useState(0);
+  useEffect(()=>{
+    if(!active){setVal(0);return;}
+    const dur=6000;const start=Date.now();
+    const tick=()=>{
+      const p=Math.min(1,(Date.now()-start)/dur);
+      const ease=1-Math.pow(1-p,2);
+      setVal(Math.round(score*ease));
+      if(p<1)requestAnimationFrame(tick);
+    };
+    const t=setTimeout(()=>requestAnimationFrame(tick),800);
+    return()=>clearTimeout(t);
+  },[active,score]);
+  const R=52; const cx=64; const cy=68;
+  const arc=(pct:number)=>{
+    const a=Math.PI*(1+pct);
+    const x=cx+R*Math.cos(a-Math.PI);
+    const y=cy+R*Math.sin(a-Math.PI)+R;
+    return`M${cx-R},${cy} A${R},${R} 0 ${pct>0.5?1:0} 1 ${x},${y}`;
+  };
+  const full=2*Math.PI*R*0.5;
+  return(
+    <div style={{textAlign:"center"}}>
+      <div style={{fontSize:9,color:"rgba(255,255,255,.22)",textTransform:"uppercase",letterSpacing:".1em",marginBottom:4}}>Compliance Score</div>
+      <svg width="128" height="80" viewBox="0 0 128 80">
+        <path d={`M${cx-R},${cy} A${R},${R} 0 0 1 ${cx+R},${cy}`} fill="none" stroke="rgba(255,255,255,.06)" strokeWidth="8" strokeLinecap="round"/>
+        <path d={`M${cx-R},${cy} A${R},${R} 0 0 1 ${cx+R},${cy}`} fill="none" stroke={accent} strokeWidth="8" strokeLinecap="round"
+          strokeDasharray={`${full*val/100} ${full}`} style={{transition:"stroke-dasharray 0.4s",filter:`drop-shadow(0 0 6px ${accent}80)`}}/>
+        <text x={cx} y={cy-4} textAnchor="middle" fill={accent} fontSize="20" fontWeight="700" fontFamily="monospace">{val}%</text>
+        <text x={cx} y={cy+12} textAnchor="middle" fill="rgba(255,255,255,.4)" fontSize="8">BCC Compliance</text>
+        <text x={cx-R+2} y={cy+16} textAnchor="start" fill="rgba(255,255,255,.2)" fontSize="7">0%</text>
+        <text x={cx+R-2} y={cy+16} textAnchor="end"   fill="rgba(255,255,255,.2)" fontSize="7">100%</text>
+      </svg>
+    </div>
+  );
+}
+
+/* ─── TRUST GAUGE ────────────────────────────────────────────────────── */
+function TrustGauge({confidence,active,accent}:{confidence:number,active:boolean,accent:string}){
+  const [val,setVal]=useState(0);
+  useEffect(()=>{
+    if(!active){setVal(0);return;}
+    const t=setTimeout(()=>{
+      const dur=2000;const s=Date.now();
+      const tick=()=>{const p=Math.min(1,(Date.now()-s)/dur);setVal(Math.round(confidence*p));if(p<1)requestAnimationFrame(tick);};
+      requestAnimationFrame(tick);
+    },4000);
+    return()=>clearTimeout(t);
+  },[active,confidence]);
+  return(
+    <div style={{textAlign:"center",padding:"6px 0"}}>
+      <div style={{fontSize:9,color:"rgba(255,255,255,.22)",textTransform:"uppercase",letterSpacing:".1em",marginBottom:4}}>Trust Score</div>
+      <div style={{position:"relative",height:10,background:"rgba(255,255,255,.05)",borderRadius:5,overflow:"hidden",margin:"0 auto",maxWidth:180}}>
+        <div style={{height:"100%",width:`${val}%`,background:`linear-gradient(90deg,${accent}80,${accent})`,borderRadius:5,transition:"width .3s",boxShadow:`0 0 8px ${accent}60`}}/>
+      </div>
+      <div style={{fontFamily:"monospace",fontSize:18,fontWeight:900,color:val>=95?accent:"rgba(255,255,255,.5)",marginTop:6,transition:"color .5s"}}>{val}%</div>
+    </div>
+  );
+}
+
+/* ─── QRON PHONE ─────────────────────────────────────────────────────── */
+function QRONPhone({active,accent,story}:{active:boolean,accent:string,story:string}){
+  const [step,setStep]=useState(0);
+  const [scans,setScans]=useState(0);
+  useEffect(()=>{
+    if(!active){setStep(0);setScans(0);return;}
+    const ts=[
+      setTimeout(()=>setStep(1),700),
+      setTimeout(()=>setStep(2),2200),
+      setTimeout(()=>setStep(3),4000),
+      setTimeout(()=>setStep(4),5800),
+      setTimeout(()=>setScans(1),7200),
+      setTimeout(()=>setScans(2),9000),
+    ];
+    return()=>ts.forEach(clearTimeout);
+  },[active]);
+  return(
+    <div style={{display:"flex",gap:16,alignItems:"flex-start",justifyContent:"center"}}>
+      {/* QR Gen */}
+      <div style={{display:"flex",flexDirection:"column",alignItems:"center",gap:8}}>
+        <div style={{fontSize:9,color:"rgba(255,255,255,.22)",textTransform:"uppercase",letterSpacing:".1em"}}>QRON Forest Weave</div>
+        <div style={{width:100,height:100,background:"rgba(132,204,22,.06)",border:`1.5px solid ${step>=1?accent:"rgba(255,255,255,.06)"}`,borderRadius:12,display:"flex",alignItems:"center",justifyContent:"center",position:"relative",transition:"border-color .4s",boxShadow:step>=1?`0 0 16px ${accent}30`:"none"}}>
+          {step>=1?(
+            <svg viewBox="0 0 10 10" width="76" height="76">
+              {Array.from({length:100},(_,k)=>{const x=k%10,y=Math.floor(k/10),corner=(x<3&&y<3)||(x>6&&y<3)||(x<3&&y>6),dark=corner||(Math.sin(k*2.8+13)*Math.cos(k*1.4)*0.5+0.5>0.44);return dark?<rect key={k} x={x} y={y} width={1} height={1} fill={accent}/>:null;})}
+            </svg>
+          ):<div style={{color:"rgba(255,255,255,.1)",fontSize:11}}>…</div>}
+          {step>=2&&<div style={{position:"absolute",bottom:-8,right:-8,background:"#22c55e",borderRadius:4,padding:"2px 7px",fontSize:7,fontWeight:700,color:"#000"}}>SC LIVE</div>}
+        </div>
+        <div style={{fontSize:9,color:accent,fontFamily:"monospace",opacity:step>=1?1:0,transition:"opacity .4s"}}>qron.space/s/BD9291CA</div>
+        {scans>0&&(
+          <div style={{background:"rgba(34,197,94,.08)",border:"1px solid rgba(34,197,94,.2)",borderRadius:6,padding:"3px 10px",fontSize:9}}>
+            <span style={{color:"#22c55e",fontWeight:700}}>{scans}</span><span style={{color:"rgba(255,255,255,.4)"}}> scan{scans>1?"s":""} verified</span>
+          </div>
+        )}
+      </div>
+
+      {/* Phone mockup */}
+      <div style={{flexShrink:0}}>
+        <div style={{fontSize:9,color:"rgba(255,255,255,.22)",textTransform:"uppercase",letterSpacing:".1em",marginBottom:6,textAlign:"center"}}>StoryMode</div>
+        <div style={{width:130,borderRadius:18,border:"2px solid rgba(255,255,255,.1)",background:"#0a0a0a",overflow:"hidden",boxShadow:"0 8px 32px rgba(0,0,0,.6)"}}>
+          {/* Camera notch */}
+          <div style={{height:20,background:"#111",display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <div style={{width:28,height:6,background:"#222",borderRadius:3}}/>
+          </div>
+          {/* Screen */}
+          <div style={{height:180,background:"linear-gradient(160deg,#0f2d15,#0a1f0d)",padding:"10px 10px",position:"relative",overflow:"hidden"}}>
+            {step<2?(
+              <div style={{color:"rgba(255,255,255,.1)",fontSize:9,textAlign:"center",paddingTop:60}}>Scan to activate…</div>
+            ):(
+              <>
+                <div style={{fontSize:8,fontWeight:700,color:accent,marginBottom:5}}>🌿 Origin Story</div>
+                <div style={{fontSize:8,color:"rgba(255,255,255,.6)",lineHeight:1.7,fontStyle:"italic"}}>{story}</div>
+                {step>=3&&(
+                  <div style={{marginTop:8,padding:"4px 7px",background:"rgba(132,204,22,.1)",border:"1px solid rgba(132,204,22,.2)",borderRadius:5}}>
+                    <div style={{fontSize:7,color:accent,fontWeight:600}}>THC {P.thc} · Myrcene 0.80%</div>
+                    <div style={{fontSize:7,color:"rgba(255,255,255,.3)"}}>→ full COA on-chain</div>
+                  </div>
+                )}
+              </>
+            )}
+          </div>
+          {/* Home indicator */}
+          <div style={{height:16,background:"#0a0a0a",display:"flex",alignItems:"center",justifyContent:"center"}}>
+            <div style={{width:30,height:3,background:"rgba(255,255,255,.12)",borderRadius:2}}/>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/* ─── TERMINAL ───────────────────────────────────────────────────────── */
+function Terminal({steps,running,accent}:{steps:{t:number,label:string,text:string}[],running:boolean,accent:string}){
   const [shown,setShown]=useState<number[]>([]);
   useEffect(()=>{
     if(!running){setShown([]);return;}
@@ -138,30 +391,30 @@ function Terminal({steps, running, accent}:{steps:{t:number,label:string,text:st
     return()=>ts.forEach(clearTimeout);
   },[running,steps]);
   return(
-    <div style={{background:"#060606",border:`1px solid ${accent}22`,borderRadius:12,padding:"16px 18px",fontFamily:"monospace",fontSize:12.5,lineHeight:1.85,minHeight:240,overflowY:"auto"}}>
+    <div style={{background:"#050505",border:`1px solid ${accent}1a`,borderRadius:10,padding:"12px 14px",fontFamily:"monospace",fontSize:11.5,lineHeight:1.85,overflowY:"auto",flex:1}}>
       {steps.map((s,i)=>shown.includes(i)&&(
-        <div key={i} style={{display:"flex",gap:12,marginBottom:1,opacity:shown[shown.length-1]===i?1:.65,transition:"opacity .3s"}}>
-          <span style={{color:accent,fontWeight:700,minWidth:94,fontSize:10.5,paddingTop:1,flexShrink:0}}>[{s.label}]</span>
+        <div key={i} style={{display:"flex",gap:10,marginBottom:1,opacity:shown[shown.length-1]===i?1:.6,transition:"opacity .3s"}}>
+          <span style={{color:accent,fontWeight:700,minWidth:80,fontSize:10,flexShrink:0}}>[{s.label}]</span>
           <span style={{color:shown[shown.length-1]===i?"#e5e5e5":"#555",wordBreak:"break-all"}}>{s.text}</span>
         </div>
       ))}
       {running&&shown.length<steps.length&&(
-        <div style={{display:"flex",gap:12}}>
-          <span style={{color:accent,fontWeight:700,minWidth:94,fontSize:10.5,flexShrink:0}}>[···]</span>
-          <span style={{color:"#333"}}>processing…</span>
+        <div style={{display:"flex",gap:10}}>
+          <span style={{color:accent,fontWeight:700,minWidth:80,fontSize:10}}>[ ··· ]</span>
+          <span style={{color:"#2a2a2a"}}>processing…</span>
         </div>
       )}
     </div>
   );
 }
 
-/* ── AGENT PANEL ─────────────────────────────────────────────────────── */
+/* ─── AGENTS ─────────────────────────────────────────────────────────── */
 function AgentPanel({uc,running}:{uc:typeof USE_CASES[1],running:boolean}){
-  const [astep,setAstep]=useState([0,0,0,0,0]);
   const [prog,setProg]=useState([0,0,0,0,0]);
+  const [astep,setAstep]=useState([0,0,0,0,0]);
   const [verdict,setVerdict]=useState(false);
   useEffect(()=>{
-    if(!running){setAstep([0,0,0,0,0]);setProg([0,0,0,0,0]);setVerdict(false);return;}
+    if(!running){setProg([0,0,0,0,0]);setAstep([0,0,0,0,0]);setVerdict(false);return;}
     const ts:ReturnType<typeof setTimeout>[]=[];
     uc.agents.forEach((a,ai)=>{
       a.steps.forEach((_,si)=>{
@@ -175,161 +428,81 @@ function AgentPanel({uc,running}:{uc:typeof USE_CASES[1],running:boolean}){
     return()=>ts.forEach(clearTimeout);
   },[running]);
   return(
-    <div style={{display:"flex",flexDirection:"column",gap:9,width:"100%"}}>
-      {uc.agents.map((a,i)=>(
-        <div key={i} style={{background:"#080808",border:`1px solid ${a.color}1a`,borderRadius:10,padding:"9px 13px"}}>
-          <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:5}}>
-            <div style={{width:6,height:6,borderRadius:"50%",background:prog[i]===100?a.color:"#222",transition:"background .4s",flexShrink:0}}/>
-            <div style={{fontWeight:700,fontSize:11.5,color:prog[i]===100?a.color:"rgba(255,255,255,.4)",flex:1,transition:"color .4s"}}>
-              {a.name} <span style={{fontWeight:400,color:"rgba(255,255,255,.2)",fontSize:10}}>({a.weight}%)</span>
+    <div style={{display:"flex",flexDirection:"column",gap:8,width:"100%"}}>
+      <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:8}}>
+        {uc.agents.slice(0,4).map((a,i)=>(
+          <div key={i} style={{background:"#080808",border:`1px solid ${a.color}18`,borderRadius:9,padding:"8px 11px"}}>
+            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+              <div style={{width:5,height:5,borderRadius:"50%",background:prog[i]===100?a.color:"#1a1a1a",transition:"background .4s",flexShrink:0}}/>
+              <div style={{fontSize:11,fontWeight:700,color:prog[i]===100?a.color:"rgba(255,255,255,.35)",flex:1,transition:"color .4s"}}>{a.name}</div>
+              <div style={{fontFamily:"monospace",fontSize:10,color:a.color}}>{prog[i]}%</div>
             </div>
-            <div style={{fontFamily:"monospace",fontSize:11,color:a.color,flexShrink:0}}>{prog[i]}%</div>
+            <div style={{height:2.5,background:"rgba(255,255,255,.04)",borderRadius:2,overflow:"hidden",marginBottom:4}}>
+              <div style={{height:"100%",width:`${prog[i]}%`,background:a.color,transition:"width .5s",boxShadow:`0 0 5px ${a.color}50`}}/>
+            </div>
+            <div style={{fontSize:9.5,color:"rgba(255,255,255,.28)",fontFamily:"monospace",lineHeight:1.3}}>{astep[i]>0?a.steps[astep[i]-1]:"waiting…"}</div>
           </div>
-          <div style={{height:3,background:"rgba(255,255,255,.04)",borderRadius:2,overflow:"hidden",marginBottom:5}}>
-            <div style={{height:"100%",width:`${prog[i]}%`,background:a.color,transition:"width .5s",borderRadius:2,boxShadow:`0 0 6px ${a.color}60`}}/>
-          </div>
-          <div style={{fontSize:10.5,color:"rgba(255,255,255,.3)",fontFamily:"monospace"}}>
-            {astep[i]>0?a.steps[astep[i]-1]:"awaiting prior agents…"}
-          </div>
+        ))}
+      </div>
+      {/* Arbiter full-width */}
+      <div style={{background:"#080808",border:`1px solid ${uc.agents[4].color}18`,borderRadius:9,padding:"8px 11px"}}>
+        <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:4}}>
+          <div style={{width:5,height:5,borderRadius:"50%",background:prog[4]===100?uc.agents[4].color:"#1a1a1a",transition:"background .4s"}}/>
+          <div style={{fontSize:11,fontWeight:700,color:prog[4]===100?uc.agents[4].color:"rgba(255,255,255,.35)",flex:1,transition:"color .4s"}}>{uc.agents[4].name} <span style={{fontWeight:400,color:"rgba(255,255,255,.2)",fontSize:9}}>— {uc.agents[4].role}</span></div>
+          <div style={{fontFamily:"monospace",fontSize:10,color:uc.agents[4].color}}>{prog[4]}%</div>
         </div>
-      ))}
+        <div style={{height:2.5,background:"rgba(255,255,255,.04)",borderRadius:2,overflow:"hidden",marginBottom:4}}>
+          <div style={{height:"100%",width:`${prog[4]}%`,background:uc.agents[4].color,transition:"width .5s"}}/>
+        </div>
+        <div style={{fontSize:9.5,color:"rgba(255,255,255,.28)",fontFamily:"monospace"}}>{astep[4]>0?uc.agents[4].steps[astep[4]-1]:"waiting for agent verdicts…"}</div>
+      </div>
       {verdict&&(
-        <div style={{background:"rgba(34,197,94,.07)",border:"2px solid #22c55e",borderRadius:12,padding:"14px 18px",textAlign:"center",marginTop:2}}>
-          <div style={{fontSize:18,fontWeight:900,color:"#22c55e",letterSpacing:".05em"}}>✓ COMPLIANT + AUTHENTIC</div>
-          <div style={{fontSize:10,color:"rgba(255,255,255,.4)",marginTop:4}}>StrainChain TRUmark: {uc.trumark}  ·  Confidence: {uc.confidence}%</div>
+        <div style={{background:"rgba(34,197,94,.06)",border:"2px solid #22c55e",borderRadius:10,padding:"10px 14px",textAlign:"center",boxShadow:"0 0 20px rgba(34,197,94,.15)"}}>
+          <div style={{fontSize:16,fontWeight:900,color:"#22c55e",letterSpacing:".04em"}}>✓ COMPLIANT + AUTHENTIC</div>
+          <div style={{fontSize:9,color:"rgba(255,255,255,.35)",marginTop:3,fontFamily:"monospace"}}>{uc.trumark} · {uc.confidence}% confidence</div>
         </div>
       )}
     </div>
   );
 }
 
-/* ── QRON PANEL ──────────────────────────────────────────────────────── */
-function QRONPanel({uc,running,accent}:{uc:typeof USE_CASES[3],running:boolean,accent:string}){
-  const [step,setStep]=useState(0);
-  const [scans,setScans]=useState(0);
-  useEffect(()=>{
-    if(!running){setStep(0);setScans(0);return;}
-    const ts=[
-      setTimeout(()=>setStep(1),700),
-      setTimeout(()=>setStep(2),2200),
-      setTimeout(()=>setStep(3),4000),
-      setTimeout(()=>setStep(4),5800),
-      setTimeout(()=>setScans(s=>s+1),7200),
-      setTimeout(()=>setScans(s=>s+1),8900),
-    ];
-    return()=>ts.forEach(clearTimeout);
-  },[running]);
-  const q=uc.qron;
-  return(
-    <div style={{display:"grid",gridTemplateColumns:"1fr 1fr",gap:14,width:"100%"}}>
-      <div style={{background:"#060606",border:`1px solid ${accent}20`,borderRadius:12,padding:"14px",textAlign:"center"}}>
-        <div style={{fontSize:9,color:"rgba(255,255,255,.25)",textTransform:"uppercase",letterSpacing:".1em",marginBottom:10}}>QRON Generator</div>
-        {step===0&&<div style={{color:"rgba(255,255,255,.15)",fontSize:11,padding:"36px 0"}}>Awaiting StrainChain verdict…</div>}
-        {step>=1&&(
-          <>
-            <div style={{width:110,height:110,margin:"0 auto 10px",background:`linear-gradient(135deg,${accent}15,transparent)`,border:`1.5px solid ${accent}35`,borderRadius:10,display:"flex",alignItems:"center",justifyContent:"center",position:"relative"}}>
-              <svg viewBox="0 0 10 10" width="84" height="84">
-                {Array.from({length:100},(_,k)=>{
-                  const x=k%10,y=Math.floor(k/10);
-                  const corner=(x<3&&y<3)||(x>6&&y<3)||(x<3&&y>6);
-                  const dark=corner||(Math.sin(k*2.3+7)*Math.cos(k*1.7)*0.5+0.5>0.42);
-                  return dark?<rect key={k} x={x} y={y} width={1} height={1} fill={accent}/>:null;
-                })}
-              </svg>
-              {step>=2&&<div style={{position:"absolute",bottom:-7,right:-7,background:"#22c55e",borderRadius:4,padding:"2px 7px",fontSize:7.5,fontWeight:700,color:"#000"}}>SC LIVE</div>}
-            </div>
-            <div style={{fontSize:11,color:accent,fontFamily:"monospace"}}>{q.shortUrl}</div>
-            <div style={{fontSize:9.5,color:"rgba(255,255,255,.3)",marginTop:3}}>Style: {q.style}</div>
-            {step>=2&&<div style={{fontSize:9,color:"rgba(255,255,255,.2)",marginTop:3}}>On packaging: Blue Dream 3.5g</div>}
-          </>
-        )}
-      </div>
-      <div style={{background:"#060606",border:`1px solid ${accent}20`,borderRadius:12,padding:"14px"}}>
-        <div style={{fontSize:9,color:"rgba(255,255,255,.25)",textTransform:"uppercase",letterSpacing:".1em",marginBottom:10}}>StoryMode Destination</div>
-        {step<2&&<div style={{color:"rgba(255,255,255,.15)",fontSize:11,padding:"28px 0",textAlign:"center"}}>Resolving QR destination…</div>}
-        {step>=2&&(
-          <>
-            <div style={{fontSize:10.5,fontWeight:700,color:accent,marginBottom:7}}>🌿 Strain Origin Story</div>
-            <div style={{fontSize:11,color:"rgba(255,255,255,.5)",lineHeight:1.75,fontStyle:"italic"}}>"{q.story}"</div>
-            {step>=3&&(
-              <div style={{marginTop:9,fontSize:9.5,background:"rgba(255,255,255,.03)",border:"1px solid rgba(255,255,255,.07)",borderRadius:6,padding:"7px 10px"}}>
-                <div style={{color:"rgba(255,255,255,.35)"}}>Dynamic: updates on dispensary activation</div>
-                <div style={{color:"rgba(255,255,255,.25)",marginTop:2}}>→ THC/CBD · terpene profile · COA link</div>
-              </div>
-            )}
-            {step>=4&&(
-              <div style={{marginTop:9,background:"rgba(34,197,94,.07)",border:"1px solid rgba(34,197,94,.2)",borderRadius:7,padding:"7px 10px",fontSize:11}}>
-                <span style={{color:"#22c55e",fontWeight:700}}>Truth Network: </span>
-                <span style={{color:"rgba(255,255,255,.45)"}}>{scans} consumer scan{scans!==1?"s":""} verified ✓</span>
-              </div>
-            )}
-          </>
-        )}
-      </div>
-    </div>
-  );
-}
-
-/* ── COMPLIANCE PANEL ────────────────────────────────────────────────── */
+/* ─── COMPLIANCE CHECKLIST ───────────────────────────────────────────── */
 function CompliancePanel({uc,running,accent}:{uc:typeof USE_CASES[5],running:boolean,accent:string}){
   const [done,setDone]=useState<boolean[]>(uc.requirements.map(()=>false));
   const [cert,setCert]=useState(false);
+  const score=Math.round(done.filter(Boolean).length/uc.requirements.length*100);
   useEffect(()=>{
     if(!running){setDone(uc.requirements.map(()=>false));setCert(false);return;}
-    const ts=uc.requirements.map((_,i)=>setTimeout(()=>setDone(p=>{const n=[...p];n[i]=true;return n;}),700+i*1000));
-    ts.push(setTimeout(()=>setCert(true),700+uc.requirements.length*1000+400));
+    const ts=uc.requirements.map((_,i)=>setTimeout(()=>setDone(p=>{const n=[...p];n[i]=true;return n;}),600+i*950));
+    ts.push(setTimeout(()=>setCert(true),600+uc.requirements.length*950+400));
     return()=>ts.forEach(clearTimeout);
   },[running]);
   return(
-    <div style={{width:"100%"}}>
-      {uc.requirements.map((r,i)=>(
-        <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"7px 11px",borderRadius:8,marginBottom:4,
-          background:done[i]?`${accent}09`:"rgba(255,255,255,.02)",transition:"background .4s"}}>
-          <div style={{width:18,height:18,borderRadius:"50%",border:`1.5px solid ${done[i]?accent:"rgba(255,255,255,.1)"}`,
-            display:"flex",alignItems:"center",justifyContent:"center",fontSize:10,color:done[i]?accent:"transparent",
-            flexShrink:0,marginTop:1,transition:"all .4s"}}>✓</div>
-          <div>
-            <div style={{fontSize:12,fontWeight:500,color:done[i]?"#e5e5e5":"rgba(255,255,255,.25)",transition:"color .3s"}}>{r.label}</div>
-            {done[i]&&<div style={{fontSize:9.5,color:"rgba(255,255,255,.3)",marginTop:2,fontFamily:"monospace"}}>{r.value}</div>}
+    <div style={{display:"grid",gridTemplateColumns:"1fr auto",gap:14,alignItems:"start",width:"100%"}}>
+      <div>
+        {uc.requirements.map((r,i)=>(
+          <div key={i} style={{display:"flex",gap:9,padding:"6px 10px",borderRadius:7,marginBottom:3,background:done[i]?`${accent}08`:"rgba(255,255,255,.02)",transition:"background .4s"}}>
+            <div style={{width:16,height:16,borderRadius:"50%",border:`1.5px solid ${done[i]?accent:"rgba(255,255,255,.1)"}`,display:"flex",alignItems:"center",justifyContent:"center",fontSize:9,color:done[i]?accent:"transparent",flexShrink:0,marginTop:1,transition:"all .4s"}}>✓</div>
+            <div>
+              <div style={{fontSize:11.5,fontWeight:500,color:done[i]?"#e5e5e5":"rgba(255,255,255,.22)",transition:"color .3s"}}>{r.label}</div>
+              {done[i]&&<div style={{fontSize:9,color:"rgba(255,255,255,.28)",marginTop:1,fontFamily:"monospace"}}>{r.value}</div>}
+            </div>
           </div>
-        </div>
-      ))}
-      {cert&&(
-        <div style={{marginTop:12,background:`${accent}0e`,border:`2px solid ${accent}`,borderRadius:12,padding:"14px 18px",textAlign:"center"}}>
-          <div style={{fontSize:9,color:"rgba(255,255,255,.35)",marginBottom:4,textTransform:"uppercase",letterSpacing:".1em"}}>StrainChain Compliance Certificate</div>
-          <div style={{fontSize:15,fontWeight:900,color:accent,fontFamily:"monospace"}}>{uc.cert}</div>
-          <div style={{fontSize:9.5,color:"rgba(255,255,255,.3)",marginTop:5}}>California BCC · METRC · Polygon · BTC Ordinal — all satisfied automatically ✓</div>
-        </div>
-      )}
+        ))}
+        {cert&&(
+          <div style={{marginTop:10,background:`${accent}0e`,border:`2px solid ${accent}`,borderRadius:10,padding:"12px 14px",textAlign:"center"}}>
+            <div style={{fontSize:8,color:"rgba(255,255,255,.3)",textTransform:"uppercase",letterSpacing:".1em",marginBottom:3}}>StrainChain Compliance Certificate</div>
+            <div style={{fontSize:14,fontWeight:900,color:accent,fontFamily:"monospace"}}>{uc.cert}</div>
+            <div style={{fontSize:8.5,color:"rgba(255,255,255,.25)",marginTop:4}}>CA BCC · METRC · Polygon · BTC Ordinal — all satisfied automatically ✓</div>
+          </div>
+        )}
+      </div>
+      <ComplianceGauge score={100} active={running} accent={accent}/>
     </div>
   );
 }
 
-/* ── PRODUCT BANNER ──────────────────────────────────────────────────── */
-function ProductBanner(){
-  return(
-    <div style={{display:"flex",alignItems:"center",gap:16,padding:"8px 12px",background:"rgba(34,197,94,.06)",border:"1px solid rgba(34,197,94,.15)",borderRadius:9,marginBottom:14,flexShrink:0}}>
-      <div style={{fontSize:22,flexShrink:0}}>🌿</div>
-      <div style={{flex:1,minWidth:0}}>
-        <div style={{display:"flex",alignItems:"baseline",gap:10,flexWrap:"wrap"}}>
-          <div style={{fontSize:13,fontWeight:700,color:"#22c55e"}}>{PRODUCT.name}</div>
-          <div style={{fontSize:10,color:"rgba(255,255,255,.35)"}}>{PRODUCT.type}</div>
-        </div>
-        <div style={{display:"flex",gap:14,marginTop:3,flexWrap:"wrap"}}>
-          {[[`THC ${PRODUCT.thc}`,""],[PRODUCT.cultivator,""],[PRODUCT.location,""],[`Batch: ${PRODUCT.batch}`,""]].map(([v],i)=>(
-            <div key={i} style={{fontSize:10,color:"rgba(255,255,255,.4)"}}>{v}</div>
-          ))}
-        </div>
-      </div>
-      <div style={{display:"flex",flexDirection:"column",alignItems:"flex-end",gap:3,flexShrink:0}}>
-        <div style={{fontSize:8.5,fontFamily:"monospace",color:"rgba(34,197,94,.6)"}}>METRC</div>
-        <div style={{fontSize:9,fontFamily:"monospace",color:"rgba(255,255,255,.3)"}}>{PRODUCT.metrc.slice(-8)}</div>
-      </div>
-    </div>
-  );
-}
-
-/* ── MAIN PAGE ───────────────────────────────────────────────────────── */
+/* ─── MAIN PAGE ──────────────────────────────────────────────────────── */
 export default function DemoPage(){
   const [uc,setUc]=useState(0);
   const [ucE,setUcE]=useState(0);
@@ -340,7 +513,6 @@ export default function DemoPage(){
   const [caption,setCaption]=useState<string[]>([]);
   const [wordIdx,setWordIdx]=useState(-1);
   const [fade,setFade]=useState(true);
-  const [counters,setCounters]=useState([0,0,0,0,0,0]);
   const timerRef=useRef<ReturnType<typeof setInterval>|null>(null);
   const synthRef=useRef<SpeechSynthesis|null>(null);
   const voiceRef=useRef<SpeechSynthesisVoice|null>(null);
@@ -354,9 +526,9 @@ export default function DemoPage(){
   const pickVoice=useCallback(()=>{
     const s=window.speechSynthesis;synthRef.current=s;
     const vs=s.getVoices();if(!vs.length)return;
-    const p=["Google UK English Male","Microsoft David","Microsoft Guy","Microsoft Christopher","Daniel","Aaron","Alex","Fred"];
+    const pr=["Google UK English Male","Microsoft David","Microsoft Guy","Microsoft Christopher","Daniel","Aaron","Alex","Fred"];
     let c:SpeechSynthesisVoice|null=null;
-    for(const n of p){c=vs.find(v=>v.name.toLowerCase().includes(n.toLowerCase()))??null;if(c)break;}
+    for(const n of pr){c=vs.find(v=>v.name.toLowerCase().includes(n.toLowerCase()))??null;if(c)break;}
     if(!c)c=vs.find(v=>v.lang.startsWith("en")&&/male|david|guy|aaron|alex|daniel|fred|chris/i.test(v.name))??null;
     if(!c)c=vs.find(v=>v.lang.startsWith("en"))??vs[0]??null;
     voiceRef.current=c;setVoiceName(c?.name??"Default");setVoiceReady(true);
@@ -377,9 +549,7 @@ export default function DemoPage(){
     const u=new SpeechSynthesisUtterance(text);
     if(voiceRef.current)u.voice=voiceRef.current;
     u.rate=0.88;u.pitch=0.8;u.volume=1;
-    u.onboundary=(e:SpeechSynthesisEvent)=>{
-      if(e.name==="word"){const sp=text.slice(0,e.charIndex+e.charLength);setWordIdx(sp.trim().split(/\s+/).length-1);}
-    };
+    u.onboundary=(e:SpeechSynthesisEvent)=>{if(e.name==="word"){const sp=text.slice(0,e.charIndex+e.charLength);setWordIdx(sp.trim().split(/\s+/).length-1);}};
     u.onend=()=>setWordIdx(-1);
     s.speak(u);
   },[muted]);
@@ -414,25 +584,24 @@ export default function DemoPage(){
   function reset(){setRunning(false);setUc(0);setUcE(0);prevRef.current=-1;synthRef.current?.cancel();setCaption([]);setWordIdx(-1);}
   function jumpTo(i:number){setUc(i);setUcE(0);prevRef.current=-1;setFade(false);setTimeout(()=>setFade(true),80);synthRef.current?.cancel();setCaption([]);setWordIdx(-1);setRunning(false);}
 
+  const sceneRunning=running;
+
   return(
     <div style={{background:"#070707",minHeight:"100vh",color:"#e5e5e5",fontFamily:"system-ui,sans-serif",display:"flex",flexDirection:"column",overflow:"hidden"}}>
-
-      {/* Ambient glow */}
-      <div style={{position:"fixed",top:0,left:"50%",transform:"translateX(-50%)",width:800,height:240,
-        background:`radial-gradient(ellipse,${accent}0c 0%,transparent 70%)`,
-        pointerEvents:"none",zIndex:0,transition:"background 1.2s"}}/>
+      {/* Ambient */}
+      <div style={{position:"fixed",top:0,left:"50%",transform:"translateX(-50%)",width:900,height:260,background:`radial-gradient(ellipse,${accent}0a 0%,transparent 68%)`,pointerEvents:"none",zIndex:0,transition:"background 1.2s"}}/>
 
       {/* ── TOP BAR ── */}
       <div style={{position:"relative",zIndex:20,padding:"9px 18px",display:"flex",alignItems:"center",gap:12,borderBottom:"0.5px solid rgba(255,255,255,.07)",background:"rgba(7,7,7,.96)",flexWrap:"wrap"}}>
-        <a href="/" style={{color:accent,fontWeight:900,fontSize:".9rem",letterSpacing:".1em",textDecoration:"none",flexShrink:0,transition:"color 1.2s"}}>◆ STRAINCHAIN × AUTHENTIC ECONOMY</a>
+        <a href="/" style={{color:"#22c55e",fontWeight:900,fontSize:".88rem",letterSpacing:".1em",textDecoration:"none",flexShrink:0}}>🌿 STRAINCHAIN <span style={{color:"rgba(255,255,255,.25)"}}>×</span> <span style={{color:accent,transition:"color 1.2s"}}>{scene.phase}</span></a>
         <div style={{flex:1,minWidth:100,height:4,background:"rgba(255,255,255,.05)",borderRadius:2,overflow:"hidden"}}>
-          <div style={{height:"100%",width:`${pct}%`,background:`linear-gradient(90deg,${accent},${accent}bb)`,borderRadius:2,transition:"width .9s linear,background 1.2s"}}/>
+          <div style={{height:"100%",width:`${pct}%`,background:`linear-gradient(90deg,#22c55e,${accent})`,borderRadius:2,transition:"width .9s linear,background 1.2s"}}/>
         </div>
         <div style={{fontFamily:"monospace",fontSize:11,color:"rgba(255,255,255,.25)"}}>{fmt(Math.round(totalE))} / {fmt(TOTAL)}</div>
         <div style={{display:"flex",gap:7,flexShrink:0}}>
           {!running
             ?<button onClick={uc===0&&ucE===0?start:resume} disabled={!voiceReady}
-                style={{background:accent,color:"#000",border:"none",borderRadius:8,padding:"7px 18px",fontWeight:700,cursor:voiceReady?"pointer":"not-allowed",fontSize:12,opacity:voiceReady?1:.5,transition:"background 1.2s"}}>
+                style={{background:accent,color:"#000",border:"none",borderRadius:8,padding:"7px 18px",fontWeight:700,cursor:voiceReady?"pointer":"not-allowed",fontSize:12,opacity:voiceReady?1:.4,transition:"background 1.2s"}}>
                 {uc===0&&ucE===0?"▶  Start":"▶  Resume"}
               </button>
             :<button onClick={pause} style={{background:"rgba(255,255,255,.05)",color:"rgba(255,255,255,.6)",border:"0.5px solid rgba(255,255,255,.1)",borderRadius:8,padding:"7px 14px",cursor:"pointer",fontSize:12}}>⏸</button>
@@ -444,38 +613,34 @@ export default function DemoPage(){
         <div style={{fontSize:9,color:"rgba(255,255,255,.15)",flexShrink:0}}>🎙 {voiceName}</div>
       </div>
 
-      {/* ── TABS ── */}
+      {/* ── SCENE TABS ── */}
       <div style={{position:"relative",zIndex:20,display:"flex",borderBottom:"0.5px solid rgba(255,255,255,.05)",background:"rgba(7,7,7,.93)",overflowX:"auto",flexShrink:0}}>
         {USE_CASES.map((u,i)=>(
           <button key={i} onClick={()=>jumpTo(i)}
-            style={{padding:"8px 13px",background:"transparent",border:"none",
-              borderBottom:i===uc?`2px solid ${u.accent}`:"2px solid transparent",
+            style={{padding:"8px 13px",background:"transparent",border:"none",borderBottom:i===uc?`2px solid ${u.accent}`:"2px solid transparent",
               color:i===uc?u.accent:i<uc?"rgba(34,197,94,.5)":"rgba(255,255,255,.2)",
               cursor:"pointer",fontSize:10.5,whiteSpace:"nowrap",fontWeight:i===uc?700:400,transition:"color .2s"}}>
             {i<uc?"✓ ":""}{i+1}. {u.title.split(" — ")[0]}
           </button>
         ))}
-        <div style={{position:"absolute",bottom:0,left:0,height:"2px",
-          width:`${(uc/USE_CASES.length+sPct/100/USE_CASES.length)*100}%`,
-          background:`${accent}28`,transition:"width 1s linear,background 1.2s"}}/>
+        <div style={{position:"absolute",bottom:0,left:0,height:"2px",width:`${(uc/USE_CASES.length+sPct/100/USE_CASES.length)*100}%`,background:`${accent}28`,transition:"width 1s linear,background 1.2s"}}/>
       </div>
 
       {/* ── SPLIT ── */}
-      <div style={{flex:1,display:"grid",gridTemplateColumns:"1fr 320px",minHeight:0}}>
+      <div style={{flex:1,display:"grid",gridTemplateColumns:"1fr 310px",minHeight:0}}>
 
         {/* Demo panel */}
-        <div style={{position:"relative",background:"#060606",display:"flex",flexDirection:"column",padding:"16px 18px 12px",gap:10,overflow:"hidden"}}>
+        <div style={{position:"relative",background:"#060606",display:"flex",flexDirection:"column",padding:"14px 16px 10px",gap:10,overflow:"hidden"}}>
 
-          {/* Phase badge + title */}
+          {/* Phase + title + ring */}
           <div style={{display:"flex",alignItems:"center",gap:10,flexShrink:0}}>
             <div style={{background:`${accent}18`,border:`1px solid ${accent}38`,borderRadius:6,padding:"3px 9px",fontSize:8.5,fontWeight:700,color:accent,textTransform:"uppercase",letterSpacing:".1em",whiteSpace:"nowrap"}}>{scene.phase}</div>
-            <div style={{fontSize:14,fontWeight:700,color:"#e5e5e5",opacity:fade?1:0,transition:"opacity .25s"}}>{scene.title}</div>
+            <div style={{fontSize:13.5,fontWeight:700,color:"#e5e5e5",opacity:fade?1:0,transition:"opacity .25s"}}>{scene.title}</div>
             <div style={{marginLeft:"auto",flexShrink:0}}>
               <svg width="36" height="36" viewBox="0 0 36 36">
                 <circle cx="18" cy="18" r="14" fill="none" stroke="rgba(255,255,255,.05)" strokeWidth="2"/>
                 <circle cx="18" cy="18" r="14" fill="none" stroke={accent} strokeWidth="2"
-                  strokeDasharray={`${2*Math.PI*14}`}
-                  strokeDashoffset={`${2*Math.PI*14*(1-sPct/100)}`}
+                  strokeDasharray={`${2*Math.PI*14}`} strokeDashoffset={`${2*Math.PI*14*(1-sPct/100)}`}
                   strokeLinecap="round" transform="rotate(-90 18 18)"
                   style={{transition:"stroke-dashoffset 1s linear,stroke 1.2s",filter:`drop-shadow(0 0 3px ${accent}55)`}}/>
                 <text x="18" y="23" textAnchor="middle" fill="rgba(255,255,255,.38)" fontSize="10" fontFamily="monospace">{Math.max(0,scene.duration-ucE)}</text>
@@ -484,25 +649,75 @@ export default function DemoPage(){
           </div>
 
           {/* Product banner */}
-          <ProductBanner/>
-
-          {/* Interaction */}
-          <div style={{flex:1,opacity:fade?1:0,transition:"opacity .25s",overflowY:"auto"}}>
-            {scene.id==="autoflow"&&<Terminal steps={(scene as typeof USE_CASES[0]).steps} running={running} accent={accent}/>}
-            {scene.id==="trumark"&&<AgentPanel uc={scene as typeof USE_CASES[1]} running={running}/>}
-            {scene.id==="mint"&&<Terminal steps={(scene as typeof USE_CASES[2]).steps} running={running} accent={accent}/>}
-            {scene.id==="qron"&&<QRONPanel uc={scene as typeof USE_CASES[3]} running={running} accent={accent}/>}
-            {scene.id==="ledger"&&<Terminal steps={(scene as typeof USE_CASES[4]).steps} running={running} accent={accent}/>}
-            {scene.id==="dpp"&&<CompliancePanel uc={scene as typeof USE_CASES[5]} running={running} accent={accent}/>}
+          <div style={{display:"flex",alignItems:"center",gap:12,padding:"7px 11px",background:"rgba(34,197,94,.05)",border:"1px solid rgba(34,197,94,.12)",borderRadius:8,flexShrink:0}}>
+            <div style={{fontSize:18}}>🌿</div>
+            <div style={{flex:1,minWidth:0}}>
+              <div style={{display:"flex",alignItems:"baseline",gap:10,flexWrap:"wrap"}}>
+                <div style={{fontSize:12.5,fontWeight:700,color:"#22c55e"}}>{P.name}</div>
+                <div style={{fontSize:9.5,color:"rgba(255,255,255,.3)"}}>{P.type}</div>
+              </div>
+              <div style={{display:"flex",gap:12,marginTop:2,flexWrap:"wrap"}}>
+                {[`THC ${P.thc}`,P.cultivator,P.location].map((v,i)=>(<div key={i} style={{fontSize:9,color:"rgba(255,255,255,.35)"}}>{v}</div>))}
+              </div>
+            </div>
+            <div style={{fontSize:8,fontFamily:"monospace",color:"rgba(34,197,94,.5)",flexShrink:0}}>{P.metrc.slice(-8)}</div>
           </div>
 
-          {/* Caption */}
+          {/* Main visual area */}
+          <div style={{flex:1,opacity:fade?1:0,transition:"opacity .25s",display:"flex",flexDirection:"column",gap:12,overflow:"hidden",minHeight:0}}>
+
+            {/* AutoFlow: terminal + terpene radar side by side */}
+            {scene.id==="autoflow"&&(
+              <div style={{display:"grid",gridTemplateColumns:"1fr auto",gap:14,flex:1,minHeight:0}}>
+                <Terminal steps={(scene as typeof USE_CASES[0]).steps} running={sceneRunning} accent={accent}/>
+                <TerpeneRadar active={sceneRunning}/>
+              </div>
+            )}
+
+            {/* TRUmark: agents + trust gauge */}
+            {scene.id==="trumark"&&(
+              <div style={{flex:1,display:"flex",flexDirection:"column",gap:10,minHeight:0,overflow:"auto"}}>
+                <AgentPanel uc={scene as typeof USE_CASES[1]} running={sceneRunning}/>
+                <TrustGauge confidence={(scene as typeof USE_CASES[1]).confidence} active={sceneRunning} accent={accent}/>
+              </div>
+            )}
+
+            {/* Mint: terminal + NFT card */}
+            {scene.id==="mint"&&(
+              <div style={{display:"grid",gridTemplateColumns:"1fr auto",gap:14,flex:1,minHeight:0}}>
+                <Terminal steps={(scene as typeof USE_CASES[2]).steps} running={sceneRunning} accent={accent}/>
+                <NFTCard active={sceneRunning}/>
+              </div>
+            )}
+
+            {/* QRON: phone + QR */}
+            {scene.id==="qron"&&(
+              <div style={{flex:1,display:"flex",alignItems:"center",justifyContent:"center"}}>
+                <QRONPhone active={sceneRunning} accent={accent} story={(scene as typeof USE_CASES[3]).story}/>
+              </div>
+            )}
+
+            {/* Ledger: lifecycle timeline + terminal */}
+            {scene.id==="ledger"&&(
+              <div style={{flex:1,display:"flex",flexDirection:"column",gap:12,minHeight:0}}>
+                <LifecycleTimeline events={(scene as typeof USE_CASES[4]).events} active={sceneRunning}/>
+                <Terminal steps={(scene as typeof USE_CASES[4]).steps} running={sceneRunning} accent={accent}/>
+              </div>
+            )}
+
+            {/* Compliance: checklist + gauge */}
+            {scene.id==="compliance"&&(
+              <div style={{flex:1,overflow:"auto"}}>
+                <CompliancePanel uc={scene as typeof USE_CASES[5]} running={sceneRunning} accent={accent}/>
+              </div>
+            )}
+          </div>
+
+          {/* Captions */}
           {caption.length>0&&(
-            <div style={{flexShrink:0,padding:"5px 10px 4px",background:"rgba(0,0,0,.72)",borderRadius:7,borderTop:`1px solid ${accent}18`}}>
-              <div style={{fontSize:11.5,lineHeight:1.7,textAlign:"center"}}>
-                {caption.map((w,i)=>(
-                  <span key={i} style={{color:i===wordIdx?accent:i<wordIdx?"rgba(255,255,255,.32)":"rgba(255,255,255,.72)",fontWeight:i===wordIdx?700:400,transition:"color .08s",marginRight:"0.27em"}}>{w}</span>
-                ))}
+            <div style={{flexShrink:0,padding:"5px 10px 4px",background:"rgba(0,0,0,.75)",borderRadius:7,borderTop:`1px solid ${accent}18`}}>
+              <div style={{fontSize:11,lineHeight:1.7,textAlign:"center"}}>
+                {caption.map((w,i)=>(<span key={i} style={{color:i===wordIdx?accent:i<wordIdx?"rgba(255,255,255,.3)":"rgba(255,255,255,.72)",fontWeight:i===wordIdx?700:400,transition:"color .08s",marginRight:"0.27em"}}>{w}</span>))}
               </div>
             </div>
           )}
@@ -510,44 +725,31 @@ export default function DemoPage(){
 
         {/* Script panel */}
         <div style={{background:"rgba(9,9,9,.98)",borderLeft:"0.5px solid rgba(255,255,255,.05)",display:"flex",flexDirection:"column"}}>
-          <div style={{padding:"12px 16px",borderBottom:"0.5px solid rgba(255,255,255,.05)"}}>
+          <div style={{padding:"12px 15px",borderBottom:"0.5px solid rgba(255,255,255,.05)"}}>
             <div style={{fontSize:8.5,textTransform:"uppercase",letterSpacing:".1em",color:"rgba(255,255,255,.17)",marginBottom:4}}>{scene.phase} · {uc+1}/{USE_CASES.length} · {scene.duration}s</div>
             <div style={{fontWeight:600,color:"#e5e5e5",fontSize:12.5,lineHeight:1.3}}>{scene.title}</div>
             <div style={{display:"flex",gap:4,marginTop:9}}>
               {USE_CASES.map((_,i)=>(
-                <div key={i} onClick={()=>jumpTo(i)} style={{height:3,flex:1,borderRadius:2,cursor:"pointer",
-                  background:i<uc?"#22c55e":i===uc?accent:"rgba(255,255,255,.06)",transition:"background .3s"}}/>
+                <div key={i} onClick={()=>jumpTo(i)} style={{height:3,flex:1,borderRadius:2,cursor:"pointer",background:i<uc?"#22c55e":i===uc?accent:"rgba(255,255,255,.06)",transition:"background .3s"}}/>
               ))}
             </div>
           </div>
-
-          <div style={{flex:1,padding:"12px 16px",overflowY:"auto"}}>
+          <div style={{flex:1,padding:"12px 15px",overflowY:"auto"}}>
             <div style={{fontSize:8.5,color:"rgba(255,255,255,.17)",textTransform:"uppercase",letterSpacing:".08em",marginBottom:7}}>Narration</div>
             <div style={{fontSize:12,lineHeight:1.95,background:`${accent}07`,border:`1px solid ${accent}10`,borderRadius:8,padding:"10px 12px"}}>
               {caption.length>0
                 ?caption.map((w,i)=>(<span key={i} style={{color:i===wordIdx?accent:i<wordIdx?"rgba(255,255,255,.28)":"rgba(255,255,255,.62)",fontWeight:i===wordIdx?700:400,transition:"color .08s",marginRight:"0.3em"}}>{w}</span>))
                 :<span style={{color:"rgba(255,255,255,.42)"}}>{scene.narration}</span>}
             </div>
-
-            {/* Platform tags */}
             <div style={{marginTop:12,display:"flex",gap:7,flexWrap:"wrap"}}>
-              <div style={{background:"rgba(34,197,94,.08)",border:"1px solid rgba(34,197,94,.2)",borderRadius:6,padding:"3px 9px",fontSize:8.5,color:"#22c55e",fontWeight:600}}>🌿 StrainChain</div>
-              {["autoflow","trumark","mint","ledger"].includes(scene.id)&&(
-                <div style={{background:"rgba(201,162,39,.08)",border:"1px solid rgba(201,162,39,.18)",borderRadius:6,padding:"3px 9px",fontSize:8.5,color:"#c9a227",fontWeight:600}}>◆ AuthiChain</div>
-              )}
-              {scene.id==="qron"&&(
-                <div style={{background:"rgba(132,204,22,.08)",border:"1px solid rgba(132,204,22,.2)",borderRadius:6,padding:"3px 9px",fontSize:8.5,color:"#84cc16",fontWeight:600}}>⬡ QRON</div>
-              )}
-              {scene.id==="ledger"&&(
-                <div style={{background:"rgba(245,158,11,.08)",border:"1px solid rgba(245,158,11,.18)",borderRadius:6,padding:"3px 9px",fontSize:8.5,color:"#f59e0b",fontWeight:600}}>₿ BTC Ordinal</div>
-              )}
-              {scene.id==="dpp"&&(
-                <div style={{background:"rgba(56,189,248,.08)",border:"1px solid rgba(56,189,248,.18)",borderRadius:6,padding:"3px 9px",fontSize:8.5,color:"#38bdf8",fontWeight:600}}>⚖ CA BCC Compliance</div>
-              )}
+              <div style={{background:"rgba(34,197,94,.07)",border:"1px solid rgba(34,197,94,.18)",borderRadius:6,padding:"3px 9px",fontSize:8.5,color:"#22c55e",fontWeight:600}}>🌿 StrainChain</div>
+              {["autoflow","trumark","mint","ledger"].includes(scene.id)&&<div style={{background:"rgba(201,162,39,.07)",border:"1px solid rgba(201,162,39,.18)",borderRadius:6,padding:"3px 9px",fontSize:8.5,color:"#c9a227",fontWeight:600}}>◆ AuthiChain</div>}
+              {scene.id==="qron"&&<div style={{background:"rgba(132,204,22,.07)",border:"1px solid rgba(132,204,22,.18)",borderRadius:6,padding:"3px 9px",fontSize:8.5,color:"#84cc16",fontWeight:600}}>⬡ QRON</div>}
+              {scene.id==="ledger"&&<div style={{background:"rgba(245,158,11,.07)",border:"1px solid rgba(245,158,11,.18)",borderRadius:6,padding:"3px 9px",fontSize:8.5,color:"#f59e0b",fontWeight:600}}>₿ BTC Ordinal</div>}
+              {scene.id==="compliance"&&<div style={{background:"rgba(56,189,248,.07)",border:"1px solid rgba(56,189,248,.18)",borderRadius:6,padding:"3px 9px",fontSize:8.5,color:"#38bdf8",fontWeight:600}}>⚖ CA BCC</div>}
             </div>
           </div>
-
-          <div style={{padding:"10px 16px",borderTop:"0.5px solid rgba(255,255,255,.05)",display:"flex",gap:7}}>
+          <div style={{padding:"10px 15px",borderTop:"0.5px solid rgba(255,255,255,.05)",display:"flex",gap:7}}>
             <button onClick={()=>jumpTo(Math.max(0,uc-1))} disabled={uc===0}
               style={{flex:1,padding:"7px",background:"rgba(255,255,255,.03)",border:"0.5px solid rgba(255,255,255,.06)",borderRadius:7,color:uc===0?"rgba(255,255,255,.09)":"rgba(255,255,255,.4)",cursor:uc===0?"default":"pointer",fontSize:11}}>← Prev</button>
             <button onClick={()=>jumpTo(Math.min(USE_CASES.length-1,uc+1))} disabled={uc===USE_CASES.length-1}
@@ -558,7 +760,7 @@ export default function DemoPage(){
 
       {/* Footer */}
       <div style={{position:"relative",zIndex:20,padding:"6px 18px",background:"rgba(7,7,7,.95)",borderTop:"0.5px solid rgba(255,255,255,.04)",display:"flex",alignItems:"center",gap:14,flexWrap:"wrap",flexShrink:0}}>
-        <div style={{fontSize:9.5,color:"rgba(255,255,255,.14)"}}>Loom → Screen + Camera → <strong style={{color:"rgba(255,255,255,.28)"}}>▶ Start</strong> → voice narrates automatically</div>
+        <div style={{fontSize:9.5,color:"rgba(255,255,255,.14)"}}>Loom → Screen + Camera → <strong style={{color:"rgba(255,255,255,.28)"}}>▶ Start</strong> → narrates automatically</div>
         <div style={{marginLeft:"auto",display:"flex",gap:12}}>
           {[{l:"strainchain.io",c:"#22c55e"},{l:"authichain.com",c:"#c9a227"},{l:"qron.space",c:"#84cc16"}].map(({l,c})=>(
             <a key={l} href={`https://${l}`} target="_blank" rel="noreferrer" style={{fontSize:9.5,color:c,opacity:.35,textDecoration:"none"}}>{l} ↗</a>
