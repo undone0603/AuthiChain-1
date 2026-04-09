@@ -1,3 +1,9 @@
+/**
+ * Demo: Luxury Watch Authentication
+ * Problem: High-value timepieces are routinely counterfeited and fraudulently resold, leaving brands, retailers, and secondhand buyers without a trusted chain of custody from the maison to the wrist.
+ * Solution: AuthiChain verifies authenticity in 2.1 seconds using QRON identities.
+ * Business Value: NFC + QR dual-mode TrueMark™ seals anchor every watch to an immutable on-chain identity, protecting resale value, enabling warranty transfer, and turning authentication into a recurring brand touchpoint.
+ */
 'use client'
 
 import { useState } from 'react'

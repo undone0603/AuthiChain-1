@@ -1,3 +1,5 @@
+# why: Deploys the AuthiChainNFT ERC-721 contract that anchors every QRON identity and TrueMark™ seal on-chain — this workflow is how new networks (Polygon, VeChain, testnets) are brought into production.
+# value: Every authenticated scan on AuthiChain ultimately resolves to a token minted by this contract, so reliable, reproducible, multi-chain deployment is the backbone of the entire authentication business.
 name: Deploy AuthiChainNFT Contract
 
 on:

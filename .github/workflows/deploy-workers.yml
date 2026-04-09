@@ -1,3 +1,5 @@
+# why: Deploys the five Cloudflare Workers (license-issuer, qron-provenance, scan-validate, telegram, verify-worker) that execute the hot-path authentication and licensing logic at the edge.
+# value: Edge deployment powers the "2.1 second" verification experience that defines AuthiChain's market promise — this workflow is how those workers reach global production without blocking the main Next.js release train.
 name: Deploy Cloudflare Workers
 
 on:

@@ -1,3 +1,9 @@
+/**
+ * Demo: Fashion & Apparel Authentication
+ * Problem: Luxury fashion loses billions each year to counterfeits, grey-market diversion, and unverifiable resale, while buyers on the secondhand market have no reliable way to confirm what they are paying for.
+ * Solution: AuthiChain verifies authenticity in 2.1 seconds using QRON identities.
+ * Business Value: Branded QR art tags woven into the product preserve design integrity, protect resale value across multi-brand marketplaces, and give maisons a direct owner-to-brand relationship at every hand-off.
+ */
 'use client'
 
 import { useState } from 'react'

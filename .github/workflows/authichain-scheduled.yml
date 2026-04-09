@@ -1,3 +1,5 @@
+# why: Runs the daily / weekly / monthly AuthiChain cron master and watchdog that keep storymode data, licence issuance, and health checks fresh across the platform.
+# value: Continuous automation replaces manual ops work, keeps the investor-facing metrics and demos always up to date, and surfaces platform health issues before customers notice them.
 name: AuthiChain Scheduled Operations
 
 on:

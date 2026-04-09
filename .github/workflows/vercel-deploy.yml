@@ -1,3 +1,5 @@
+# why: Builds the AuthiChain Next.js app and promotes it to Vercel production on every push to main, keeping authichain.com aligned with the latest demo, manifest, and marketing changes in this repo.
+# value: Continuous deployment keeps the investor, customer, and partner-facing site live with zero manual steps — marketing, intake form, and demo updates are visible to prospects within minutes of merge.
 name: Vercel Deploy
 
 on:
