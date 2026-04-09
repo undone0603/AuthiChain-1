@@ -1,3 +1,9 @@
+/**
+ * Demo: Pharmaceutical Authentication
+ * Problem: Counterfeit and diverted drugs cost the global pharma industry over $200B a year and put patient safety at risk, while DSCSA compliance demands end-to-end serialisation and instant audit readiness.
+ * Solution: AuthiChain verifies authenticity in 2.1 seconds using QRON identities.
+ * Business Value: DSCSA / FDA 21 CFR Part 11 compliant traceability from manufacturer to pharmacy, instant recall and audit reporting, and provable pedigree that protects brand trust and patient safety.
+ */
 'use client'
 
 import { useState } from 'react'

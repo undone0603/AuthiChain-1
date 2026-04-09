@@ -7,7 +7,9 @@
     "product_id": "a1000001-0001-4000-a000-000000000011",
     "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000011",
     "qron_image": "/qron/qron-fashion.png",
-    "qron_theme": "Gold art-deco fashion — runway couture, vintage elegance"
+    "qron_theme": "Gold art-deco fashion — runway couture, vintage elegance",
+    "why": "Luxury footwear is one of the most counterfeited categories in fashion, and resale marketplaces have no reliable way to separate genuine Valentino pieces from convincing fakes.",
+    "value": "Every pair ships with a QRON identity that pairs a branded, art-directed tag with an on-chain record — protecting resale value, enabling warranty transfer, and giving Valentino a direct channel to every owner."
   },
   {
     "product_name": "Patek Philippe Nautilus 5711/1A",
@@ -17,7 +19,9 @@
     "product_id": "a1000001-0001-4000-a000-000000000002",
     "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000002",
     "qron_image": "/qron/qron-luxury.png",
-    "qron_theme": "Gold marble classical — museum grandeur, candlelit prestige"
+    "qron_theme": "Gold marble classical — museum grandeur, candlelit prestige",
+    "why": "Grail-tier timepieces like the Nautilus 5711 trade far above retail in a secondhand market riddled with service-part swaps, franken-watches, and sophisticated counterfeits.",
+    "value": "A TrueMark™ NFC + QR seal anchors each watch to an immutable AuthiChain record, protecting the ~7-figure trading premium, enabling proof-of-ownership transfers, and turning every resale into an authenticated brand touchpoint."
   },
   {
     "product_name": "Kopi Luwak Heritage Reserve Coffee",
@@ -27,7 +31,9 @@
     "product_id": "a1000001-0001-4000-a000-000000000003",
     "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000003",
     "qron_image": "/qron/qron-food.png",
-    "qron_theme": "Brown coffee beans — warm earth tones, artisanal craft"
+    "qron_theme": "Brown coffee beans — warm earth tones, artisanal craft",
+    "why": "Premium single-origin coffees command huge premiums and are routinely cut with cheap beans or falsely labelled, eroding consumer trust in specialty and direct-trade brands.",
+    "value": "Farm-to-cup provenance is anchored on-chain at each stage, proving origin, processing, and ethical sourcing claims to buyers and baristas and justifying the premium SKU price."
   },
   {
     "product_name": "Sony WH-1000XM6 Headphones",
@@ -37,7 +43,9 @@
     "product_id": "a1000001-0001-4000-a000-000000000004",
     "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000004",
     "qron_image": "/qron/qron-electronics.png",
-    "qron_theme": "Cyan circuit board — futuristic tech, neon data streams"
+    "qron_theme": "Cyan circuit board — futuristic tech, neon data streams",
+    "why": "High-end consumer electronics are frequently cloned at near-perfect quality, confusing customers, damaging brand NPS, and overloading support with fraudulent warranty claims.",
+    "value": "QRON identity verification replaces fragile serial stickers with a scan-to-authenticate experience, reduces warranty fraud, and unlocks onboarding / upsell flows directly from the package."
   },
   {
     "product_name": "NovaShield mRNA Booster Vial",
@@ -47,7 +55,9 @@
     "product_id": "a1000001-0001-4000-a000-000000000005",
     "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000005",
     "qron_image": "/qron/qron-pharma.png",
-    "qron_theme": "Teal clinical — sterile precision, biotech luminescence"
+    "qron_theme": "Teal clinical — sterile precision, biotech luminescence",
+    "why": "Counterfeit and diverted vaccines directly endanger patients, and DSCSA mandates full unit-level traceability with instant audit readiness that legacy systems struggle to deliver.",
+    "value": "AuthiChain provides DSCSA / FDA 21 CFR Part 11 compliant serialisation from line to pharmacy, with cold-chain checkpoints and instant recall queries, protecting patients and the manufacturer's licence to operate."
   },
   {
     "product_name": "Banksy 'Girl with Balloon' Print",
@@ -57,7 +67,9 @@
     "product_id": "a1000001-0001-4000-a000-000000000006",
     "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000006",
     "qron_image": "/qron/qron-art.png",
-    "qron_theme": "Blue glass architecture — gallery-grade, translucent depth"
+    "qron_theme": "Blue glass architecture — gallery-grade, translucent depth",
+    "why": "Blue-chip art and limited-edition prints rely on paper COAs that can be forged, lost, or decoupled from the work — undermining insurance, estate planning, and auction confidence.",
+    "value": "An AuthiChain-anchored digital twin of the COA stays bound to the work through every sale, gallery loan, and estate transfer, preserving six- and seven-figure valuations and simplifying insurance underwriting."
   },
   {
     "product_name": "La Mer Creme de la Mer",
@@ -67,7 +79,9 @@
     "product_id": "a1000001-0001-4000-a000-000000000007",
     "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000007",
     "qron_image": "/qron/qron-cosmetics.png",
-    "qron_theme": "Pink neon nightlife — luminous beauty, urban glamour"
+    "qron_theme": "Pink neon nightlife — luminous beauty, urban glamour",
+    "why": "Counterfeit prestige cosmetics can contain unsafe formulations, and grey-market diversion routinely undercuts department-store pricing and damages brand equity.",
+    "value": "Per-jar QRON verification guarantees safety and batch integrity, protects premium pricing across authorised channels, and converts first-time scans into loyalty and refill subscriptions."
   },
   {
     "product_name": "Brembo GT-R Brake Caliper Set",
@@ -77,7 +91,9 @@
     "product_id": "a1000001-0001-4000-a000-000000000008",
     "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000008",
     "qron_image": "/qron/qron-automotive.png",
-    "qron_theme": "Blue lightning supercar — electric velocity, kinetic power"
+    "qron_theme": "Blue lightning supercar — electric velocity, kinetic power",
+    "why": "Counterfeit performance brake parts are a life-safety hazard and a liability minefield for OEMs and aftermarket distributors.",
+    "value": "AuthiChain binds each caliper to its forge batch, torque-test record, and authorised installer network, giving insurers, track operators, and owners an auditable safety chain of custody."
   },
   {
     "product_name": "Titleist Pro V1x Tour Edition",
@@ -87,7 +103,9 @@
     "product_id": "a1000001-0001-4000-a000-000000000009",
     "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000009",
     "qron_image": "/qron/qron-sports.png",
-    "qron_theme": "Sports athletes — kinetic action, competitive precision"
+    "qron_theme": "Sports athletes — kinetic action, competitive precision",
+    "why": "Tour-grade equipment is widely counterfeited in grey-market e-commerce, damaging sponsorships, pro-shop margins, and amateur player experience.",
+    "value": "Authenticated tour-spec gear unlocks direct-to-golfer engagement, verifiable tournament compliance, and a loyalty loop every time a player scans to verify a dozen balls."
   },
   {
     "product_name": "SKF Explorer Roller Bearing 22320",
@@ -95,8 +113,9 @@
     "brand": "SKF",
     "price": 1250,
     "product_id": "a1000001-0001-4000-a000-000000000010",
-    "storymode_url": "https://authichain.com/storymode/viewer?product_id=a1000001-0001-4000-a000-000000000010",
-    "qron_theme": "Industrial steel — machined textures, rotational symmetry, metallic gradients"
+    "qron_theme": "Industrial steel — machined textures, rotational symmetry, metallic gradients",
+    "why": "Counterfeit industrial bearings cause catastrophic failures in wind, rail, and heavy-machinery applications — with multi-million-dollar downtime and safety consequences.",
+    "value": "QRON identity verification lets maintenance crews confirm part provenance before installation, reducing warranty fraud and giving SKF a direct line into asset-level usage data."
   },
   {
     "product_name": "Zkittlez OG — Indoor Craft Flower (3.5g)",
@@ -113,6 +132,8 @@
       "cbd": "0.08%",
       "terpenes": "Caryophyllene 1.2%, Limonene 0.9%, Linalool 0.7%",
       "testing_lab": "PSI Labs — Michigan Licensed"
-    }
+    },
+    "why": "Cannabis consumers and dispensaries cannot easily verify seed-to-sale provenance, lab results, or licensed origin — exposing regulated markets to diversion and untested product.",
+    "value": "StrainChain links every package to its cultivator licence, lab results, and terpene profile through an AuthiChain QRON, enabling compliant dispensary scanning, brand loyalty, and regulator-ready audit trails."
   }
 ]

@@ -1,3 +1,5 @@
+# why: Gatekeeper CI that type-checks and builds the Next.js app on every push and pull request to main, preventing broken demos, broken NFT flows, or broken Supabase bindings from reaching production.
+# value: Protects the always-live investor and customer demos at authichain.com by ensuring every merge into main ships a buildable, type-safe application.
 name: Build Check
 
 on:

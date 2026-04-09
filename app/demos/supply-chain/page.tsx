@@ -1,3 +1,9 @@
+/**
+ * Demo: Supply Chain Authentication
+ * Problem: Global supply chains suffer from tamper, substitution, and diversion fraud across dozens of hand-offs, with importers and retailers unable to prove that what left the factory is what reached the dock.
+ * Solution: AuthiChain verifies authenticity in 2.1 seconds using QRON identities.
+ * Business Value: Every custody event is signed on-chain with GPS and actor identity, tamper attempts are flagged in real time, and full audit trails are generated on demand for customs, insurance, and compliance.
+ */
 'use client'
 
 import { useState, useEffect } from 'react'

@@ -1,3 +1,9 @@
+/**
+ * Demo: AuthiChain Industry Demo Index
+ * Problem: Prospects, investors, and partners need a single entry point to see AuthiChain's value across every industry we serve — without hunting through the codebase or marketing site.
+ * Solution: AuthiChain verifies authenticity in 2.1 seconds using QRON identities.
+ * Business Value: A curated demo gallery that lets a buyer self-qualify into the industry that matches their pain — pharma, fashion, luxury, supply chain — and converts into a booked demo in a single click.
+ */
 'use client'
 
 import Link from 'next/link'
