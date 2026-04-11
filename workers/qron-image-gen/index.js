@@ -138,6 +138,41 @@ async function handleRequest(req, event) {
     });
   }
 
+  // v1 compatibility — matches qron-app Next.js route expectations
+  // Accepts: { url, prompt, style }
+  // Returns: { id, downloadUrl, previewUrl, status }
+  if (path === '/v1/generate' && req.method === 'POST') {
+    const token = typeof HF_TOKEN !== 'undefined' ? HF_TOKEN : null;
+    if (!token) return json({ error: 'HF_TOKEN not configured' }, 500);
+
+    let body;
+    try { body = await req.json(); } catch { return json({ error: 'Invalid JSON' }, 400); }
+
+    let prompt = body.prompt || 'QRON AI art authentication seal';
+    const style = body.style || 'gold_vault';
+
+    if (STYLE_PRESETS[style]) {
+      const preset = STYLE_PRESETS[style];
+      prompt = `${preset.prefix}${prompt}${preset.suffix}`;
+    }
+
+    const result = await generateImage(prompt, token, 1024, 1024);
+
+    if (!result.success) {
+      return json({ error: 'Generation failed', details: result.errors }, 502);
+    }
+
+    const dataUrl = `data:${result.content_type};base64,${result.image_base64}`;
+    return json({
+      id: `qron_${Date.now()}_${Math.random().toString(36).slice(2,8)}`,
+      downloadUrl: dataUrl,
+      previewUrl: dataUrl,
+      status: 'complete',
+      model: result.model,
+      generated_at: result.generated_at,
+    });
+  }
+
   // Generate image
   if ((path === '/generate' || path === '/generate/qron') && req.method === 'POST') {
     const token = typeof HF_TOKEN !== 'undefined' ? HF_TOKEN : null;
