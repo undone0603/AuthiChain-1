@@ -57,3 +57,11 @@ Supabase PostgreSQL + Drizzle ORM. 10 migrations in `supabase/migrations/`.
 - Use `getSession()` (deprecated) — use `getUser()` instead
 - Modify contract addresses without redeploying
 - Commit real wallet private keys
+- Use Edge Runtime for fal.ai generation routes (use Node.js server runtime)
+
+## Content Registry (Notion)
+
+Before creating new files, check the Notion Content Registry to avoid duplication:
+https://www.notion.so/3959bfd5dd9e4b9cb741ef7c2ea7cd78
+
+If a similar asset exists, update it instead of creating a new one. If creating new, register it in the Content Registry immediately with Source, Type, Status, Project, and Priority.
