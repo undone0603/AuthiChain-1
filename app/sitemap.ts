@@ -27,6 +27,5 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/eu-dpp`,                                         lastModified: now, changeFrequency: "monthly", priority: 0.65 },
     { url: `${base}/privacy`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
     { url: `${base}/terms`, lastModified: new Date(), changeFrequency: 'yearly', priority: 0.3 },
-    { url: `${base}/demo-video`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.8 },
   ];
 }
