@@ -82,9 +82,17 @@ Make.com MCP has read-only auth — can list/inspect but not toggle. Must use da
 - SAM.gov registration required (7-10 business days) — start immediately
 - Project Pitch = 5 slides: problem, solution, market, team, why now
 
+### ⚠️ CURRENT STATUS (researched Apr 13, 2026)
+- **Project Pitches are PAUSED** — NSF congressional authorization lapsed Oct 1, 2025
+- Bipartisan reauthorization bill **S. 3971 (Ernst-Markey)** passed Senate by voice vote Mar 3, 2026
+- Bill added to House fast-track suspension calendar week of Mar 16
+- Once signed into law, NSF expected to reopen within weeks
+- DL topics (DL8-DL15) remain listed — AuthiChain is a strong fit
+- Monitor: seedfund.nsf.gov/solicitations + seedfund.nsf.gov/project-pitch
+
 ### Immediate actions
-1. Start SAM.gov entity registration today (free, but slow)
-2. Check seedfund.nsf.gov for current solicitation window
+1. **Start SAM.gov entity registration today** (free, but 7-10 day processing — be ready when pitches reopen)
+2. Sign up for email alerts at seedfund.nsf.gov/project-pitch
 3. Draft 5-slide Project Pitch from existing AuthiChain materials:
    - Problem: counterfeit goods, provenance gaps, cannabis compliance burden
    - Solution: blockchain-backed authentication + DPP registry
