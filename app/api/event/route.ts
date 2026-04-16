@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { writeActivityEvent } from '@/lib/activity-store'
 
+
+export const dynamic = 'force-dynamic'
 // Domains that may POST analytics events from the browser
 const CORS_ORIGINS = new Set([
   'https://authichain.com',
