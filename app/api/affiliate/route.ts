@@ -73,7 +73,7 @@ export async function POST(req: NextRequest) {
     .from('affiliates')
     .insert({
       user_id: user.id,
-      affiliate_code: code,
+      affiliatecode: code,
       status: 'active',
       commission_rate: 10.00,
       payout_method: body.payoutMethod || 'paypal',

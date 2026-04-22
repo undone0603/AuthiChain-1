@@ -26,7 +26,7 @@ export async function GET() {
   const { data: commissions } = await service
     .from('affiliate_commissions')
     .select('*')
-    .eq('affiliate_id', affiliate.id)
+    .eq('affiliateid', affiliate.id)
     .order('created_at', { ascending: false })
 
   return NextResponse.json({ referrals: commissions ?? [] })

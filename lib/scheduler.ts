@@ -367,7 +367,7 @@ export async function runCustomerHealthScore(): Promise<JobResult> {
       .from('customer_health_scores')
       .select('score')
       .eq('user_id', sub.user_id)
-      .order('last_calculated_at', { ascending: false })
+      .order('calculated_at', { ascending: false })
       .limit(1)
       .single()
 
@@ -430,7 +430,7 @@ export async function runFraudDetection(): Promise<JobResult> {
           alert_type: 'high_volume_auth',
           severity: 'medium',
           description: `User performed ${count} authentications in the last 6 hours (threshold: 50).`,
-          metadata: { authCount: count, period: '6h' },
+          payload: { authCount: count, period: '6h' },
         })
         flagged++
       }
@@ -444,7 +444,7 @@ export async function runFraudDetection(): Promise<JobResult> {
           alert_type: 'multiple_counterfeit_flags',
           severity: 'high',
           description: `User had ${count} counterfeit flags in the last 6 hours.`,
-          metadata: { failCount: count, period: '6h' },
+          payload: { failCount: count, period: '6h' },
         })
         flagged++
       }

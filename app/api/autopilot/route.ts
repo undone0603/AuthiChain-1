@@ -34,7 +34,7 @@ export async function GET() {
   const total = decisions?.length ?? 0
 
   return NextResponse.json({
-    enabled: config?.enabled ?? false,
+    enabled: config?.is_enabled ?? false,
     mode: config?.mode ?? 'balanced',
     guardrails: config?.guardrails,
     decisionsToday: total,
@@ -55,22 +55,23 @@ export async function POST(req: NextRequest) {
   if (body.action === 'toggle') {
     const { data: existing } = await supabase
       .from('autopilot_config')
-      .select('id, enabled')
+      .select('id, is_enabled')
       .order('id', { ascending: false })
       .limit(1)
       .single()
 
-    const newEnabled = !(existing?.enabled ?? false)
+    const newEnabled = !(existing?.is_enabled ?? false)
 
     if (existing) {
       await supabase.from('autopilot_config').update({
-        enabled: newEnabled,
+        is_enabled: newEnabled,
         updated_by: user.id,
         updated_at: new Date().toISOString(),
       }).eq('id', existing.id)
     } else {
       await supabase.from('autopilot_config').insert({
-        enabled: newEnabled,
+        is_enabled: newEnabled,
+        user_id: user.id,
         mode: 'balanced',
         guardrails: { maxEmailsPerDay: 50, maxSocialPostsPerDay: 5, maxDiscountPercent: 30 },
         updated_by: user.id,
@@ -102,7 +103,8 @@ export async function POST(req: NextRequest) {
       }).eq('id', existing.id)
     } else {
       await supabase.from('autopilot_config').insert({
-        enabled: false,
+        is_enabled: false,
+        user_id: user.id,
         mode: body.mode,
         updated_by: user.id,
       })
@@ -146,7 +148,8 @@ export async function POST(req: NextRequest) {
     const { data: decision } = await supabase
       .from('autopilot_decisions')
       .insert({
-        type: body.type,
+        user_id: user.id,
+        decision_type: body.type,
         action: body.actionText,
         reasoning: body.reasoning,
         confidence: evaluation.confidence,

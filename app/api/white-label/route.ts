@@ -17,13 +17,16 @@ export async function GET(req: NextRequest) {
   if (apiKey) {
     const { data: client } = await supabase
       .from('white_label_clients')
-      .select('company_name, domain, status')
+      .select('name, company_name, domain, is_active, status')
       .eq('api_key', apiKey)
       .single()
 
+    const active = client?.is_active ?? client?.status === 'active'
+    const companyName = client?.company_name ?? client?.name
+
     return NextResponse.json({
-      valid: !!client && client.status === 'active',
-      client: client ? { companyName: client.company_name, domain: client.domain } : null,
+      valid: !!client && active,
+      client: client ? { companyName, domain: client.domain } : null,
     })
   }
 
@@ -58,6 +61,7 @@ export async function POST(req: NextRequest) {
     .from('white_label_clients')
     .insert({
       user_id: body.userId,
+      name: body.companyName,
       company_name: body.companyName,
       domain: body.domain,
       logo_url: body.logoUrl,
