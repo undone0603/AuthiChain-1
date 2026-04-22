@@ -21,7 +21,7 @@ const STAKING_TIER_COUPONS: Record<string, string> = {
 }
 
 function getStripe(): Stripe {
-  return new Stripe(process.env.STRIPE_SECRET_KEY!, { apiVersion: '2024-06-20' as any })
+  return new Stripe(process.env.STRIPE_SECRET_KEY!)
 }
 
 /**
@@ -51,7 +51,7 @@ export async function applyStakingCouponToSubscription(
 
     if (couponId) {
       await stripe.subscriptions.update(sub.stripe_subscription_id, {
-        coupon: couponId,
+        discounts: [{ coupon: couponId }],
       })
       console.log(`[stripe-billing] Applied coupon ${couponId} to sub ${sub.stripe_subscription_id}`)
     } else {

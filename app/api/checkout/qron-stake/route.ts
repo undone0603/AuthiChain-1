@@ -51,7 +51,7 @@ export async function POST(req: NextRequest) {
   }
 
   const bundle = QRON_STAKE_BUNDLES[tier]
-  const stripe = new Stripe(stripeKey, { apiVersion: '2024-06-20' as any })
+  const stripe = new Stripe(stripeKey)
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'https://authichain.com'
 
   const session = await stripe.checkout.sessions.create({

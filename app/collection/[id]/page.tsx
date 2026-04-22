@@ -65,8 +65,9 @@ const NFT_STORIES: Record<string, NFTStory> = {
   // Additional NFTs will be completed in the full implementation...
 };
 
-export async function generateMetadata({ params }: { params: { id: string } }): Promise<Metadata> {
-  const nft = NFT_STORIES[params.id];
+export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
+  const { id } = await params;
+  const nft = NFT_STORIES[id];
   if (!nft) return { title: "NFT Not Found" };
   return {
     title: `${nft.name} StoryMode — StrainChain NFT`,
@@ -74,8 +75,9 @@ export async function generateMetadata({ params }: { params: { id: string } }): 
   };
 }
 
-export default function NFTStoryPage({ params }: { params: { id: string } }) {
-  const nft = NFT_STORIES[params.id];
+export default async function NFTStoryPage({ params }: { params: Promise<{ id: string }> }) {
+  const { id } = await params;
+  const nft = NFT_STORIES[id];
   if (!nft) notFound();
 
   const rarityColor = nft.rarity === "LEGENDARY" ? "#FFD700" : nft.rarity === "EPIC" ? "#a78bfa" : "#22c55e";

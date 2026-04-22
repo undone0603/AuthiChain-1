@@ -15,7 +15,8 @@
     "contract:deploy:mainnet": "npx hardhat run scripts/nft/deploy.ts --network vechain_main",
     "build:cloudflare": "pnpm exec @opennextjs/cloudflare build",
     "contract:deploy:polygon": "hardhat run scripts/nft/deploy.ts --network polygon",
-    "contract:deploy:polygon_amoy": "hardhat run scripts/nft/deploy.ts --network polygon_amoy"
+    "contract:deploy:polygon_amoy": "hardhat run scripts/nft/deploy.ts --network polygon_amoy",
+    "mcp:stripe": "tsx mcp/stripe-server.ts"
   },
   "engines": {
     "node": "20.x"
@@ -23,6 +24,7 @@
   "dependencies": {
     "@fal-ai/client": "^1.9.5",
     "@hookform/resolvers": "^3.10.0",
+    "@modelcontextprotocol/sdk": "^1.29.0",
     "@radix-ui/react-accordion": "^1.2.4",
     "@radix-ui/react-alert-dialog": "^1.1.7",
     "@radix-ui/react-avatar": "^1.1.4",
@@ -62,7 +64,7 @@
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.55.0",
     "resend": "^3.5.0",
-    "stripe": "^17.7.0",
+    "stripe": "^22.0.2",
     "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "thirdweb": "^5.119.1",
@@ -83,6 +85,7 @@
     "postcss": "^8.4.47",
     "tailwindcss": "^3.4.17",
     "ts-node": "^10.9.2",
+    "tsx": "^4.21.0",
     "typescript": "^5.6.3",
     "wrangler": "4.78.0"
   },

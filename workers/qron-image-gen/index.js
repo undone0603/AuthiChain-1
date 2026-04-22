@@ -93,7 +93,13 @@ async function generateImage(prompt, token, width = 1024, height = 1024) {
       }
 
       const imageBuffer = await res.arrayBuffer();
-      const base64 = btoa(String.fromCharCode(...new Uint8Array(imageBuffer)));
+      const bytes = new Uint8Array(imageBuffer);
+      let binary = "";
+      const chunkSize = 8192;
+      for (let i = 0; i < bytes.byteLength; i += chunkSize) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunkSize));
+      }
+      const base64 = btoa(binary);
 
       return {
         success: true,

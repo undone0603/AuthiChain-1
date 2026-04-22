@@ -262,7 +262,7 @@ async function rewardReferrer(referredUserId: string, referredCustomerId: string
     if (referrerSub?.stripe_subscription_id) {
       // Apply LAUNCH25 (25% off, 3 months) to referrer's subscription
       await stripe.subscriptions.update(referrerSub.stripe_subscription_id, {
-        coupon: 'dmFW0urq', // LAUNCH25
+        discounts: [{ coupon: 'dmFW0urq' }], // LAUNCH25
       });
     }
 
@@ -316,10 +316,10 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     const priceId = subscription.items.data[0]?.price?.id ?? '';
     const plan = session.metadata?.plan || planFromPriceId(priceId);
     const monthlyAmount = subscription.items.data[0]?.price?.unit_amount
-      ? subscription.items.data[0].price.unit_amount / 100
+      ? Number(subscription.items.data[0].price.unit_amount) / 100
       : amountTotal;
-    const periodEnd = subscription.current_period_end
-      ? new Date(subscription.current_period_end * 1000)
+    const periodEnd = subscription.items.data[0]?.current_period_end
+      ? new Date(subscription.items.data[0].current_period_end * 1000)
       : null;
 
     await upsertRevenueProjection(subscriptionId, {
@@ -361,8 +361,8 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
   const planKey = plan.toLowerCase();
   const limits = PLAN_LIMITS[planKey as keyof typeof PLAN_LIMITS] ?? PLAN_LIMITS.starter;
   const productLimit = limits.productLimit === Infinity ? 999999 : limits.productLimit;
-  const periodEnd = subscription.current_period_end
-    ? new Date(subscription.current_period_end * 1000)
+  const periodEnd = subscription.items.data[0]?.current_period_end
+    ? new Date(subscription.items.data[0].current_period_end * 1000)
     : null;
   const status = (['trialing', 'active', 'past_due', 'canceled', 'unpaid'] as const).includes(
     subscription.status as any
@@ -382,7 +382,7 @@ async function handleSubscriptionUpdated(subscription: Stripe.Subscription) {
 
   // Sync plan change to Airtable revenue projections
   const monthlyAmount = subscription.items.data[0]?.price?.unit_amount
-    ? subscription.items.data[0].price.unit_amount / 100
+    ? Number(subscription.items.data[0].price.unit_amount) / 100
     : 0;
   await upsertRevenueProjection(subscription.id, {
     'Status': subscription.status === 'active' ? 'Active' : subscription.status,
@@ -396,7 +396,7 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
   const stripe = getStripe();
   const customerId = invoice.customer as string;
   const customerEmail = invoice.customer_email || '';
-  const subscriptionId = invoice.subscription as string;
+  const subscriptionId = (invoice.parent?.subscription_details?.subscription ?? '') as string;
   const amountPaid = invoice.amount_paid / 100;
 
   const accountId = await upsertAccount(customerId, {
@@ -420,7 +420,7 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
   if (subscriptionId) {
     const sub = await stripe.subscriptions.retrieve(subscriptionId);
     const mrr = sub.items.data[0]?.price?.unit_amount
-      ? sub.items.data[0].price.unit_amount / 100
+      ? Number(sub.items.data[0].price.unit_amount) / 100
       : amountPaid;
 
     await upsertRevenueProjection(subscriptionId, {
@@ -434,8 +434,8 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
     // Keep Supabase subscription status active on renewal
     try {
       const supabase = createServiceClient();
-      const periodEnd = sub.current_period_end
-        ? new Date(sub.current_period_end * 1000).toISOString()
+      const periodEnd = sub.items.data[0]?.current_period_end
+        ? new Date(sub.items.data[0].current_period_end * 1000).toISOString()
         : null;
       await supabase
         .from('subscriptions')
@@ -450,7 +450,7 @@ async function handleInvoicePaid(invoice: Stripe.Invoice) {
 async function handleInvoicePaymentFailed(invoice: Stripe.Invoice) {
   const customerId = invoice.customer as string;
   const customerEmail = invoice.customer_email || '';
-  const subscriptionId = invoice.subscription as string;
+  const subscriptionId = (invoice.parent?.subscription_details?.subscription ?? '') as string;
 
   const accountId = await upsertAccount(customerId, {
     'Status': 'Payment Failed',

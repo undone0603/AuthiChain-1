@@ -25,9 +25,7 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: 'Stripe not configured' }, { status: 500 })
   }
 
-  const stripe = new Stripe(stripeKey, {
-    apiVersion: '2024-06-20' as any,
-  })
+  const stripe = new Stripe(stripeKey)
 
   try {
     const formData = await req.formData()
