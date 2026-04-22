@@ -10,12 +10,22 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
   }
 
+  // Hobby plan: single daily cron runs all jobs.
+  // Monday-only jobs check the day internally.
+  const dayOfWeek = new Date().getUTCDay() // 0=Sun, 1=Mon
+
   const jobs = [
+    // Core daily jobs
     'subscription-health-check',
     'certificate-expiry-check',
     'lead-nurturing',
     'database-cleanup',
     'customer-health-score',
+    // Previously "frequent" (every 4h) — run once daily instead
+    'hubspot-crm-sync',
+    'fraud-detection-sweep',
+    // Weekly digest — Monday only
+    ...(dayOfWeek === 1 ? ['weekly-analytics-digest'] : []),
   ]
 
   const results: Record<string, string> = {}

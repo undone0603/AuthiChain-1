@@ -3,28 +3,8 @@
   "framework": "nextjs",
   "crons": [
     {
-      "path": "/api/funding/seek",
-      "schedule": "0 9 * * 1"
-    },
-    {
-      "path": "/api/nurture/send",
-      "schedule": "0 10 * * *"
-    },
-    {
-      "path": "/api/convert/pipeline-deals",
-      "schedule": "0 9 * * 3"
-    },
-    {
       "path": "/api/cron/daily",
       "schedule": "0 6 * * *"
-    },
-    {
-      "path": "/api/cron/frequent",
-      "schedule": "0 */4 * * *"
-    },
-    {
-      "path": "/api/cron/weekly",
-      "schedule": "0 8 * * 1"
     }
   ]
 }
