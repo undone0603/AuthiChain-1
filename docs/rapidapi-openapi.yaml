@@ -247,9 +247,15 @@ components:
       in: header
       name: X-RapidAPI-Key
       description: Your RapidAPI subscription key
+    AuthiChainKey:
+      type: apiKey
+      in: header
+      name: X-API-Key
+      description: Your native AuthiChain production key
 
 security:
   - RapidAPIKey: []
+  - AuthiChainKey: []
 
 x-rapidapi:
   pricing:

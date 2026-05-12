@@ -25,7 +25,7 @@ export default function VsVeChain() {
         <li>Larger enterprise client base in Asia</li>
       </ul>
       <p><strong>Verdict:</strong> AuthiChain wins on AI, UX, consumer engagement, and price. VeChain wins on legacy brand only.</p>
-      <a href="https://authichain.com/pricing">Start free today →</a>
+      <a href="/pricing">Start free today →</a>
     </div>
   );
 }

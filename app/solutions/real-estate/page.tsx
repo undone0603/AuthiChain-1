@@ -7,7 +7,7 @@ export default function RealEstatePage(){
       <p style={{color:'#C9A227',fontWeight:700,letterSpacing:'.2em',fontSize:12,marginBottom:16}}>AUTHICHAIN · REAL ESTATE</p>
       <h1 style={{fontSize:48,fontWeight:800,color:'#fff',lineHeight:1.1,marginBottom:16}}>Title Fraud Ends Here.<br/>Blockchain-Verified Property.</h1>
       <p style={{fontSize:18,color:'#aaa',maxWidth:560,margin:'0 auto 32px'}}>Every deed, title, and closing document gets a blockchain truemark. Agents, title companies, and investors verify in seconds.</p>
-      <a href="https://authichain.com/pricing" style={{display:'inline-block',padding:'14px 28px',background:'#C9A227',color:'#000',fontWeight:700,textDecoration:'none',borderRadius:8}}>Start Free →</a>
+      <a href="/pricing" style={{display:'inline-block',padding:'14px 28px',background:'#C9A227',color:'#000',fontWeight:700,textDecoration:'none',borderRadius:8}}>Start Free →</a>
     </div>
     <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:60}}>
       {stats.map((s,i)=><div key={i} style={{background:'#111',border:'1px solid #C9A22740',borderRadius:12,padding:24,textAlign:'center'}}><div style={{fontSize:22,fontWeight:800,color:'#C9A227',marginBottom:8}}>{s.v}</div><p style={{color:'#888',fontSize:13,margin:0}}>{s.l}</p></div>)}

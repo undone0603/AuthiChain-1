@@ -14,13 +14,14 @@ export async function GET() {
       register: "/api/v1/register",
       health: "/api/v1/health",
     },
-    blockchain: "Polygon Mainnet",
-    contract: "0x5db511706FB6317cd23A7655F67450c5AC6e6AA2",
-    platforms: ["AuthiChain", "QRON", "StrainChain"],
-    docs: "https://authichain.com/openapi.json",
+    blockchain: "Polygon PoS + Base",
+    consensus: "5-Agent AI Weighted",
+    status: "Elite / Theater 3 Active",
+    docs: "https://authichain.com/api-docs",
   }, {
     headers: {
       "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization, X-API-Key",
       "Cache-Control": "public, max-age=60",
     }
   });

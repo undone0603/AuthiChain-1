@@ -12,6 +12,7 @@ import { useToast } from "@/hooks/use-toast"
 import { createClient } from "@/lib/supabase/client"
 import { Shield, Plus, Package, CheckCircle, Loader2, LogOut, Sparkles, TrendingUp, Zap, X, Coins, ArrowUpRight, Lock, Share2, Copy, Check } from "lucide-react"
 import { ThemeToggle } from "@/components/theme-toggle"
+import { AgentZLogs } from "@/components/agentz-logs"
 import { productsResponseSchema, type Product } from "@/lib/contracts/products"
 
 export default function DashboardPage() {
@@ -29,6 +30,9 @@ export default function DashboardPage() {
   const [feeFlowSummary, setFeeFlowSummary] = useState<any>(null)
   const [referral, setReferral] = useState<any>(null)
   const [referralCopied, setReferralCopied] = useState(false)
+  const [apiKeys, setApiKeys] = useState<any[]>([])
+  const [newKey, setNewKey] = useState<string | null>(null)
+  const [keyName, setKeyName] = useState("")
 
   useEffect(() => {
     checkUser()
@@ -36,7 +40,49 @@ export default function DashboardPage() {
     fetchSubscription()
     fetchBrand()
     fetchReferral()
+    fetchApiKeys()
   }, [])
+
+  const fetchApiKeys = async () => {
+    try {
+      const res = await fetch("/api/keys")
+      if (res.ok) {
+        const data = await res.json()
+        setApiKeys(data.keys ?? [])
+      }
+    } catch {}
+  }
+
+  const handleCreateKey = async () => {
+    try {
+      const res = await fetch("/api/keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: keyName || "Default Key" }),
+      })
+      if (res.ok) {
+        const data = await res.json()
+        setNewKey(data.key)
+        setKeyName("")
+        fetchApiKeys()
+        toast({ title: "Success", description: "API key generated successfully." })
+      }
+    } catch {
+      toast({ title: "Error", description: "Failed to generate API key.", variant: "destructive" })
+    }
+  }
+
+  const handleDeleteKey = async (id: string) => {
+    try {
+      const res = await fetch(`/api/keys?id=${id}`, { method: "DELETE" })
+      if (res.ok) {
+        fetchApiKeys()
+        toast({ title: "Success", description: "API key revoked." })
+      }
+    } catch {
+      toast({ title: "Error", description: "Failed to revoke key.", variant: "destructive" })
+    }
+  }
 
   const fetchSubscription = async () => {
     try {
@@ -424,6 +470,11 @@ export default function DashboardPage() {
           </Card>
         )}
 
+        {/* AgentZ Logs */}
+        <div className="mb-8">
+          <AgentZLogs />
+        </div>
+
         {/* Upgrade Banner */}
         {!loading && !upgradeDismissed && isFreePlan && (
           <div className="relative mb-8 rounded-2xl overflow-hidden">
@@ -655,6 +706,119 @@ export default function DashboardPage() {
               ))}
             </div>
           )}
+        </div>
+
+        {/* API & Integrations Section */}
+        <div className="mt-12">
+          <h2 className="text-2xl font-bold mb-6">API & Integrations</h2>
+          <Card className="border-cyan-500/30 bg-gradient-to-br from-gray-50 to-cyan-50 dark:from-gray-950/20 dark:to-cyan-950/20 shadow-xl">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+              <div>
+                <CardTitle className="flex items-center gap-2">
+                  <Terminal className="h-5 w-5 text-cyan-500" />
+                  Self-Serve API Keys
+                </CardTitle>
+                <CardDescription>
+                  Integrate product verification directly into your application.
+                </CardDescription>
+              </div>
+              <Link href="/api-docs">
+                <Button variant="outline" size="sm" className="gap-2">
+                  <BookOpen className="h-4 w-4" />
+                  View API Docs
+                </Button>
+              </Link>
+            </CardHeader>
+            <CardContent>
+              {newKey && (
+                <div className="mb-6 p-4 bg-emerald-500/10 border border-emerald-500/50 rounded-xl animate-in zoom-in-95">
+                  <div className="flex items-center justify-between mb-2">
+                    <p className="text-xs font-bold text-emerald-600 uppercase tracking-widest flex items-center gap-2">
+                      <ShieldCheck className="h-3 w-3" /> New API Key Generated
+                    </p>
+                    <button onClick={() => setNewKey(null)}><X className="h-4 w-4 text-zinc-400" /></button>
+                  </div>
+                  <p className="text-[10px] text-zinc-500 mb-3 italic">
+                    Copy this key now. For your security, it will not be shown again.
+                  </p>
+                  <div className="flex items-center gap-2">
+                    <div className="flex-1 bg-white dark:bg-black/50 border border-emerald-200 dark:border-emerald-800 rounded-lg px-3 py-2 font-mono text-sm break-all select-all">
+                      {newKey}
+                    </div>
+                    <Button
+                      size="icon"
+                      variant="outline"
+                      className="border-emerald-500/50 hover:bg-emerald-500/10 shrink-0"
+                      onClick={() => {
+                        navigator.clipboard.writeText(newKey)
+                        toast({ title: "Copied", description: "API Key copied to clipboard." })
+                      }}
+                    >
+                      <Copy className="h-4 w-4" />
+                    </Button>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-4">
+                <div className="flex gap-4">
+                   <div className="flex-1 relative">
+                      <Input 
+                        placeholder="Key Name (e.g. Production Website)" 
+                        value={keyName}
+                        onChange={(e) => setKeyName(e.target.value)}
+                        className="bg-white/50 dark:bg-black/20"
+                      />
+                   </div>
+                   <Button onClick={handleCreateKey} className="bg-cyan-600 hover:bg-cyan-700 text-white gap-2">
+                      <Plus className="h-4 w-4" /> Generate Key
+                   </Button>
+                </div>
+
+                <div className="border rounded-xl overflow-hidden bg-white/30 dark:bg-black/10">
+                   <table className="w-full text-sm">
+                      <thead className="bg-muted/50">
+                         <tr className="text-left text-xs font-black uppercase tracking-widest text-muted-foreground">
+                            <th className="px-4 py-3">Name</th>
+                            <th className="px-4 py-3">Key (Last 4)</th>
+                            <th className="px-4 py-3">Created</th>
+                            <th className="px-4 py-3 text-right">Actions</th>
+                         </tr>
+                      </thead>
+                      <tbody className="divide-y">
+                         {apiKeys.length === 0 ? (
+                           <tr>
+                              <td colSpan={4} className="px-4 py-8 text-center text-muted-foreground italic">
+                                 No API keys generated yet.
+                              </td>
+                           </tr>
+                         ) : (
+                           apiKeys.map((k) => (
+                             <tr key={k.id} className="hover:bg-muted/30 transition-colors">
+                                <td className="px-4 py-3 font-semibold">{k.key_name}</td>
+                                <td className="px-4 py-3 font-mono text-xs">••••••••{k.last_four}</td>
+                                <td className="px-4 py-3 text-zinc-500">
+                                   {new Date(k.created_at).toLocaleDateString()}
+                                </td>
+                                <td className="px-4 py-3 text-right">
+                                   <Button 
+                                      variant="ghost" 
+                                      size="sm" 
+                                      className="text-red-500 hover:text-red-600 hover:bg-red-500/10"
+                                      onClick={() => handleDeleteKey(k.id)}
+                                   >
+                                      Revoke
+                                   </Button>
+                                </td>
+                             </tr>
+                           ))
+                         )}
+                      </tbody>
+                   </table>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

@@ -27,8 +27,8 @@ export default function CannabisPage() {
         <h1 style={{fontSize:48,fontWeight:800,color:'#fff',lineHeight:1.1,marginBottom:16}}>Authenticity for<br/>the Cannabis Supply Chain</h1>
         <p style={{fontSize:18,color:'#aaa',maxWidth:560,margin:'0 auto 32px'}}>Seed-to-sale blockchain transparency. Lab result anchoring. Consumer scan-to-earn. The only authentication OS built for cannabis.</p>
         <div style={{display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap'}}>
-          <a href="https://authichain.com/pricing" style={{padding:'14px 28px',background:'#C9A227',color:'#000',fontWeight:700,textDecoration:'none',borderRadius:8,fontSize:16}}>Start Free →</a>
-          <a href="https://authichain.com/verify/STRAIN-SC-OG-KUSH-2026" style={{padding:'14px 28px',border:'1px solid #C9A22760',color:'#C9A227',textDecoration:'none',borderRadius:8,fontSize:16}}>See Live Demo</a>
+          <a href="/pricing" style={{padding:'14px 28px',background:'#C9A227',color:'#000',fontWeight:700,textDecoration:'none',borderRadius:8,fontSize:16}}>Start Free →</a>
+          <a href="/verify/STRAIN-SC-OG-KUSH-2026" style={{padding:'14px 28px',border:'1px solid #C9A22760',color:'#C9A227',textDecoration:'none',borderRadius:8,fontSize:16}}>See Live Demo</a>
         </div>
       </div>
       <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:60}}>
@@ -40,7 +40,7 @@ export default function CannabisPage() {
       <div style={{background:'#111',border:'1px solid #C9A22740',borderRadius:12,padding:40,textAlign:'center'}}>
         <h2 style={{color:'#C9A227',marginBottom:8}}>Live demo: Lume Cannabis OG Kush</h2>
         <p style={{color:'#aaa',marginBottom:24}}>STRAIN-SC-OG-KUSH-2026 · Cultivation → Lab → Packaging → Dispensary · 100% authentic</p>
-        <a href="https://authichain.com/verify/STRAIN-SC-OG-KUSH-2026" style={{padding:'12px 28px',background:'#C9A227',color:'#000',fontWeight:700,textDecoration:'none',borderRadius:6}}>Scan Now →</a>
+        <a href="/verify/STRAIN-SC-OG-KUSH-2026" style={{padding:'12px 28px',background:'#C9A227',color:'#000',fontWeight:700,textDecoration:'none',borderRadius:6}}>Scan Now →</a>
       </div>
     </div>
   );

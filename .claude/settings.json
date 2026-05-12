@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "authichain-stripe": {
+      "command": "npx",
+      "args": ["tsx", "mcp/stripe-server.ts"],
+      "cwd": "C:/Users/rac/OneDrive/Desktop/AuthiChain",
+      "env": {
+        "STRIPE_SECRET_KEY": "${STRIPE_SECRET_KEY}",
+        "AIRTABLE_API_KEY": "${AIRTABLE_API_KEY}",
+        "AIRTABLE_BASE_ID": "app4lw5wNMNmzTNMn"
+      }
+    }
+  }
+}

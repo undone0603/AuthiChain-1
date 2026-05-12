@@ -6,6 +6,7 @@ import { relations } from "drizzle-orm";
 // Export integration models
 export * from "./models/auth";
 export * from "./models/chat";
+export * from "./models/logs";
 
 import { users } from "./models/auth";
 
@@ -75,6 +76,13 @@ export const insertProductSchema = createInsertSchema(products).omit({
 export const insertScanSchema = createInsertSchema(scans).omit({
   id: true,
   createdAt: true
+}) as any;
+
+import { autonomousSystemLogs } from "./models/logs";
+
+export const insertLogSchema = createInsertSchema(autonomousSystemLogs).omit({
+  id: true,
+  timestamp: true
 }) as any;
 
 // === TYPES ===

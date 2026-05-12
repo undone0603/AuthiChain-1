@@ -345,7 +345,7 @@ export default function DemoVideoPage() {
         <span style={{ fontSize:11, color:"rgba(255,255,255,.38)" }}>Demo</span>
         <div style={{ flex:1 }}/>
         <a
-          href="https://authichain.com/verify?id=AC-1829577CED8F6BFBB0BC667CDE33DF0E"
+          href="/verify?id=AC-1829577CED8F6BFBB0BC667CDE33DF0E"
           target="_blank" rel="noopener noreferrer"
           className="nav-verify-btn"
           style={{ fontSize:12, color:gold, textDecoration:"none", padding:"6px 12px", border:`1px solid rgba(201,162,39,.35)`, borderRadius:8, display:"inline-flex", alignItems:"center", gap:4 }}
@@ -479,18 +479,18 @@ export default function DemoVideoPage() {
       {/* ── BOTTOM CTA BAR ── */}
       <div className="cta-bar" style={{ padding:"12px 24px", borderTop:`0.5px solid ${border}`, background:"rgba(6,6,8,.96)", display:"flex", alignItems:"center", gap:16, flexShrink:0 }}>
         <div className="cta-bar-text">
-          <div className="syne" style={{ fontWeight:700, fontSize:"1rem", color:gold }}>Seen enough?</div>
-          <div style={{ fontSize:12, color:"rgba(255,255,255,.35)" }}>Deploy AuthiChain in 48 hours. $0.004 per seal.</div>
+          <div className="syne" style={{ fontWeight:700, fontSize:"1rem", color:gold }}>Ready to scale truth?</div>
+          <div style={{ fontSize:12, color:"rgba(255,255,255,.35)" }}>Self-serve onboarding. 5-minute setup. $0.004 per seal.</div>
         </div>
         <div style={{ flex:1 }}/>
         <a
-          href="https://authichain.com/portal"
-          style={{ background:gold, color:"#000", padding:"10px 22px", borderRadius:10, textDecoration:"none", fontWeight:700, fontSize:13, flexShrink:0 }}
-        >Get Started →</a>
-        <button
-          onClick={()=>{const e=['z','@','authichain','.','com'].join('');window.open('mailto:'+e);}}
-          style={{ border:`1px solid rgba(255,255,255,.18)`, color:"#e5e5e5", padding:"10px 18px", borderRadius:10, fontSize:13, background:"transparent", cursor:"pointer", fontFamily:"'DM Mono','Courier New',monospace", flexShrink:0 }}
-        >Talk to Founder</button>
+          href="/onboarding"
+          style={{ background:gold, color:"#000", padding:"10px 22px", borderRadius:10, textDecoration:"none", fontWeight:900, fontSize:12, flexShrink:0, textTransform:"uppercase", letterSpacing:".1em" }}
+        >Onboard Now →</a>
+        <a
+          href="/api-docs"
+          style={{ border:`1px solid rgba(255,255,255,.18)`, color:"#e5e5e5", padding:"10px 18px", borderRadius:10, fontSize:12, textDecoration:"none", fontWeight:700, flexShrink:0, textTransform:"uppercase", letterSpacing:".05em" }}
+        >API Docs</a>
       </div>
     </main>
   );

@@ -8,8 +8,8 @@ export default function ElectronicsPage(){
       <h1 style={{fontSize:48,fontWeight:800,color:'#fff',lineHeight:1.1,marginBottom:16}}>Every Component,<br/>Every Scan, Verified.</h1>
       <p style={{fontSize:18,color:'#aaa',maxWidth:560,margin:'0 auto 32px'}}>From IC to finished device: blockchain serial number authentication stopping counterfeit components before they reach your assembly line.</p>
       <div style={{display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap'}}>
-        <a href="https://authichain.com/pricing" style={{padding:'14px 28px',background:'#C9A227',color:'#000',fontWeight:700,textDecoration:'none',borderRadius:8}}>Start Free →</a>
-        <a href="https://authichain.com/verify/AUTHI-HERM-LUX-MVLN4NH023" style={{padding:'14px 28px',border:'1px solid #C9A22760',color:'#C9A227',textDecoration:'none',borderRadius:8}}>Live Demo</a>
+        <a href="/pricing" style={{padding:'14px 28px',background:'#C9A227',color:'#000',fontWeight:700,textDecoration:'none',borderRadius:8}}>Start Free →</a>
+        <a href="/verify/AUTHI-HERM-LUX-MVLN4NH023" style={{padding:'14px 28px',border:'1px solid #C9A22760',color:'#C9A227',textDecoration:'none',borderRadius:8}}>Live Demo</a>
       </div>
     </div>
     <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:60}}>{stats.map((s,i)=><div key={i} style={{background:'#111',border:'1px solid #C9A22740',borderRadius:12,padding:24,textAlign:'center'}}><div style={{fontSize:24,fontWeight:800,color:'#C9A227',marginBottom:8}}>{s.v}</div><p style={{color:'#888',fontSize:13,margin:0}}>{s.l}</p></div>)}</div>

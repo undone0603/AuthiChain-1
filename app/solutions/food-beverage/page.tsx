@@ -7,7 +7,7 @@ export default function FoodPage(){
       <h1 style={{fontSize:48,fontWeight:800,color:'#fff',lineHeight:1.1,marginBottom:16}}>Prove What's In<br/>Every Bite and Sip.</h1>
       <p style={{fontSize:18,color:'#aaa',maxWidth:560,margin:'0 auto 32px'}}>Farm-to-table blockchain traceability. Organic claims, allergen safety, and sustainability certifications — all verifiable on-chain.</p>
       <div style={{display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap'}}>
-        <a href="https://authichain.com/pricing" style={{padding:'14px 28px',background:'#C9A227',color:'#000',fontWeight:700,textDecoration:'none',borderRadius:8}}>Start Free →</a>
+        <a href="/pricing" style={{padding:'14px 28px',background:'#C9A227',color:'#000',fontWeight:700,textDecoration:'none',borderRadius:8}}>Start Free →</a>
       </div>
     </div>
     <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:24}}>

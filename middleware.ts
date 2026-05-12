@@ -14,7 +14,7 @@ export async function middleware(req: NextRequest) {
   }
 
   // Refresh Supabase session on every request
-  return updateSession(req)
+  return await updateSession(req)
 }
 
 export const config = {

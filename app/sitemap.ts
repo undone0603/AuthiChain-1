@@ -21,6 +21,8 @@ export default function sitemap(): MetadataRoute.Sitemap {
     { url: `${base}/blog/pharmaceutical-blockchain-dscsa`,          lastModified: now, changeFrequency: "monthly", priority: 0.75 },
     { url: `${base}/product-hunt`,                                   lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/portal`,                                         lastModified: now, changeFrequency: "monthly", priority: 0.7 },
+    { url: `${base}/api-docs`,                                       lastModified: now, changeFrequency: "monthly", priority: 0.8 },
+    { url: `${base}/onboarding`,                                     lastModified: now, changeFrequency: "monthly", priority: 0.8 },
     { url: `${base}/compliance`,                                     lastModified: now, changeFrequency: "monthly", priority: 0.7 },
     { url: `${base}/verify`,                                         lastModified: now, changeFrequency: "weekly",  priority: 0.7 },
     { url: `${base}/pricing`,                                        lastModified: now, changeFrequency: "monthly", priority: 0.65 },

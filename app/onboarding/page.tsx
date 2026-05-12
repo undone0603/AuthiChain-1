@@ -247,6 +247,7 @@ export default function OnboardingPage() {
   const [step, setStep] = useState(0)
   const [submitting, setSubmitting] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
+  const [onboardedResult, setOnboardedResult] = useState<any>(null)
   const [data, setData] = useState<OnboardingData>({
     brandName: '',
     industry: '',
@@ -285,13 +286,81 @@ export default function OnboardingPage() {
         body: JSON.stringify(data),
       })
       if (!res.ok) throw new Error(`Server error (${res.status})`)
-      // Redirect to pricing/checkout with selected plan pre-filled
-      router.push(`/pricing?plan=${data.plan}&from=onboarding`)
+      const result = await res.json()
+      setOnboardedResult(result)
     } catch (err) {
       setSubmitError('Something went wrong saving your setup. Please try again.')
     } finally {
       setSubmitting(false)
     }
+  }
+
+  if (onboardedResult) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center p-4">
+        <div className="w-full max-w-xl text-center">
+          <div className="mb-8">
+            <div className="w-20 h-20 bg-emerald-500/10 rounded-full flex items-center justify-center mx-auto mb-4 border border-emerald-500/20">
+               <CheckCircle className="w-10 h-10 text-emerald-500" />
+            </div>
+            <h1 className="text-4xl font-black uppercase tracking-tight mb-2">You're Protected.</h1>
+            <p className="text-muted-foreground uppercase tracking-widest text-xs font-bold">
+               {data.brandName} is now live on the AuthiChain Truth Layer
+            </p>
+          </div>
+
+          <div className="grid gap-6">
+            <Card className="border-emerald-500/30 bg-emerald-500/5">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                  <QrCode className="w-4 h-4 text-emerald-500" /> First TrueMark™ Created
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-2xl font-mono font-black text-emerald-600 dark:text-emerald-400">
+                  {onboardedResult.truemarkId}
+                </p>
+                <p className="text-[10px] text-muted-foreground mt-2 uppercase font-bold">
+                  {data.productName} • {data.productCategory}
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card className="border-primary/30">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm font-bold uppercase tracking-widest flex items-center justify-center gap-2">
+                  <Terminal className="w-4 h-4 text-primary" /> Your API Credentials
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="bg-background border rounded-lg p-3 font-mono text-sm break-all mb-2 flex items-center gap-2">
+                   <span className="flex-1">{onboardedResult.apiKey}</span>
+                   <Button size="icon" variant="ghost" onClick={() => navigator.clipboard.writeText(onboardedResult.apiKey)}>
+                      <Copy className="w-4 h-4" />
+                   </Button>
+                </div>
+                <p className="text-[10px] text-muted-foreground italic">
+                   Copy this key. You'll need it to push truth via our REST API.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+
+          <div className="mt-10 flex flex-wrap justify-center gap-4">
+             <Link href="/dashboard">
+                <Button className="px-8 rounded-xl font-black uppercase text-xs tracking-widest gap-2">
+                   Go to Dashboard <ChevronRight className="w-4 h-4" />
+                </Button>
+             </Link>
+             <Link href="/api-docs">
+                <Button variant="outline" className="px-8 rounded-xl font-black uppercase text-xs tracking-widest gap-2">
+                   Start Integrating <Terminal className="w-4 h-4" />
+                </Button>
+             </Link>
+          </div>
+        </div>
+      </div>
+    )
   }
 
   const CurrentStep = [StepBrand, StepProduct, StepGoals, StepPlan][step]

@@ -11,11 +11,11 @@ export default function LaunchPage() {
           Beat VeChain at $299/mo with no sales call.
         </p>
         <div style={{display:'flex',gap:'16px',justifyContent:'center',flexWrap:'wrap'}}>
-          <a href="https://authichain.com/verify/AUTHI-HERM-LUX-MVLN4NH023" style={{padding:'14px 28px',background:'#C9A227',color:'#000',fontWeight:'700',textDecoration:'none',borderRadius:'8px',fontSize:'16px'}}>
-            See Live Demo →
+          <a href="/verify/AUTHI-HERM-LUX-MVLN4NH023" style={{padding:'14px 28px',background:'#C9A227',color:'#000',fontWeight:'700',textDecoration:'none',borderRadius:'8px',fontSize:'16px'}}>
+            Scan Demo Product
           </a>
-          <a href="https://authichain.com/pricing" style={{padding:'14px 28px',border:'1px solid #C9A22760',color:'#C9A227',textDecoration:'none',borderRadius:'8px',fontSize:'16px'}}>
-            Start Free
+          <a href="/pricing" style={{padding:'14px 28px',border:'1px solid #C9A22760',color:'#C9A227',textDecoration:'none',borderRadius:'8px',fontSize:'16px'}}>
+            View Pricing
           </a>
         </div>
       </div>

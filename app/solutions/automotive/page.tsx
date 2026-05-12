@@ -15,21 +15,21 @@ export default function AutomotivePage() {
     { icon: '⚡', t: 'Recall Intelligence', d: 'When a recall is issued, instantly identify all authenticated parts in the field. Reduce recall campaign cost by 40–60%.' },
   ];
   return (
-    <div style={{maxWidth:900,margin:'0 auto',padding:'60px 20px',background:'#0a0a0a',color:'#e5e5e5',fontFamily:'sans-serif',minHeight:'100vh'}}>
-      <div style={{textAlign:'center',marginBottom:60}}>
-        <p style={{color:'#C9A227',fontWeight:700,letterSpacing:'.2em',fontSize:12,marginBottom:16}}>AUTHICHAIN · AUTOMOTIVE</p>
-        <h1 style={{fontSize:48,fontWeight:800,color:'#fff',lineHeight:1.1,marginBottom:16}}>Stop Counterfeit Parts<br/>Before They Cause Harm</h1>
-        <p style={{fontSize:18,color:'#aaa',maxWidth:560,margin:'0 auto 32px'}}>Blockchain-anchored OEM part authentication from the production line to the dealer bay. Porsche, BMW, and Tier-1 suppliers use AuthiChain.</p>
-        <div style={{display:'flex',gap:16,justifyContent:'center',flexWrap:'wrap'}}>
-          <a href="https://authichain.com/pricing" style={{padding:'14px 28px',background:'#C9A227',color:'#000',fontWeight:700,textDecoration:'none',borderRadius:8,fontSize:16}}>Start Free →</a>
-          <a href="https://authichain.com/verify/AUTHI-BMW-DEF-BRAKES" style={{padding:'14px 28px',border:'1px solid #C9A22760',color:'#C9A227',textDecoration:'none',borderRadius:8,fontSize:16}}>See Live Demo</a>
+    <div style={{maxWidth:1200,margin:'0 auto',padding:'80px 32px',background:'#060608',color:'#e5e5e5',fontFamily:"'DM Mono',monospace",minHeight:'100vh'}}>
+      <div style={{textAlign:'center',marginBottom:80}}>
+        <p style={{color:'#C9A227',fontWeight:900,letterSpacing:'.3em',fontSize:11,marginBottom:24,textTransform:'uppercase'}}>Theater 3 · Automotive</p>
+        <h1 style={{fontSize:64,fontWeight:900,color:'#fff',lineHeight:0.9,marginBottom:24,textTransform:'uppercase',letterSpacing:'-0.04em'}}>Securing the <span style={{color:'#C9A227'}}>Digital Twin</span><br/>of Every Component</h1>
+        <p style={{fontSize:20,color:'#666',maxWidth:640,margin:'0 auto 40px',lineHeight:1.6}}>Blockchain-anchored OEM part authentication from the production line to the dealer bay. Stop counterfeits, simplify recalls, and protect consumers in 2.1 seconds.</p>
+        <div style={{display:'flex',gap:20,justifyContent:'center',flexWrap:'wrap'}}>
+          <a href="/onboarding" style={{padding:'16px 36px',background:'#C9A227',color:'#000',fontWeight:900,textDecoration:'none',borderRadius:12,fontSize:14,textTransform:'uppercase',letterSpacing:'.1em'}}>Secure Your Fleet →</a>
+          <a href="/api-docs" style={{padding:'16px 36px',border:'1px solid #C9A22760',color:'#C9A227',textDecoration:'none',borderRadius:12,fontSize:14,textTransform:'uppercase',letterSpacing:'.1em'}}>Developer API</a>
         </div>
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:16,marginBottom:60}}>
-        {stats.map((s,i)=><div key={i} style={{background:'#111',border:'1px solid #C9A22740',borderRadius:12,padding:24,textAlign:'center'}}><div style={{fontSize:26,fontWeight:800,color:'#C9A227',marginBottom:8}}>{s.v}</div><p style={{color:'#888',fontSize:13,margin:0}}>{s.l}</p></div>)}
+      <div style={{display:'grid',gridTemplateColumns:'repeat(4,1fr)',gap:20,marginBottom:80}}>
+        {stats.map((s,i)=><div key={i} style={{background:'rgba(255,255,255,0.03)',border:'1px solid rgba(201,162,39,0.15)',borderRadius:20,padding:32,textAlign:'center'}}><div style={{fontSize:32,fontWeight:900,color:'#C9A227',marginBottom:8,letterSpacing:'-0.02em'}}>{s.v}</div><p style={{color:'#666',fontSize:10,margin:0,textTransform:'uppercase',fontWeight:800,letterSpacing:'.1em'}}>{s.l}</p></div>)}
       </div>
-      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:24}}>
-        {features.map((f,i)=><div key={i} style={{background:'#111',border:'1px solid #ffffff10',borderRadius:12,padding:24}}><div style={{fontSize:28,marginBottom:12}}>{f.icon}</div><h3 style={{color:'#fff',marginBottom:8,fontSize:16}}>{f.t}</h3><p style={{color:'#888',fontSize:14,lineHeight:1.5}}>{f.d}</p></div>)}
+      <div style={{display:'grid',gridTemplateColumns:'repeat(3,1fr)',gap:32}}>
+        {features.map((f,i)=><div key={i} style={{background:'rgba(255,255,255,0.02)',border:'1px solid rgba(255,255,255,0.05)',borderRadius:24,padding:32}}><div style={{fontSize:32,marginBottom:20}}>{f.icon}</div><h3 style={{color:'#fff',marginBottom:12,fontSize:18,fontWeight:900,textTransform:'uppercase',letterSpacing:'-0.01em'}}>{f.t}</h3><p style={{color:'#666',fontSize:14,lineHeight:1.7}}>{f.d}</p></div>)}
       </div>
     </div>
   );

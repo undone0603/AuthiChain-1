@@ -71,11 +71,22 @@ export async function POST(req: NextRequest) {
       // Non-fatal — user can add product from dashboard
     }
 
+    // ── Generate first API key ────────────────────────────────────────────────
+    const apiKey = `ac_${randomBytes(24).toString('hex')}`
+    await supabase.from('api_keys').insert({
+      user_id: user.id,
+      key_name: 'Sandbox Key',
+      api_key: apiKey,
+      last_four: apiKey.slice(-4),
+      status: 'active'
+    })
+
     return NextResponse.json({
       success: true,
       truemarkId: product?.truemark_id ?? truemarkId,
       productId: product?.id ?? null,
       plan,
+      apiKey // Return the key so the UI can show it
     })
   } catch (err) {
     console.error('[onboarding] Error:', err)

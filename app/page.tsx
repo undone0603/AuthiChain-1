@@ -67,6 +67,24 @@ export default function HomePage() {
 
   const scanY = ((tick % 100) / 100) * 84 + 6;
 
+  const [apiOutput, setApiOutput] = useState<string | null>(null);
+  const [isTestingApi, setIsTestingApi] = useState(false);
+
+  const runApiTest = async () => {
+    setIsTestingApi(true);
+    try {
+      const res = await fetch("/api/v1/verify?id=AC-HERM-LUX-MVLN4NH023", {
+        headers: { "X-API-Key": "demo_test_key_2026" }
+      });
+      const data = await res.json();
+      setApiOutput(JSON.stringify(data, null, 2));
+    } catch {
+      setApiOutput("// Error connecting to Truth Layer");
+    } finally {
+      setIsTestingApi(false);
+    }
+  };
+
   return (
     <main style={{ background:bg, color:"#e5e5e5", minHeight:"100vh", fontFamily:"'DM Mono','Courier New',monospace", overflowX:"hidden" }}>
       <style>{`
@@ -164,11 +182,11 @@ export default function HomePage() {
         </Link>
         <div style={{ flex:1 }}/>
         <div className="nav-links">
-          {[["Products","#products"],["How It Works","#how-it-works"],["Demo","/demo-video"],["Verify","/verify?id=AC-1829577CED8F6BFBB0BC667CDE33DF0E"],["EU DPP","/compliance"],["Grants","/grants"]].map(([l,h])=>(
+          {[["Products","#products"],["Developers","/api-docs"],["How It Works","#how-it-works"],["Demo","/demo-video"],["Verify","/verify?id=AC-1829577CED8F6BFBB0BC667CDE33DF0E"],["EU DPP","/compliance"]].map(([l,h])=>(
             <a key={l} href={h} className="nav-a">{l}</a>
           ))}
         </div>
-        <a href="https://authichain.com/portal" className="cta-gold" style={{ padding:"7px 16px", fontSize:12 }}>Get Started →</a>
+        <a href="/onboarding" className="cta-gold" style={{ padding:"7px 16px", fontSize:12 }}>Self-Serve Onboarding →</a>
       </nav>
 
       {/* ── HERO ── */}
@@ -188,8 +206,8 @@ export default function HomePage() {
             Every physical product has a story. AuthiChain makes it verifiable — blockchain-sealed, AI-enforced, scan-in-2.1-seconds authentic. Three platforms. One truth layer.
           </p>
           <div className="hero-ctas" style={{ display:"flex", gap:12, flexWrap:"wrap", marginBottom:36 }}>
-            <a href="https://authichain.com/demo-video" className="cta-gold">Watch Demo</a>
-            <a href="https://authichain.com/verify?id=AC-1829577CED8F6BFBB0BC667CDE33DF0E" className="cta-out" target="_blank" rel="noopener">Live Verify →</a>
+            <a href="/onboarding" className="cta-gold">Protect Your Brand Now</a>
+            <a href="/api-docs" className="cta-out">Developer Portal</a>
           </div>
           <div className="hero-stats" style={{ display:"flex", gap:32, flexWrap:"wrap" }}>
             {[["$0.004","per seal"],["2.1s","verify time"],["1B","$QRON supply"],["EU DPP","compliant"]].map(([v,l])=>(
@@ -278,7 +296,7 @@ export default function HomePage() {
         </p>
         <div className="three-col">
           {/* AuthiChain */}
-          <a href="https://authichain.com/portal" className="plink">
+          <a href="/portal" className="plink">
             <div className="card card-gold" style={{ padding:"32px 24px", height:"100%", display:"flex", flexDirection:"column" }}>
               <div style={{ fontSize:24, marginBottom:14 }}>◆</div>
               <div className="syne gt-gold" style={{ fontWeight:800, fontSize:"1.4rem", marginBottom:6 }}>AuthiChain</div>
@@ -393,6 +411,70 @@ export default function HomePage() {
 
       <div className="divider"/>
 
+      {/* ── API FIRST ── */}
+      <section className="section">
+        <div className="two-col two-col-gap-tight items-center">
+          <div>
+            <div className="pill" style={{ color:gold, borderColor:goldBorder, background:goldDim, marginBottom:24 }}>
+               DEVELOPER HUB
+            </div>
+            <h2 className="syne" style={{ fontWeight:800, fontSize:"2.8rem", marginBottom:20, lineHeight:1.1 }}>
+               Push <span className="gt-gold">Truth</span><br/>via API
+            </h2>
+            <p style={{ fontSize:16, lineHeight:1.8, color:"rgba(255,255,255,.5)", marginBottom:32 }}>
+               Building an e-commerce platform or a logistics tracker? Integrate AuthiChain's 5-agent consensus and blockchain anchoring with a single line of code. No web3 library required.
+            </p>
+            <div style={{ display:"flex", gap:16, flexWrap:"wrap" }}>
+               <a href="/api-docs" className="cta-gold">Explore Documentation</a>
+               <a href="/portal" className="cta-out">Get Free API Key</a>
+            </div>
+          </div>
+          <div className="card" style={{ background:"#000", border:`1px solid ${border}`, padding:0, borderRadius:24, overflow:"hidden", position:"relative" }}>
+             <div style={{ padding:"12px 16px", borderBottom:`1px solid ${border}`, display:"flex", alignItems:"center", justifyContent:"space-between" }}>
+                <div style={{ display:"flex", gap:6 }}>
+                   <div style={{ width:10, height:10, borderRadius:"50%", background:"rgba(255,255,255,.1)" }}/>
+                   <div style={{ width:10, height:10, borderRadius:"50%", background:"rgba(255,255,255,.1)" }}/>
+                   <div style={{ width:10, height:10, borderRadius:"50%", background:"rgba(255,255,255,.1)" }}/>
+                </div>
+                <button 
+                  onClick={runApiTest}
+                  disabled={isTestingApi}
+                  style={{ background:gold, color:"#000", border:"none", borderRadius:6, padding:"4px 10px", fontSize:10, fontWeight:900, cursor:"pointer", textTransform:"uppercase", letterSpacing:".05em" }}
+                >
+                  {isTestingApi ? "Running..." : "Run Live Test"}
+                </button>
+             </div>
+             <div style={{ position:"relative" }}>
+                <pre style={{ padding:24, fontSize:12, color:gold, overflowX:"auto", opacity: apiOutput ? 0.3 : 1 }}>{`
+# Verify product authenticity via REST
+GET /api/v1/verify?id=AC-LVMH-2026
+
+{
+  "authentic": true,
+  "confidence": 0.99,
+  "l1_anchor": "0x7f9fade1...",
+  "consensus": "5/5 agents"
+}
+                `}</pre>
+                {apiOutput && (
+                  <div style={{ position:"absolute", inset:0, background:"rgba(0,0,0,0.85)", padding:24, overflowY:"auto" }}>
+                     <p style={{ color:"rgba(255,255,255,0.4)", fontSize:10, marginBottom:12, fontWeight:800, textTransform:"uppercase" }}>Response from Truth Layer:</p>
+                     <pre style={{ fontSize:11, color:green, fontFamily:"inherit" }}>{apiOutput}</pre>
+                     <button 
+                        onClick={() => setApiOutput(null)}
+                        style={{ marginTop:16, background:"transparent", border:`1px solid ${border}`, color:"#fff", padding:"4px 8px", fontSize:10, borderRadius:4, cursor:"pointer" }}
+                     >
+                        Clear
+                     </button>
+                  </div>
+                )}
+             </div>
+          </div>
+        </div>
+      </section>
+
+      <div className="divider"/>
+
       {/* ── MARKETS ── */}
       <section className="section">
         <div style={{ fontSize:11, color:"rgba(255,255,255,.3)", letterSpacing:".18em", marginBottom:12 }}>TARGET MARKETS</div>
@@ -420,8 +502,8 @@ export default function HomePage() {
           Deploy in 48 hours. $0.004 per seal. No hardware required.
         </p>
         <div className="final-ctas" style={{ display:"flex", gap:14, justifyContent:"center", flexWrap:"wrap" }}>
-          <a href="https://authichain.com/demo-video" className="cta-gold">Watch Full Demo</a>
-          <a href="https://authichain.com/verify?id=AC-1829577CED8F6BFBB0BC667CDE33DF0E" className="cta-out" target="_blank" rel="noopener">Try Live Verify</a>
+          <a href="/demo-video" className="cta-gold">Watch Full Demo</a>
+          <a href="/verify?id=AC-1829577CED8F6BFBB0BC667CDE33DF0E" className="cta-out" target="_blank" rel="noopener">Try Live Verify</a>
           <button onClick={()=>{const e=['z','@','authichain','.','com'].join('');window.open('mailto:'+e);}} className="cta-out" style={{ cursor:"pointer", fontFamily:"inherit" }}>Talk to Founder</button>
         </div>
       </section>
